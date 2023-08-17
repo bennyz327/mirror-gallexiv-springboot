@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /gallexiv
+#    https://子網域名.網域名.主域/context-path(/功能、系統名)
+spring:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    database: mysql
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
+    username: benny
+    password: benben327327
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+    view:
+      prefix:
+      suffix:
+springdoc:
+  swagger-ui:
+    path: /api/doc
