@@ -1,7 +1,7 @@
 server:
   port: 8080
-  servlet:
-    context-path: /gallexiv
+#  servlet:
+#    context-path: /gallexiv
 #    https://子網域名.網域名.主域/context-path(/功能、系統名)
 spring:
   jackson:
