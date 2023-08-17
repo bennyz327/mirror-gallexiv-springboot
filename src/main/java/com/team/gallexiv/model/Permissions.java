@@ -2,10 +2,12 @@ package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.Objects;
 
+@Getter
 @Entity
 @Table(name = "permissions", schema = "gallexiv")
 public class Permissions {
@@ -20,16 +22,8 @@ public class Permissions {
     @OneToMany(mappedBy = "permissionsByPermissionId")
     private Collection<RolePermission> rolePermissionsByPermissionId;
 
-    public int getPermissionId() {
-        return permissionId;
-    }
-
     public void setPermissionId(int permissionId) {
         this.permissionId = permissionId;
-    }
-
-    public String getPermissionName() {
-        return permissionName;
     }
 
     public void setPermissionName(String permissionName) {
@@ -47,10 +41,6 @@ public class Permissions {
     @Override
     public int hashCode() {
         return Objects.hash(permissionId, permissionName);
-    }
-
-    public Collection<RolePermission> getRolePermissionsByPermissionId() {
-        return rolePermissionsByPermissionId;
     }
 
     public void setRolePermissionsByPermissionId(Collection<RolePermission> rolePermissionsByPermissionId) {

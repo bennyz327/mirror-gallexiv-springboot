@@ -4,14 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -72,7 +69,7 @@ public class Post {
 //    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
 //    private Collection<TagPost> tagPostsByPostId;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
     @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns = {@JoinColumn(name = "tagId")})
     private Collection<Tag> tagsByPostId;
 

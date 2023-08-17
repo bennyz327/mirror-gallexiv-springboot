@@ -1,11 +1,11 @@
 package com.team.gallexiv.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Objects;
-
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "tagPost", schema = "gallexiv")
 public class TagPost {

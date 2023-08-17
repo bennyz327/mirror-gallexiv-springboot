@@ -4,15 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Objects;
 
 @Getter
 @Setter

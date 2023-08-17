@@ -18,7 +18,6 @@ public class UserService {
         return post.orElse(null);
     }
     public Userinfo mygetUserById(int id) {
-        Userinfo user = userDao.myfindById(id);
-        return user;
+        return userDao.myfindById(id);
     }
 }

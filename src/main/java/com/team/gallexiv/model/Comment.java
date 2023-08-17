@@ -1,11 +1,12 @@
 package com.team.gallexiv.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Objects;
 
+@Getter
 @Entity
 @Table(name = "comment", schema = "gallexiv")
 public class Comment {
@@ -36,32 +37,16 @@ public class Comment {
     @OneToMany(mappedBy = "commentByParentCommentId")
     private Collection<Comment> commentsByCommentId;
 
-    public int getCommentId() {
-        return commentId;
-    }
-
     public void setCommentId(int commentId) {
         this.commentId = commentId;
-    }
-
-    public String getCommentText() {
-        return commentText;
     }
 
     public void setCommentText(String commentText) {
         this.commentText = commentText;
     }
 
-    public Timestamp getCommentTime() {
-        return commentTime;
-    }
-
     public void setCommentTime(Timestamp commentTime) {
         this.commentTime = commentTime;
-    }
-
-    public String getCommentStatus() {
-        return commentStatus;
     }
 
     public void setCommentStatus(String commentStatus) {
@@ -76,37 +61,21 @@ public class Comment {
 //        return commentId == comment.commentId && Objects.equals(commentText, comment.commentText) && Objects.equals(commentTime, comment.commentTime) && Objects.equals(commentStatus, comment.commentStatus);
 //    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(commentId, commentText, commentTime, commentStatus);
-    }
-
-    public Post getPostByPostId() {
-        return postByPostId;
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(commentId, commentText, commentTime, commentStatus);
+//    }
 
     public void setPostByPostId(Post postByPostId) {
         this.postByPostId = postByPostId;
-    }
-
-    public Userinfo getUserinfoByUserId() {
-        return userinfoByUserId;
     }
 
     public void setUserinfoByUserId(Userinfo userinfoByUserId) {
         this.userinfoByUserId = userinfoByUserId;
     }
 
-    public Comment getCommentByParentCommentId() {
-        return commentByParentCommentId;
-    }
-
     public void setCommentByParentCommentId(Comment commentByParentCommentId) {
         this.commentByParentCommentId = commentByParentCommentId;
-    }
-
-    public Collection<Comment> getCommentsByCommentId() {
-        return commentsByCommentId;
     }
 
     public void setCommentsByCommentId(Collection<Comment> commentsByCommentId) {
