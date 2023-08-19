@@ -3,15 +3,13 @@ package com.team.gallexiv.api;
 import com.team.gallexiv.model.Tag;
 import com.team.gallexiv.model.TagService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin()
@@ -26,6 +24,14 @@ public class TagsController {
     @GetMapping(path = "/all", produces = "application/json")
     public Collection<Tag> getTags() {
         return tagService.getAllTags();
+    }
+
+    //分頁式查詢 還不能用
+    @GetMapping(path = "/all/pageable", produces = "application/json")
+    public Page<Tag> getTags2(@Parameter Integer p) {
+        Page<Tag> tagPages = tagService.getAllpage(p);
+//        int totalPageNum = tagPages.getTotalPages();
+        return tagPages;
     }
 
     //分頁式查詢 還不能用
