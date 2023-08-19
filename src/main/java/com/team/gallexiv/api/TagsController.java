@@ -2,6 +2,7 @@ package com.team.gallexiv.api;
 
 import com.team.gallexiv.model.Tag;
 import com.team.gallexiv.model.TagService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -54,10 +55,17 @@ public class TagsController {
         return tagService.deleteTag(id);
     }
 
-    //TODO 沒有處理好接到的東西
+    @Operation(description = "編輯標籤 (EDIT BY ID)")
     @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     public Tag updateTag(@PathVariable int id, @RequestBody Tag tag) {
         System.out.println("接收到"+tag+" 名稱為"+tag.getTagName());
         return tagService.updateTag(id, tag);
     }
+
+    @PostMapping(path = "/add",consumes = "application/json", produces = "application/json")
+    public Tag addTag(@RequestBody Tag newTag){
+        System.out.println("接收到名稱為: "+newTag.getTagName());
+        return tagService.addTag(newTag);
+    }
+
 }

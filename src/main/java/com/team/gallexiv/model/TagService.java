@@ -51,7 +51,7 @@ public class TagService {
         //檢查是否有此tag
         if (tagDao.existsById(tagId)) {
             //檢查是否有重複的tag
-            if (tagDao.findByTagName(tag.getTagName())==null){
+            if (tagDao.findByTagName(tag.getTagName())!=null){
                 return null;
             }
             //更新tag
@@ -61,6 +61,14 @@ public class TagService {
             return tagDao.save(currentTag);
         }
         return null;
+    }
+
+    public Tag addTag(Tag newTag){
+        if (tagDao.findByTagName((newTag.getTagName()))!=null){
+            System.out.println("標籤重複");
+            return null;
+        }
+        return tagDao.save(newTag);
     }
 
 }
