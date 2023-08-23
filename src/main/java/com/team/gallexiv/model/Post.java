@@ -34,9 +34,9 @@ public class Post {
     @Basic
     @Column(name = "postAgeLimit")
     private Integer postAgeLimit;
-    @Basic
-    @Column(name = "postStatus")
-    private String postStatus;
+//    @Basic
+//    @Column(name = "postStatus")
+//    private String postStatus;
 
     //M2O取得Userinfo物件
     @JsonBackReference
@@ -73,4 +73,7 @@ public class Post {
     @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns = {@JoinColumn(name = "tagId")})
     private Collection<Tag> tagsByPostId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_status", referencedColumnName = "code_id")
+    private Status postStatusByStatusId;
 }

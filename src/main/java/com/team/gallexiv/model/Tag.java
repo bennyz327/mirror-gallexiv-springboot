@@ -23,6 +23,8 @@ public class Tag {
     @OneToMany(mappedBy = "tagByTagId")
     private Collection<TagPost> tagPostsByTagId;
 
+
+
 //    public int getTagId() {
 //        return tagId;
 //    }

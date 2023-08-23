@@ -2,9 +2,11 @@ package com.team.gallexiv.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "userSubscription", schema = "gallexiv")
@@ -22,9 +24,9 @@ public class UserSubscription {
     @Basic
     @Column(name = "subscriptionStartTime")
     private Timestamp subscriptionStartTime;
-    @Basic
-    @Column(name = "subscriptionStatus")
-    private String subscriptionStatus;
+//    @Basic
+//    @Column(name = "subscriptionStatus")
+//    private String subscriptionStatus;
     @ManyToOne
     @JoinColumn(referencedColumnName = "userId", nullable = false)
     private Userinfo userinfoByUserId;
@@ -32,33 +34,11 @@ public class UserSubscription {
     @JoinColumn(referencedColumnName = "planId", nullable = false)
     private Plan planByPlanId;
 
-    public void setSubscriptionId(int subscriptionId) {
-        this.subscriptionId = subscriptionId;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscription_status", referencedColumnName = "code_Id")
+    private Status subscriptionStatusByStatusId;
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
-    public void setPlanId(int planId) {
-        this.planId = planId;
-    }
-
-    public void setSubscriptionStartTime(Timestamp subscriptionStartTime) {
-        this.subscriptionStartTime = subscriptionStartTime;
-    }
-
-    public void setSubscriptionStatus(String subscriptionStatus) {
-        this.subscriptionStatus = subscriptionStatus;
-    }
-
-    public void setUserinfoByUserId(Userinfo userinfoByUserId) {
-        this.userinfoByUserId = userinfoByUserId;
-    }
-
-    public void setPlanByPlanId(Plan planByPlanId) {
-        this.planByPlanId = planByPlanId;
-    }
 
 //    @Override
 //    public boolean equals(Object o) {
