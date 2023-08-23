@@ -46,9 +46,9 @@ public class Userinfo {
     @Basic
     @Column(name = "createTime")
     private Timestamp createTime;
-    @Basic
-    @Column(name = "userStatus")
-    private String userStatus;
+//    @Basic
+//    @Column(name = "userStatus")
+//    private String userStatus;
 
     @JsonIgnore
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
@@ -58,9 +58,9 @@ public class Userinfo {
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<Post> postsListByUserId;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "userinfoBySessionUserId",fetch = FetchType.LAZY)
-    private Collection<Session> sessionsByUserId;
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "userinfoBySessionUserId",fetch = FetchType.LAZY)
+//    private Collection<Session> sessionsByUserId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
@@ -70,5 +70,9 @@ public class Userinfo {
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "roleId")
     private AccountRole accountRoleByRoleId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_status", referencedColumnName = "code_id")
+    private Status userStatusByStatusId;
 
 }
