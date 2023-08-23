@@ -2,10 +2,12 @@ package com.team.gallexiv.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Collection;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "comment", schema = "gallexiv")
@@ -20,9 +22,9 @@ public class Comment {
     @Basic
     @Column(name = "commentTime")
     private Timestamp commentTime;
-    @Basic
-    @Column(name = "commentStatus")
-    private String commentStatus;
+//    @Basic
+//    @Column(name = "commentStatus")
+//    private String commentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
@@ -37,21 +39,9 @@ public class Comment {
     @OneToMany(mappedBy = "commentByParentCommentId")
     private Collection<Comment> commentsByCommentId;
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public void setCommentText(String commentText) {
-        this.commentText = commentText;
-    }
-
-    public void setCommentTime(Timestamp commentTime) {
-        this.commentTime = commentTime;
-    }
-
-    public void setCommentStatus(String commentStatus) {
-        this.commentStatus = commentStatus;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_status", referencedColumnName = "code_id")
+    private Status commentStatusByStatusId;
 
 //    @Override
 //    public boolean equals(Object o) {
@@ -81,4 +71,6 @@ public class Comment {
     public void setCommentsByCommentId(Collection<Comment> commentsByCommentId) {
         this.commentsByCommentId = commentsByCommentId;
     }
+
+
 }

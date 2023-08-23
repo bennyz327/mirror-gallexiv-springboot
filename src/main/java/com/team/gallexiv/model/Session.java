@@ -1,57 +1,57 @@
-package com.team.gallexiv.model;
-
-import jakarta.persistence.*;
-import lombok.Getter;
-
-import java.sql.Timestamp;
-
-@Getter
-@Entity
-@Table(name = "session", schema = "gallexiv")
-public class Session {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "sessionId")
-    private int sessionId;
-    @Basic
-    @Column(name = "clientSessionId")
-    private String clientSessionId;
-    @Basic
-    @Column(name = "sessionUserAgent")
-    private String sessionUserAgent;
-    @Basic
-    @Column(name = "sessionData")
-    private String sessionData;
-    @Basic
-    @Column(name = "expirationTime")
-    private Timestamp expirationTime;
-    @ManyToOne
-    @JoinColumn(name = "sessionUserId", referencedColumnName = "userId", nullable = false)
-    private Userinfo userinfoBySessionUserId;
-
-    public void setSessionId(int sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public void setClientSessionId(String clientSessionId) {
-        this.clientSessionId = clientSessionId;
-    }
-
-    public void setSessionUserAgent(String sessionUserAgent) {
-        this.sessionUserAgent = sessionUserAgent;
-    }
-
-    public void setSessionData(String sessionData) {
-        this.sessionData = sessionData;
-    }
-
-    public void setExpirationTime(Timestamp expirationTime) {
-        this.expirationTime = expirationTime;
-    }
-
-    public void setUserinfoBySessionUserId(Userinfo userinfoBySessionUserId) {
-        this.userinfoBySessionUserId = userinfoBySessionUserId;
-    }
+//package com.team.gallexiv.model;
+//
+//import jakarta.persistence.*;
+//import lombok.Getter;
+//
+//import java.sql.Timestamp;
+//
+//@Getter
+//@Entity
+//@Table(name = "session", schema = "gallexiv")
+//public class Session {
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @Column(name = "sessionId")
+//    private int sessionId;
+//    @Basic
+//    @Column(name = "clientSessionId")
+//    private String clientSessionId;
+//    @Basic
+//    @Column(name = "sessionUserAgent")
+//    private String sessionUserAgent;
+//    @Basic
+//    @Column(name = "sessionData")
+//    private String sessionData;
+//    @Basic
+//    @Column(name = "expirationTime")
+//    private Timestamp expirationTime;
+//    @ManyToOne
+//    @JoinColumn(name = "sessionUserId", referencedColumnName = "userId", nullable = false)
+//    private Userinfo userinfoBySessionUserId;
+//
+//    public void setSessionId(int sessionId) {
+//        this.sessionId = sessionId;
+//    }
+//
+//    public void setClientSessionId(String clientSessionId) {
+//        this.clientSessionId = clientSessionId;
+//    }
+//
+//    public void setSessionUserAgent(String sessionUserAgent) {
+//        this.sessionUserAgent = sessionUserAgent;
+//    }
+//
+//    public void setSessionData(String sessionData) {
+//        this.sessionData = sessionData;
+//    }
+//
+//    public void setExpirationTime(Timestamp expirationTime) {
+//        this.expirationTime = expirationTime;
+//    }
+//
+//    public void setUserinfoBySessionUserId(Userinfo userinfoBySessionUserId) {
+//        this.userinfoBySessionUserId = userinfoBySessionUserId;
+//    }
 
 //    @Override
 //    public boolean equals(Object o) {
@@ -67,4 +67,4 @@ public class Session {
 //    }
 
 
-}
+//}

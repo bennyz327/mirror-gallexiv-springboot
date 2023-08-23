@@ -26,6 +26,10 @@ public class Picture {
     @Column(name = "imgPath")
     private String imgPath;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "picture_status", referencedColumnName = "code_id")
+    private Status pictureStatusByStatusId;
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "postId", referencedColumnName = "postId")
