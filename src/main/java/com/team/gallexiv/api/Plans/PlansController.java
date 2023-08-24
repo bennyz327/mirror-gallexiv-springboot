@@ -1,10 +1,8 @@
-package com.team.gallexiv.api.Plan;
+package com.team.gallexiv.api.Plans;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team.gallexiv.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,10 +11,7 @@ import java.util.List;
 public class PlansController {
 
     final PlanService planS;
-
     final UserService userS;
-
-    @Autowired
     public PlansController(PlanService planS, UserService userS) {
         this.planS = planS;
         this.userS = userS;
@@ -30,11 +25,19 @@ public class PlansController {
         return planS.getPlanById(planId);
     }
 
-    @PostMapping(path = "/plans/insert",produces = "application/json;charset=UTF-8")
-    @Operation(description = "新增plan")
-    public Plan addPlan(@RequestBody Plan plan){
-        return planS.insertPlan(plan);
+    @GetMapping(path = "/plansForShow/{planId}", produces = "application/json")
+    @Operation(description = "取得單筆plan (GET BY ID)")
+    public PlanForShow getPlanShowById(@PathVariable int planId) {
+        return planS.getPlanForShowById(planId);
     }
+
+    @PostMapping(path = "/plans/{ownerId}/insert",produces = "application/json;charset=UTF-8")
+    @Operation(description = "新增plan")
+    public Plan addPlan(@PathVariable int ownerId, @RequestBody Plan plan){
+//        System.out.println("收到"+plan);
+        return planS.insertPlan(ownerId,plan);
+    }
+
 
     //OK
     @CrossOrigin
@@ -43,6 +46,13 @@ public class PlansController {
         List<Plan> result = planS.getAllPlan();
         return  result;
     }
+    @CrossOrigin
+    @GetMapping(path="/plansForShow",produces = "application/json;charset=UTF-8")
+    public List<PlanForShow> findAllPlanForShow(){
+        List<PlanForShow> result = planS.getAllPlanForShow();
+        return  result;
+    }
+
 
     //OK
     @DeleteMapping(path = "/plans/delete")
@@ -54,7 +64,7 @@ public class PlansController {
     @Transactional
     @PutMapping("/plans/update")
     public String updatePlan(@RequestParam int planId, @RequestParam("planName") String planName, @RequestParam("planPrice") int planPrice,
-                             @RequestParam("planDescription") String planDescription, @RequestParam("planStatus") String planStatus, @RequestParam("planPicture") String planPicture ){
+                             @RequestParam("planDescription") String planDescription, @RequestParam("planStatus") Integer planStatus, @RequestParam("planPicture") String planPicture ){
         planS.updatePlanById(planId,planName,planPrice,planDescription,planStatus,planPicture);
         return "更新成功";
     }

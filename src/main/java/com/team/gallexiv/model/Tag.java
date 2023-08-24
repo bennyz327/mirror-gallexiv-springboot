@@ -16,14 +16,18 @@ public class Tag {
     @Id
     @Column(name = "tagId")
     private int tagId;
+
     @Basic
     @Column(name = "tagName")
     private String tagName;
+
     @JsonIgnore
     @OneToMany(mappedBy = "tagByTagId")
     private Collection<TagPost> tagPostsByTagId;
 
-
+    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
+    @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "tagId")}, inverseJoinColumns = {@JoinColumn(name = "postId")})
+    private Collection<Post> postsByTagId;
 
 //    public int getTagId() {
 //        return tagId;
