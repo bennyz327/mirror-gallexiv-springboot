@@ -1,6 +1,8 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,16 +25,17 @@ public class AccountRole {
     @Column(name = "roleName")
     private String roleName;
 
-    @JsonIgnoreProperties("accountRoleByRoleId")
+    @JsonIgnore
     @OneToMany(mappedBy = "accountRoleByRoleId")
     private Collection<RolePermission> rolePermissionsByRoleId;
 
-    @JsonIgnoreProperties("accountRoleByRoleId")
+    @JsonIgnore
     @OneToMany(mappedBy = "accountRoleByRoleId")
     private Collection<Userinfo> userinfosByRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_status", referencedColumnName = "code_id")
+    @JsonIncludeProperties("statusName")
     private Status roleStatusByStatusId;
 
 

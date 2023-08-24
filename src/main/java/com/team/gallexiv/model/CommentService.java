@@ -1,30 +1,32 @@
 package com.team.gallexiv.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PlanService {
+public class CommentService {
 
     final PlanDao planD;
     final PlanForShowDao planForShowD;
+
+    final CommentDao commentD;
     final UserDao userinfoD;
     final StatusDao statusD;
 
-    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD,StatusDao statusD) {
+    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD,CommentDao commentD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
         this.statusD = statusD;
+        this.commentD =commentD;
     }
 
-    // 取得單筆plan
-    public Plan getPlanById(int planId) {
-        Optional<Plan> plan = planD.findById(planId);
-        return plan.orElse(null);
+    // 取得單筆comment
+    public Comment getPlanById(int commentId) {
+        Optional<Comment> comment = commentD.findById(commentId);
+        return comment.orElse(null);
     }
 
     public PlanForShow getPlanForShowById(int planId) {
@@ -45,23 +47,21 @@ public class PlanService {
     public Plan insertPlan(int ownerId,Plan plan) {
 
         Userinfo thisUser = userinfoD.myfindById(ownerId);
-//        Optional<Userinfo> thisUser = userinfoD.findByUserId(ownerId);
 
-        int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
-        Optional<Status> status = statusD.findById(thisPlanStatusId);
+        Status thisPlanStatusObject = plan.getPlanStatusByStatusId();
+        int thisPlanStatusId = plan.getPlanId();
 
+//        System.out.println("查詢條件ID"+thisPlanStatusObject.getStatusId());
+//        Status status = statusD.findByStatusName(thisPlanStatusObject.getStatusCategory(),thisPlanStatusObject.getStatusName());
+//        System.out.println(status);
 
-        if (thisUser != null && status.isPresent()) {
-            plan.setPlanStatusByStatusId(status.get());
+//        Status status = statusD.getById(thisPlanStatusId);
+//        plan.setPlanStatusByStatusId(status);
+
+        if (thisUser!=null) {
             plan.setOwnerIdByUserId(thisUser);
             return planD.save(plan);
         }
-//        if (status.isPresent() && thisUser.isPresent()) {
-//            plan.setPlanStatusByStatusId(status.get());
-//            plan.setOwnerIdByUserId(thisUser.get());
-//            return planD.save(plan);
-//        }
-
         return null;
     }
 

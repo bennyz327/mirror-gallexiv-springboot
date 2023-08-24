@@ -1,4 +1,4 @@
-package com.team.gallexiv.api.picture;
+package com.team.gallexiv.api.Pictures;
 
 import com.team.gallexiv.model.UserService;
 import com.team.gallexiv.model.Userinfo;

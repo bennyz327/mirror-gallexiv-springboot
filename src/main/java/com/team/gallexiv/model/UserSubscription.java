@@ -1,5 +1,6 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +16,7 @@ public class UserSubscription {
     @Id
     @Column(name = "subscriptionId")
     private int subscriptionId;
-    @Basic
-    @Column(name = "userId")
-    private int userId;
-    @Basic
-    @Column(name = "planId")
-    private int planId;
+
     @Basic
     @Column(name = "subscriptionStartTime")
     private Timestamp subscriptionStartTime;
@@ -28,10 +24,11 @@ public class UserSubscription {
 //    @Column(name = "subscriptionStatus")
 //    private String subscriptionStatus;
     @ManyToOne
-    @JoinColumn(referencedColumnName = "userId", nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private Userinfo userinfoByUserId;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "planId", nullable = false)
+    @JoinColumn(name = "planId", referencedColumnName = "planId", nullable = false)
     private Plan planByPlanId;
 
     @ManyToOne(fetch = FetchType.LAZY)
