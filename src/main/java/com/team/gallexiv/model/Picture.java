@@ -30,7 +30,6 @@ public class Picture {
     @JoinColumn(name = "picture_status", referencedColumnName = "code_id")
     private Status pictureStatusByStatusId;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "postId", referencedColumnName = "postId")
     private Post postByPostId;

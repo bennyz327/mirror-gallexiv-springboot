@@ -1,5 +1,6 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,7 @@ public class Status {
     @OneToMany(mappedBy = "pictureStatusByStatusId")
     private Collection<Picture> statusByPictureId;
 
+
     @OneToMany(mappedBy = "planStatusByStatusId")
     private Collection<Plan> statusByPlanId;
 
@@ -49,7 +51,15 @@ public class Status {
     @OneToMany(mappedBy = "subscriptionStatusByStatusId")
     private Collection<UserSubscription> statusBySubscriptionId;
 
+    public Status(){
+
+    }
     public Status(int statusId) {
         this.statusId = statusId;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(statusId)+","+statusName+","+statusCategory+";";
     }
 }

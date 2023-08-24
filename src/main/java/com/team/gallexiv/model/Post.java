@@ -15,38 +15,38 @@ import java.util.Collection;
 @Entity
 @Table(name = "post", schema = "gallexiv")
 public class Post {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "postId")
     private int postId;
+
     @Basic
     @Column(name = "postTitle")
     private String postTitle;
+
     @Basic
     @Column(name = "postContent")
     private String postContent;
+
     @Basic
     @Column(name = "postTime")
     private Timestamp postTime;
+
     @Basic
     @Column(name = "postPublic")
     private Integer postPublic;
+
     @Basic
     @Column(name = "postAgeLimit")
     private Integer postAgeLimit;
-//    @Basic
-//    @Column(name = "postStatus")
-//    private String postStatus;
+
 
     //M2O取得Userinfo物件
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private Userinfo userinfoByUserId;
-    //單純取得userId
-//    @Basic
-//    @Column(name = "userId", insertable = false, updatable = false)
-//    private Integer userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "planId", referencedColumnName = "planId")
@@ -58,7 +58,8 @@ public class Post {
     private Collection<Comment> commentsByPostId;
 
     //mappedBy = "postByPostId" 要指定的是Picture裡面的屬性名稱，不是資料庫的欄位名稱
-    @JsonManagedReference
+
+    @JsonIgnore
     @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
     private Collection<Picture> picturesByPostId;
 //    @OneToMany(mappedBy = "postByPostId", orphanRemoval = true)

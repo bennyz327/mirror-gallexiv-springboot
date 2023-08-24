@@ -17,11 +17,13 @@ public class RolePermission {
     @Id
     @Column(name = "RPId")
     private int rpId;
-    @JsonBackReference
+
+
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "roleId", nullable = false)
     private AccountRole accountRoleByRoleId;
-    @JsonIgnore
+
+
     @ManyToOne
     @JoinColumn(name = "permissionId", referencedColumnName = "permissionId", nullable = false)
     private Permissions permissionsByPermissionId;

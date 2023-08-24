@@ -1,5 +1,6 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,26 +17,28 @@ public class Comment {
     @Id
     @Column(name = "commentId")
     private int commentId;
+
     @Basic
     @Column(name = "commentText")
     private String commentText;
+
     @Basic
     @Column(name = "commentTime")
     private Timestamp commentTime;
-//    @Basic
-//    @Column(name = "commentStatus")
-//    private String commentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
     private Post postByPostId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private Userinfo userinfoByUserId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentCommentId", referencedColumnName = "commentId")
     private Comment commentByParentCommentId;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "commentByParentCommentId")
     private Collection<Comment> commentsByCommentId;
 
@@ -55,22 +58,5 @@ public class Comment {
 //    public int hashCode() {
 //        return Objects.hash(commentId, commentText, commentTime, commentStatus);
 //    }
-
-    public void setPostByPostId(Post postByPostId) {
-        this.postByPostId = postByPostId;
-    }
-
-    public void setUserinfoByUserId(Userinfo userinfoByUserId) {
-        this.userinfoByUserId = userinfoByUserId;
-    }
-
-    public void setCommentByParentCommentId(Comment commentByParentCommentId) {
-        this.commentByParentCommentId = commentByParentCommentId;
-    }
-
-    public void setCommentsByCommentId(Collection<Comment> commentsByCommentId) {
-        this.commentsByCommentId = commentsByCommentId;
-    }
-
 
 }

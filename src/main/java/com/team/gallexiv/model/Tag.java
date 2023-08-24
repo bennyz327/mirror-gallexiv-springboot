@@ -23,4 +23,7 @@ public class Tag {
     @OneToMany(mappedBy = "tagByTagId")
     private Collection<TagPost> tagPostsByTagId;
 
+    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
+    @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "tagId")}, inverseJoinColumns = {@JoinColumn(name = "postId")})
+    private Collection<Post> postsByTagId;
 }
