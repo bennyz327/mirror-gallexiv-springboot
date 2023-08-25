@@ -38,7 +38,7 @@ public class Comment {
     @JoinColumn(name = "parentCommentId", referencedColumnName = "commentId")
     private Comment commentByParentCommentId;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "commentByParentCommentId")
     private Collection<Comment> commentsByCommentId;
 
