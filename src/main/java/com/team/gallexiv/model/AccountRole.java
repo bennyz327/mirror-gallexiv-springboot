@@ -25,11 +25,11 @@ public class AccountRole {
     @Column(name = "roleName")
     private String roleName;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "accountRoleByRoleId")
     private Collection<RolePermission> rolePermissionsByRoleId;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "accountRoleByRoleId")
     private Collection<Userinfo> userinfosByRoleId;
 

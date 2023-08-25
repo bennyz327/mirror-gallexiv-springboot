@@ -1,12 +1,10 @@
 package com.team.gallexiv.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -14,7 +12,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
-@JsonPropertyOrder({"userEmail","userName"})
+@DynamicUpdate
 @Table(name = "userinfo", schema = "gallexiv")
 public class Userinfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +27,7 @@ public class Userinfo {
     @Basic
     @Column(name = "account")
     private String account;
+
 
     @Basic
     @Column(name = "pWord")
@@ -78,10 +77,11 @@ public class Userinfo {
     @Column(name = "last_modified")
     private Timestamp last_modified;
 
-    @JsonIgnore
+    @JsonIncludeProperties("commentId")
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<Comment> commentsByUserId;
 
+    @JsonIncludeProperties("postTitle")
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<Post> postsListByUserId;
 
@@ -93,15 +93,38 @@ public class Userinfo {
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<UserSubscription> userSubscriptionsByUserId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "roleId")
     private AccountRole accountRoleByRoleId;
 
+    @JsonIncludeProperties({"code_id","system_type","code_category","code_name"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status", referencedColumnName = "code_id")
     private Status userStatusByStatusId;
 
+    @JsonIncludeProperties("planName")
     @OneToMany(mappedBy = "ownerIdByUserId")
     private Collection<Plan> planByPlanId;
 
+    @Override
+    public String toString() {
+        return "Userinfo{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", account='" + account + '\'' +
+                ", pWord='" + pWord + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", email_verified=" + email_verified +
+                ", birthday=" + birthday +
+                ", gender='" + gender + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", intro='" + intro + '\'' +
+                ", createTime=" + createTime +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", modified_by=" + modified_by +
+                ", last_modified=" + last_modified +
+                '}';
+    }
 }
