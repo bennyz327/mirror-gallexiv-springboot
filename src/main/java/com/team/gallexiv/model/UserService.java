@@ -42,22 +42,21 @@ public class UserService {
 //    }
 
 
-    //取得單筆user OK //status別人的無法找
-    public Userinfo getUserById(int userId) {
-        Optional<Userinfo> user = userD.findById(userId);
-        return user.orElse(null);
+    //取得單筆user OK
+    public Userinfo getUserById(Userinfo user) {
+        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
+        return optionalUserinfo.orElse(null);
     }
+
     //取得所有user OK
     public List<Userinfo> getAllUsers(){
         return userD.findAll();
     }
 
-
     //新增使用者
     public Userinfo insertUser(Userinfo user) {
 
         String userName =user.getAccount();
-        String userEmail = user.getUserEmail();
         List<Userinfo> a = userD.findAll();
         for(int i=0;i<a.size();i++){
             System.out.println(a.get(i).getUserName());
@@ -67,13 +66,10 @@ public class UserService {
             }
         }
         return userD.save(user);
-
     }
 
-
-
-    //刪除user
-    public void unableUserById(Userinfo user) {
+    //刪除user 少判斷
+    public Userinfo unableUserById(Userinfo user) {
 //        Optional<Comment> optionalComment= commentD.findById(user.getUserId());
 //        Comment result = optionalComment.get();
 //        result.getCommentId();
@@ -82,20 +78,18 @@ public class UserService {
 
         if(optional.isPresent()){
             Optional<Status> optionalStatus = statusD.findById(user.getUserStatusByStatusId().getStatusId());
-            Status resulStatus = optionalStatus.get();
+            Status resultStatus = optionalStatus.get();
 
             Userinfo result = optional.get();
-            result.setUserStatusByStatusId(resulStatus);
-
+            result.setUserStatusByStatusId(resultStatus);
+            return user;
         }
-
-
 
 //       if(user.getUserStatusByStatusId().getStatusName().equals("DELETED") || user.getUserStatusByStatusId().getStatusName().equals("UNACTIVE")  ){
 //            Optional<Plan> a = planD.findById(user.getUserId());
 //            a.get().setPlanStatusByStatusId(comstatus);
 //       }
-
+        return null;
     }
 
     //更新user

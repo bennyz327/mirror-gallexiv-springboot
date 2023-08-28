@@ -52,10 +52,8 @@ public class Plan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ownerId", referencedColumnName = "userId")
-//    @JsonIgnoreProperties({"commentsByUserId", "postsListByUserId","accountRoleByRoleId", "userStatusByStatusId", "planByPlanId"})
-    @JsonIncludeProperties({"userName","userEmail","accountRoleByRoleId"})
+    @JsonIncludeProperties({"userId","userName","userEmail","accountRoleByRoleId"})
     private Userinfo ownerIdByUserId;
-
 
     @Override
     public String toString() {

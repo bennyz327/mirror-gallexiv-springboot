@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
+@DynamicInsert
 @Table(name = "userinfo", schema = "gallexiv")
 public class Userinfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,6 @@ public class Userinfo {
     @Basic
     @Column(name = "account")
     private String account;
-
 
     @Basic
     @Column(name = "pWord")
