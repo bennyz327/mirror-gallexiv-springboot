@@ -24,12 +24,12 @@ public class UsersController {
         return UserS.getUserById(userId);
     }
 
-//    @PostMapping(path = "/userInfos/{ownerId}/insert",produces = "application/json;charset=UTF-8")
-//    @Operation(description = "新增user")
-//    public Userinfo addUser(@PathVariable int ownerId, @RequestBody Plan plan){
-////        System.out.println("收到"+plan);
-//        return UserS.(ownerId,plan);
-//    }
+    @PostMapping(path = "/userInfos/insert",produces = "application/json;charset=UTF-8")
+    @Operation(description = "新增user")
+    public Userinfo addUser( @RequestBody Userinfo user){
+//        System.out.println("收到"+plan);
+        return UserS.insertUser(user);
+    }
 
 
     @CrossOrigin
@@ -49,7 +49,7 @@ public class UsersController {
 
     @Transactional
     @PutMapping(value = "/userInfos/update",consumes = "application/json")
-    public String updatePlan(@RequestBody Userinfo user) {
+    public String updateUser(@RequestBody Userinfo user) {
         System.out.println(user);
         UserS.updateUserById(user);
         return ("更新成功");

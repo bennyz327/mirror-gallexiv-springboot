@@ -17,7 +17,7 @@ public class Tag {
     @Column(name = "tagId")
     private int tagId;
     @Basic
-    @Column(name = "tagName")
+    @Column(name = "tagName",unique = true)
     private String tagName;
     @JsonIgnore
     @OneToMany(mappedBy = "tagByTagId")

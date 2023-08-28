@@ -12,7 +12,6 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
-@DynamicUpdate
 @Table(name = "userinfo", schema = "gallexiv")
 public class Userinfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,34 +76,32 @@ public class Userinfo {
     @Column(name = "last_modified")
     private Timestamp last_modified;
 
-    @JsonIncludeProperties("commentId")
+    @JsonIncludeProperties({"commentId","commentText","commentStatusByStatusId",""})
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<Comment> commentsByUserId;
 
-    @JsonIncludeProperties("postTitle")
+    @JsonIncludeProperties({"postId","postTitle","postStatusByStatusId"})
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     private Collection<Post> postsListByUserId;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "userinfoBySessionUserId",fetch = FetchType.LAZY)
-//    private Collection<Session> sessionsByUserId;
-
-    @JsonIgnore
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"subscriptionId","subscriptionStatusByStatusId"})
     private Collection<UserSubscription> userSubscriptionsByUserId;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "roleId")
+    @JsonIncludeProperties({"roleId","roleName","roleStatusByStatusId"})
     private AccountRole accountRoleByRoleId;
 
-    @JsonIncludeProperties({"code_id","system_type","code_category","code_name"})
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status", referencedColumnName = "code_id")
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status userStatusByStatusId;
 
-    @JsonIncludeProperties("planName")
+
     @OneToMany(mappedBy = "ownerIdByUserId")
+    @JsonIncludeProperties({"planId","planName","planStatusByStatusId"})
     private Collection<Plan> planByPlanId;
 
     @Override
