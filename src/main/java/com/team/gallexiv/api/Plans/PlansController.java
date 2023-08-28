@@ -17,8 +17,6 @@ public class PlansController {
         this.userS = userS;
     }
 
-
-
     @GetMapping(path = "/plans/{planId}", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
     public Plan getPlanById(@PathVariable int planId) {
@@ -34,10 +32,10 @@ public class PlansController {
     @PostMapping(path = "/plans/{ownerId}/insert",produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
     public Plan addPlan(@PathVariable int ownerId, @RequestBody Plan plan){
-//        System.out.println("收到"+plan);
+        System.out.println("收到"+plan);
+        System.out.println("收到"+ownerId);
         return planS.insertPlan(ownerId,plan);
     }
-
 
     //OK
     @CrossOrigin

@@ -14,7 +14,6 @@ import java.util.Collection;
 @Setter
 @Getter
 @Entity
-@DynamicUpdate
 @Table(name = "plan", schema = "gallexiv")
 public class Plan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +39,7 @@ public class Plan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_status", referencedColumnName = "code_id")
-    @JsonIncludeProperties({"statusName","statusId"})
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status planStatusByStatusId;
 
     @JsonIgnore
@@ -58,4 +57,14 @@ public class Plan {
     private Userinfo ownerIdByUserId;
 
 
+    @Override
+    public String toString() {
+        return "Plan{" +
+                "planId=" + planId +
+                ", planName='" + planName + '\'' +
+                ", planPrice=" + planPrice +
+                ", planDescription='" + planDescription + '\'' +
+                ", planPicture='" + planPicture + '\'' +
+                '}';
+    }
 }

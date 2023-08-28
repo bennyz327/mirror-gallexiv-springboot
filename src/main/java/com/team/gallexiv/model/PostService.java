@@ -3,6 +3,7 @@ package com.team.gallexiv.model;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,15 +13,18 @@ public class PostService {
     final PostDao postD;
     final UserDao userD;
 
+    final PlanDao planD;
+
     final TagDao tagD;
 
     final PictureDao pictureD;
 
-    public PostService(PostDao postD, UserDao userD,TagDao tagD,PictureDao pictureD) {
+    public PostService(PostDao postD, UserDao userD,TagDao tagD,PictureDao pictureD,PlanDao planD) {
         this.postD = postD;
         this.userD = userD;
         this.tagD = tagD;
         this.pictureD = pictureD;
+        this.planD =planD;
     }
 
     //取得單筆貼文
@@ -36,9 +40,16 @@ public class PostService {
 
     //新增貼文
     public Post insertPost(Post post){
+        Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
+        if(optionalPlan.isEmpty()){
+            return null;
+        }
 
-
-        return postD.save(post);
+        Optional<Post> optional = postD.findById(post.getUserinfoByUserId().getUserId());
+        if(optional.isPresent()){
+            return postD.save(post);
+        }
+        return null;
     }
 
 

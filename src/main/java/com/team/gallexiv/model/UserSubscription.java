@@ -1,6 +1,7 @@
 package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,7 @@ public class UserSubscription {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_status", referencedColumnName = "code_Id")
+    @JsonIncludeProperties({"statusId","statusCategory","statusName"})
     private Status subscriptionStatusByStatusId;
 
 
