@@ -36,39 +36,42 @@ public class PostsController {
         return postS.getPostOwner(id);
     }
 
-
     @PostMapping(path = "/posts/insert",produces = "application/json;charset=UTF-8")
     @Operation(description = "新增貼文")
     public Post addPost(@RequestBody Post post){
         return postS.insertPost(post);
     }
 
-    //OK
     @CrossOrigin
     @GetMapping(path="/posts",produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得全部筆貼文")
     public List<Post> findAllPost(){
-        List<Post> result = postS.getAllPost();
-        return  result;
+        return postS.getAllPost();
     }
 
-    //OK
     @DeleteMapping(path = "/posts/delete")
+    @Operation(description = "刪除貼文")
     public String deletePost(@RequestParam Integer postId){
-        postS.deletePostById(postId);
-        return ("刪除成功");
+        if(postId != null){
+            postS.deletePostById(postId);
+            return ("刪除成功");
+        }
+        return ("刪除失敗");
     }
 
-
-    //@RequestParam("postTime") Timestamp postTime,
     @Transactional
     @PutMapping("/posts/update")
-    public String updatePost(@RequestParam int postId, @RequestParam("postTitle") String postTitle, @RequestParam("postContent") String postContent,
-                           @RequestParam("postPublic") Integer postPublic,@RequestParam("postAgeLimit") Integer postAgeLimit){
-        postS.updatePostById(postId,postTitle,postContent,postPublic,postAgeLimit);
-        return "更新成功";
+    @Operation(description = "更新貼文")
+    public String updatePost(@RequestBody Post post){
+        if(post != null){
+            postS.updatePostById(post);
+            return "更新成功";
+        }
+        return "更新失敗";
     }
 
     @GetMapping("/posts/postTitle")
+    @Operation(description = "模糊查詢貼文")
     public List<Post> findPostByName(@RequestParam("postTitle") String postTitle){
         return postS.findPostByTitleLike(postTitle);
     }

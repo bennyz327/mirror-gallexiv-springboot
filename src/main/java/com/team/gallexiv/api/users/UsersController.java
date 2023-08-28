@@ -18,19 +18,11 @@ public class UsersController {
         this.UserS = UserS;
     }
 
-    @GetMapping(path = "/userInfos/{userId}", produces = "application/json")
+    @GetMapping(path = "/userInfosById", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
-    public Userinfo getUserById(@PathVariable int userId) {
-        return UserS.getUserById(userId);
+    public Userinfo getUserById(@RequestBody Userinfo user) {
+        return UserS.getUserById(user);
     }
-
-    @PostMapping(path = "/userInfos/insert",produces = "application/json;charset=UTF-8")
-    @Operation(description = "新增user")
-    public Userinfo addUser( @RequestBody Userinfo user){
-//        System.out.println("收到"+plan);
-        return UserS.insertUser(user);
-    }
-
 
     @CrossOrigin
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
@@ -40,11 +32,17 @@ public class UsersController {
         return result;
     }
 
+    @PostMapping(path = "/userInfos/insert",produces = "application/json;charset=UTF-8")
+    @Operation(description = "新增user")
+    public Userinfo addUser( @RequestBody Userinfo user){
+//        System.out.println("收到"+plan);
+        return UserS.insertUser(user);
+    }
+
     @Transactional
     @PutMapping(path = "/userInfos/delete")
-    public String deleteUser(@RequestBody Userinfo user) {
-        UserS.unableUserById(user);
-        return ("刪除成功");
+    public Userinfo deleteUser(@RequestBody Userinfo user) {
+        return UserS.unableUserById(user);
     }
 
     @Transactional

@@ -1,6 +1,5 @@
 package com.team.gallexiv.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public class PlanService {
     }
 
     // 取得單筆plan
-    public Plan getPlanById(int planId) {
-        Optional<Plan> plan = planD.findById(planId);
-        return plan.orElse(null);
+    public Plan getPlanById(Plan plan) {
+        Optional<Plan> optionalPlan = planD.findById(plan.getPlanId());
+        return optionalPlan.orElse(null);
     }
 
     public PlanForShow getPlanForShowById(int planId) {
@@ -42,22 +41,13 @@ public class PlanService {
     }
 
     //新增plan
-    public Plan insertPlan(int ownerId,Plan plan) {
+    public Plan insertPlan(Plan plan) {
 
-//        Userinfo thisUser = userinfoD.myfindById(ownerId);
-        Optional<Userinfo> thisUser = userinfoD.findByUserId(ownerId);
-
+        Optional<Userinfo> thisUser = userinfoD.findByUserId(plan.getOwnerIdByUserId().getUserId());
 
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: "+thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
-
-
-//        if (thisUser != null && status.isPresent()) {
-//            plan.setPlanStatusByStatusId(status.get());
-//            plan.setOwnerIdByUserId(thisUser);
-//            return planD.save(plan);
-//        }
 
         if (status.isPresent() && thisUser.isPresent()) {
             System.out.println("有進去");
@@ -70,33 +60,30 @@ public class PlanService {
     }
 
     //刪除plan
-    public void deletePlanById(int planId) {
-        Optional<Plan> planOptional = planD.findById(planId);
-        if (planOptional.isEmpty()) {
-            return;
+    public String deletePlanById(Plan plan) {
+        Optional<Plan> planOptional = planD.findById(plan.getPlanId());
+        if (planOptional.isPresent()) {
+           planD.deleteById(plan.getPlanId());
+           return "刪除成功";
         }
-        planD.deleteById(planId);
+        return "刪除失敗";
     }
 
     //更新plan
-    public void updatePlanById(int planId, String planName, int planPrice, String planDescription, int planStatusNum, String planPicture) {
-        Optional<Plan> optional = planD.findById(planId);
+    public Plan updatePlanById(Plan plan) {
+        Optional<Plan> optional = planD.findById(plan.getPlanId());
 
-        if (optional.isEmpty()) {
-            return;
+        if (optional.isPresent()) {
+            Plan result = optional.get();
+            result.setPlanName(plan.getPlanName());
+            result.setPlanPrice(plan.getPlanPrice());
+            result.setPlanStatusByStatusId(new Status(plan.getPlanStatusByStatusId().getStatusId()));
+            result.setPlanDescription(plan.getPlanDescription());
+            result.setPlanPicture(plan.getPlanPicture());
+            return result;
         }
-        Plan result = optional.get();
-        result.setPlanName(planName);
-        result.setPlanPrice(planPrice);
-        result.setPlanStatusByStatusId(new Status(planStatusNum));
-        result.setPlanDescription(planDescription);
-        result.setPlanPicture(planPicture);
-    }
+        return null;
 
-//    public Plan updateBenny(Plan planToupdate){
-//
-//
-//        return planD.save(planToupdate);
-//    }
+    }
 
 }

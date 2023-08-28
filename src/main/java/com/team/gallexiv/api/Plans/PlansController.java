@@ -17,10 +17,10 @@ public class PlansController {
         this.userS = userS;
     }
 
-    @GetMapping(path = "/plans/{planId}", produces = "application/json")
+    @GetMapping(path = "/plansById", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
-    public Plan getPlanById(@PathVariable int planId) {
-        return planS.getPlanById(planId);
+    public Plan getPlanById(@RequestBody Plan plan) {
+        return planS.getPlanById(plan);
     }
 
     @GetMapping(path = "/plansForShow/{planId}", produces = "application/json")
@@ -29,21 +29,20 @@ public class PlansController {
         return planS.getPlanForShowById(planId);
     }
 
-    @PostMapping(path = "/plans/{ownerId}/insert",produces = "application/json;charset=UTF-8")
+    @PostMapping(path = "/plans/insert",produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public Plan addPlan(@PathVariable int ownerId, @RequestBody Plan plan){
+    public Plan addPlan(@RequestBody Plan plan){
         System.out.println("收到"+plan);
-        System.out.println("收到"+ownerId);
-        return planS.insertPlan(ownerId,plan);
+        return planS.insertPlan(plan);
     }
 
-    //OK
     @CrossOrigin
     @GetMapping(path="/plans",produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得全部plan")
     public List<Plan> findAllPlan(){
-        List<Plan> result = planS.getAllPlan();
-        return  result;
+        return planS.getAllPlan();
     }
+
     @CrossOrigin
     @GetMapping(path="/plansForShow",produces = "application/json;charset=UTF-8")
     public List<PlanForShow> findAllPlanForShow(){
@@ -51,20 +50,21 @@ public class PlansController {
         return  result;
     }
 
-
-    //OK
     @DeleteMapping(path = "/plans/delete")
-    public String deletePlan(@RequestParam Integer planId){
-        planS.deletePlanById(planId);
-        return ("刪除成功");
+    @Operation(description = "刪除plan(GET BY ID)")
+    public String deletePlan(@RequestBody Plan plan) {
+
+        return planS.deletePlanById(plan);
+
     }
 
-    @Transactional
+    @Transactional //狀態更新會只有statusId
     @PutMapping("/plans/update")
-    public String updatePlan(@RequestParam int planId, @RequestParam("planName") String planName, @RequestParam("planPrice") int planPrice,
-                             @RequestParam("planDescription") String planDescription, @RequestParam("planStatus") Integer planStatus, @RequestParam("planPicture") String planPicture ){
-        planS.updatePlanById(planId,planName,planPrice,planDescription,planStatus,planPicture);
-        return "更新成功";
+    @Operation(description = "更新plan")
+    public Plan updatePlan(@RequestBody Plan plan){
+
+        return planS.updatePlanById(plan);
+
     }
 
 }

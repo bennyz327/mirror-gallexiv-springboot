@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
+@DynamicInsert
 @Table(name = "post", schema = "gallexiv")
 public class Post {
 
