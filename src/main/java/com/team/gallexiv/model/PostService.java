@@ -3,7 +3,6 @@ package com.team.gallexiv.model;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,69 +11,68 @@ public class PostService {
 
     final PostDao postD;
     final UserDao userD;
-
     final PlanDao planD;
-
     final TagDao tagD;
-
     final PictureDao pictureD;
 
-    public PostService(PostDao postD, UserDao userD,TagDao tagD,PictureDao pictureD,PlanDao planD) {
+    public PostService(PostDao postD, UserDao userD, TagDao tagD, PictureDao pictureD, PlanDao planD) {
         this.postD = postD;
         this.userD = userD;
         this.tagD = tagD;
         this.pictureD = pictureD;
-        this.planD =planD;
+        this.planD = planD;
     }
 
     //取得單筆貼文
     public Post getPostById(int id) {
         Optional<Post> post = postD.findById(id);
-        return post.orElse(null);
+        if (post.isPresent()) {
+            return post.orElse(null);
+        }
+        return null;
     }
 
     //取得全部貼文
-    public List<Post> getAllPost(){
-        return  postD.findAll();
+    public List<Post> getAllPost() {
+        return postD.findAll();
     }
 
-    //新增貼文
-    public Post insertPost(Post post){
+    //新增貼文 //少了tag判斷
+    public Post insertPost(Post post) {
         Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
-        if(optionalPlan.isEmpty()){
+        if (optionalPlan.isEmpty()) {
             return null;
         }
 
         Optional<Post> optional = postD.findById(post.getUserinfoByUserId().getUserId());
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             return postD.save(post);
         }
         return null;
     }
 
-
     //刪除貼文
-    public void deletePostById(int postId){
+    public void deletePostById(int postId) {
         Optional<Post> postOptional = postD.findById(postId);
-        if(postOptional.isEmpty()){
-            return;
+        if (postOptional.isPresent()) {
+            postD.deleteById(postId);
         }
-        postD.deleteById(postId);
     }
 
     //更新貼文
-    public void updatePostById(int postId, String postTitle, String postContent, Integer postPublic, Integer postAgeLimit){
-        Optional<Post> optional = postD.findById(postId);
+    public void updatePostById(Post post) {
+        Optional<Post> optional = postD.findById(post.getPostId());
+//        Optional<Tag> optionalTag = tagD.findById(post.getTagsByPostId());
 
-        if(optional.isEmpty()){
-            return;
+        if (optional.isPresent()) {
+            Post result = optional.get();
+            result.setPostTitle(post.getPostTitle());
+            result.setPostContent(post.getPostContent());
+            result.setPostPublic(post.getPostPublic());
+            result.setPostAgeLimit(post.getPostAgeLimit());
         }
-        Post result = optional.get();
-        result.setPostTitle(postTitle);
-        result.setPostContent(postContent);
-        result.setPostPublic(postPublic);
-        result.setPostAgeLimit(postAgeLimit);
     }
+
 
     public Userinfo getPostOwner(int id) {
         System.out.println("--查詢貼文作者--");
@@ -91,7 +89,7 @@ public class PostService {
 
             if (owner.isPresent()) {
                 Userinfo ownerUser = owner.get();
-                System.out.println("這是查到的使用者ID="+ownerUser.getUserId());
+                System.out.println("這是查到的使用者ID=" + ownerUser.getUserId());
                 return ownerUser;
             }
             System.out.println("查無貼文作者");
@@ -101,7 +99,8 @@ public class PostService {
         return null;
     }
 
-    public List<Post> findPostByTitleLike(@RequestParam("postTitle") String postTitle){
+    //模糊查詢
+    public List<Post> findPostByTitleLike(@RequestParam("postTitle") String postTitle) {
         return postD.findByTitleLike(postTitle);
     }
 
