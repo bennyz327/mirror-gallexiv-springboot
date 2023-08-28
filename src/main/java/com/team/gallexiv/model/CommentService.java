@@ -8,91 +8,73 @@ import java.util.Optional;
 @Service
 public class CommentService {
 
-    final PlanDao planD;
-    final PlanForShowDao planForShowD;
-
     final CommentDao commentD;
     final UserDao userinfoD;
     final StatusDao statusD;
+    final PostDao postD;
 
-    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD,CommentDao commentD) {
-        this.planD = planD;
-        this.planForShowD = planForShowD;
+    public CommentService(UserDao userinfoD, StatusDao statusD, CommentDao commentD, PostDao postD) {
         this.userinfoD = userinfoD;
         this.statusD = statusD;
-        this.commentD =commentD;
+        this.commentD = commentD;
+        this.postD = postD;
     }
 
-    // 取得單筆comment
-    public Comment getPlanById(int commentId) {
+    // 取得單筆 comment
+    public Comment getCommentById(int commentId) {
         Optional<Comment> comment = commentD.findById(commentId);
         return comment.orElse(null);
     }
 
-    public PlanForShow getPlanForShowById(int planId) {
-        Optional<PlanForShow> plan = planForShowD.findById(planId);
-        return plan.orElse(null);
+    // 取得全部 comment
+    public List<Comment> getAllComment() {
+        return commentD.findAll();
     }
 
-    //取得全部plan
-    public List<Plan> getAllPlan() {
-        return planD.findAll();
+    // 刪除 comment
+    public void deleteCommentById(Integer commentId) {
+        Optional<Comment> commentOptional = commentD.findById(commentId);
+        if (commentOptional.isEmpty()) {
+            return;
+        }
+        commentD.deleteById(commentId);
     }
 
-    public List<PlanForShow> getAllPlanForShow() {
-        return planForShowD.findAll();
-    }
+    // 新增 comment
+    public Comment insertComment(Integer postId, Integer userId, Comment comment) {
+        Optional<Post> thisPost = postD.findById(postId);
+        Optional<Userinfo> thisUser = userinfoD.findById(userId);
+        int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
+        Optional<Status> commentOptional = statusD.findById(thisCommentStatusId);
 
-    //新增plan
-    public Plan insertPlan(int ownerId,Plan plan) {
-
-        Userinfo thisUser = userinfoD.myfindById(ownerId);
-
-        Status thisPlanStatusObject = plan.getPlanStatusByStatusId();
-        int thisPlanStatusId = plan.getPlanId();
-
-//        System.out.println("查詢條件ID"+thisPlanStatusObject.getStatusId());
-//        Status status = statusD.findByStatusName(thisPlanStatusObject.getStatusCategory(),thisPlanStatusObject.getStatusName());
-//        System.out.println(status);
-
-//        Status status = statusD.getById(thisPlanStatusId);
-//        plan.setPlanStatusByStatusId(status);
-
-        if (thisUser!=null) {
-            plan.setOwnerIdByUserId(thisUser);
-            return planD.save(plan);
+        if (thisPost.isPresent() && thisUser.isPresent() && commentOptional.isPresent()) {
+            comment.setPostByPostId(thisPost.get());
+            comment.setUserinfoByUserId(thisUser.get());
+            comment.setCommentStatusByStatusId(commentOptional.get());
+            return commentD.save(comment);
         }
         return null;
     }
 
-    //刪除plan
-    public void deletePlanById(int planId) {
-        Optional<Plan> planOptional = planD.findById(planId);
-        if (planOptional.isEmpty()) {
+    // 更新 comment
+    public void updateComment(Integer commentId, String commentText) {
+        Optional<Comment> commentOptional = commentD.findById(commentId);
+
+        if (commentOptional.isEmpty()) {
             return;
         }
-        planD.deleteById(planId);
+        Comment updateComment = commentOptional.get();
+        updateComment.setCommentText(commentText);
     }
+    // public void updateComment(Integer commentId, Comment comment) {
+    // Optional<Comment> commentOptional = commentD.findById(commentId);
 
-    //更新plan
-    public void updatePlanById(int planId, String planName, int planPrice, String planDescription, int planStatusNum, String planPicture) {
-        Optional<Plan> optional = planD.findById(planId);
+    // if (commentOptional.isPresent()) {
+    // Comment updateComment = commentOptional.get();
+    // updateComment.setCommentText(updateComment.getCommentText());
+    // // return commentD.save(updateComment);
+    // }
+    // return;
 
-        if (optional.isEmpty()) {
-            return;
-        }
-        Plan result = optional.get();
-        result.setPlanName(planName);
-        result.setPlanPrice(planPrice);
-        result.setPlanStatusByStatusId(new Status(planStatusNum));
-        result.setPlanDescription(planDescription);
-        result.setPlanPicture(planPicture);
-    }
-
-//    public Plan updateBenny(Plan planToupdate){
-//
-//
-//        return planD.save(planToupdate);
-//    }
-
+    // }
 }
