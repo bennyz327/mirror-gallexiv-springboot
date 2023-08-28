@@ -48,7 +48,7 @@ public class UserService {
         return optionalUserinfo.orElse(null);
     }
 
-    //取得所有user OK
+    //取得所有user
     public List<Userinfo> getAllUsers(){
         return userD.findAll();
     }
