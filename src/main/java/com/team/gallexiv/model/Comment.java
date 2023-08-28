@@ -1,6 +1,7 @@
 package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
+    @JsonIncludeProperties({"userId","userName"})
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,6 +46,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_status", referencedColumnName = "code_id")
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status commentStatusByStatusId;
 
 //    @Override

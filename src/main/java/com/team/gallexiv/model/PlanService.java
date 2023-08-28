@@ -44,23 +44,27 @@ public class PlanService {
     //新增plan
     public Plan insertPlan(int ownerId,Plan plan) {
 
-        Userinfo thisUser = userinfoD.myfindById(ownerId);
-//        Optional<Userinfo> thisUser = userinfoD.findByUserId(ownerId);
+//        Userinfo thisUser = userinfoD.myfindById(ownerId);
+        Optional<Userinfo> thisUser = userinfoD.findByUserId(ownerId);
+
 
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
+        System.out.println("statusID: "+thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
 
 
-        if (thisUser != null && status.isPresent()) {
-            plan.setPlanStatusByStatusId(status.get());
-            plan.setOwnerIdByUserId(thisUser);
-            return planD.save(plan);
-        }
-//        if (status.isPresent() && thisUser.isPresent()) {
+//        if (thisUser != null && status.isPresent()) {
 //            plan.setPlanStatusByStatusId(status.get());
-//            plan.setOwnerIdByUserId(thisUser.get());
+//            plan.setOwnerIdByUserId(thisUser);
 //            return planD.save(plan);
 //        }
+
+        if (status.isPresent() && thisUser.isPresent()) {
+            System.out.println("有進去");
+            plan.setPlanStatusByStatusId(status.get());
+            plan.setOwnerIdByUserId(thisUser.get());
+            return planD.save(plan);
+        }
 
         return null;
     }

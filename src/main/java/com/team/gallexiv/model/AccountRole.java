@@ -27,15 +27,17 @@ public class AccountRole {
 
 
     @OneToMany(mappedBy = "accountRoleByRoleId")
+    @JsonIncludeProperties({"rpId","permissionsByPermissionId"})
     private Collection<RolePermission> rolePermissionsByRoleId;
 
 
     @OneToMany(mappedBy = "accountRoleByRoleId")
-    private Collection<Userinfo> userinfosByRoleId;
+    @JsonIncludeProperties({"userId","userName"})
+    private Collection<Userinfo> userInfosByRoleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_status", referencedColumnName = "code_id")
-    @JsonIncludeProperties("statusName")
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status roleStatusByStatusId;
 
 

@@ -2,6 +2,7 @@ package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,38 +44,45 @@ public class Post {
 
 
     //M2O取得Userinfo物件
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
+    @JsonIncludeProperties({"userId","userName","userStatusByStatusId"})
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "planId", referencedColumnName = "planId")
+    @JsonIncludeProperties({"planId","planName","planStatusByStatusId"})
     private Plan planByPlanId;
 
     //M2O取得Comment物件
-    @JsonIgnore
+
     @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"commentId","userinfoByUserId","commentText","commentStatusByStatusId"})
     private Collection<Comment> commentsByPostId;
 
     //mappedBy = "postByPostId" 要指定的是Picture裡面的屬性名稱，不是資料庫的欄位名稱
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"pictureId","imgPath","picture_status"})
     private Collection<Picture> picturesByPostId;
-//    @OneToMany(mappedBy = "postByPostId", orphanRemoval = true)
-//    private Collection<Picture> pictures;
 
 
     //好像不需要讓這張表單被存取
-//    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
-//    private Collection<TagPost> tagPostsByPostId;
+    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
+    private Collection<TagPost> tagPostsByPostId;
 
-    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
-    @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns = {@JoinColumn(name = "tagId")})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "tagPost",
+            joinColumns = {@JoinColumn(name = "postId")},
+            inverseJoinColumns = {@JoinColumn(name = "tagId")}
+    )
+    @JsonIncludeProperties({"tagId","tagName"})
     private Collection<Tag> tagsByPostId;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_status", referencedColumnName = "code_id")
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status postStatusByStatusId;
 }

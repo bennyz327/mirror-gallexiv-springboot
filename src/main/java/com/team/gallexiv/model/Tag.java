@@ -18,7 +18,7 @@ public class Tag {
     private int tagId;
 
     @Basic
-    @Column(name = "tagName")
+    @Column(name = "tagName",unique = true)
     private String tagName;
 
     @JsonIgnore

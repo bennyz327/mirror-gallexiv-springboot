@@ -1,6 +1,7 @@
 package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +23,9 @@ public class Permissions {
     @Column(name = "permissionName")
     private String permissionName;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "permissionsByPermissionId")
+    @JsonIncludeProperties({"rpId","accountRoleByRoleId"})
     private Collection<RolePermission> rolePermissionsByPermissionId;
 
     @Override
