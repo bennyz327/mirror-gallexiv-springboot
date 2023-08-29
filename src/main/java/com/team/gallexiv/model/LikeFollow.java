@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "likefollow", schema = "gallexiv")
+@Table(name = "likeFollow")
 public class LikeFollow {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

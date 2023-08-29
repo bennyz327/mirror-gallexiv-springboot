@@ -24,7 +24,7 @@ public class UsersController {
         return userS.getUserById(user);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {
         return userS.getAllUsers();

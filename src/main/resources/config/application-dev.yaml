@@ -29,12 +29,6 @@ spring:
     view:
       prefix:
       suffix:
-  security:
-    user:
-      name: admin
-      password: admin1234
 springdoc:
   swagger-ui:
     path: /api/doc
-gallexiv:
-  allowedApi: http://localhost:3000,http://localhost:3050

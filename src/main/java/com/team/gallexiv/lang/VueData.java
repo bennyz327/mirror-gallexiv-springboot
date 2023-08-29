@@ -1,6 +1,7 @@
 package com.team.gallexiv.lang;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
