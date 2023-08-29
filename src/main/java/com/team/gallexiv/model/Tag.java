@@ -27,5 +27,6 @@ public class Tag {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "tagId")}, inverseJoinColumns = {@JoinColumn(name = "postId")})
+    @JsonIncludeProperties({"postId"})
     private Collection<Post> postsByTagId;
 }
