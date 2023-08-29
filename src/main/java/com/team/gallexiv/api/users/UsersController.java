@@ -24,7 +24,7 @@ public class UsersController {
         return UserS.getUserById(user);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public List<Userinfo> findAllUser() {
         List<Userinfo> result = UserS.getAllUsers();
