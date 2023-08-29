@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserSubscriptionDao extends JpaRepository<Userinfo, Integer> {
+public interface UserSubscriptionDao extends JpaRepository<UserSubscription, Integer> {
 
 
 }

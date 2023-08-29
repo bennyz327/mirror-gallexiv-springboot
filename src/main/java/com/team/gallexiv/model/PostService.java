@@ -24,12 +24,9 @@ public class PostService {
     }
 
     //取得單筆貼文
-    public Post getPostById(int id) {
-        Optional<Post> post = postD.findById(id);
-        if (post.isPresent()) {
-            return post.orElse(null);
-        }
-        return null;
+    public Post getPostById(Post post) {
+        Optional<Post> optionalPost = postD.findById(post.getPostId());
+        return optionalPost.orElse(null);
     }
 
     //取得全部貼文
@@ -43,6 +40,8 @@ public class PostService {
         if (optionalPlan.isEmpty()) {
             return null;
         }
+//        Optional<Tag> optionalTag = tagD.findByTagName();
+//        optionalTag.get().getTagName().equals(tagD.findByTagName());
 
         Optional<Post> optional = postD.findById(post.getUserinfoByUserId().getUserId());
         if (optional.isPresent()) {
@@ -52,17 +51,29 @@ public class PostService {
     }
 
     //刪除貼文
-    public void deletePostById(int postId) {
-        Optional<Post> postOptional = postD.findById(postId);
+    public String deletePostById(Post post) {
+        Optional<Post> postOptional = postD.findById(post.getPostId());
         if (postOptional.isPresent()) {
-            postD.deleteById(postId);
+            postD.deleteById(post.getPostId());
+            return "刪除成功";
         }
+        return "刪除失敗";
     }
 
     //更新貼文
     public void updatePostById(Post post) {
+        //輸入值得tag
         Optional<Post> optional = postD.findById(post.getPostId());
-//        Optional<Tag> optionalTag = tagD.findById(post.getTagsByPostId());
+//        Optional<Tag> optionalTag = tagD.findById(post.getPostId());
+//        Tag tag = optionalTag.get();
+//        String tagName = optionalTag.get().getTagName();
+//        //取的所有tag比對
+//        if(tagD.findByTagName(tagName).isPresent()){
+//            tag.setTagName(tagName);
+//        }
+//        else {
+//            tagD.save(post);
+//        }
 
         if (optional.isPresent()) {
             Post result = optional.get();
@@ -70,6 +81,7 @@ public class PostService {
             result.setPostContent(post.getPostContent());
             result.setPostPublic(post.getPostPublic());
             result.setPostAgeLimit(post.getPostAgeLimit());
+            result.setTagsByPostId(post.getTagsByPostId());
         }
     }
 

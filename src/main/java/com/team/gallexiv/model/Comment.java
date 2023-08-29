@@ -29,6 +29,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
+    @JsonIncludeProperties({"postId"})
     private Post postByPostId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,8 +39,8 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentCommentId", referencedColumnName = "commentId")
+    @JsonIncludeProperties({"parentCommentId"})
     private Comment commentByParentCommentId;
-
 
     @OneToMany(mappedBy = "commentByParentCommentId")
     private Collection<Comment> commentsByCommentId;

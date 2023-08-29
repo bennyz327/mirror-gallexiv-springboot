@@ -21,6 +21,7 @@ public class Plan {
     @Column(name = "planId")
     private int planId;
 
+
     @Basic
     @Column(name = "planName")
     private String planName;
@@ -42,12 +43,12 @@ public class Plan {
     @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status planStatusByStatusId;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "planByPlanId")
+    @OneToMany(mappedBy = "planByPlanId",cascade = CascadeType.ALL)
+    @JsonIncludeProperties({"postId"})
     private Collection<Post> postsByPlanId;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "planByPlanId")
+    @JsonIncludeProperties({"subscriptionId"})
     private Collection<UserSubscription> userSubscriptionsByPlanId;
 
     @ManyToOne(fetch = FetchType.LAZY)

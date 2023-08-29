@@ -23,18 +23,17 @@ public class Permissions {
     @Column(name = "permissionName")
     private String permissionName;
 
-
     @OneToMany(mappedBy = "permissionsByPermissionId")
     @JsonIncludeProperties({"rpId","accountRoleByRoleId"})
     private Collection<RolePermission> rolePermissionsByPermissionId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Permissions that = (Permissions) o;
-        return permissionId == that.permissionId && Objects.equals(permissionName, that.permissionName);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Permissions that = (Permissions) o;
+//        return permissionId == that.permissionId && Objects.equals(permissionName, that.permissionName);
+//    }
 
     @Override
     public int hashCode() {

@@ -58,21 +58,21 @@ public class Post {
 
     //M2O取得Comment物件
 
-    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JsonIncludeProperties({"commentId","userinfoByUserId","commentText","commentStatusByStatusId"})
     private Collection<Comment> commentsByPostId;
 
     //mappedBy = "postByPostId" 要指定的是Picture裡面的屬性名稱，不是資料庫的欄位名稱
 
 
-    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JsonIncludeProperties({"pictureId","imgPath","picture_status"})
     private Collection<Picture> picturesByPostId;
 
 
-    //好像不需要讓這張表單被存取
-    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY)
-    private Collection<TagPost> tagPostsByPostId;
+    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonIncludeProperties({"likeId"})
+    private Collection<LikeFollow> likeFollowByPostId;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "tagPost",
@@ -87,4 +87,5 @@ public class Post {
     @JoinColumn(name = "post_status", referencedColumnName = "code_id")
     @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status postStatusByStatusId;
+
 }

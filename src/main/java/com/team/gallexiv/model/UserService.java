@@ -21,14 +21,18 @@ public class UserService {
     final PlanDao planD;
     final StatusDao statusD;
     final CommentDao commentD;
+    final UserSubscriptionDao userSubscriptionD;
+    final AccountRoleDao accountRoleD;
 
-    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD) {
+    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
         this.planD = planD;
         this.userSubD = userSubD;
         this.statusD = statusD;
+        this.userSubscriptionD = userSubscriptionD;
+        this.accountRoleD = accountRoleD;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -70,12 +74,20 @@ public class UserService {
 
     //刪除user 少判斷
     public Userinfo unableUserById(Userinfo user) {
-//        Optional<Comment> optionalComment= commentD.findById(user.getUserId());
-//        Comment result = optionalComment.get();
-//        result.getCommentId();
+        Optional<Comment> optionalComment= commentD.findById(user.getUserId());
+        Status resultComment = optionalComment.get().getCommentStatusByStatusId();
+
+        Optional<Post> optionalPost = postD.findById(user.getUserId());
+        Status resultPost = optionalPost.get().getPostStatusByStatusId();
+
+        Optional<AccountRole> optionalAccountRole = accountRoleD.findById(user.getUserId());
+        Status resultAccountRole = optionalAccountRole.get().getRoleStatusByStatusId();
+
+        Optional<Plan> optionalPlan = planD.findById(user.getUserId());
+        Status resultPlan = optionalPlan.get().getPlanStatusByStatusId();
+
 
         Optional<Userinfo> optional =userD.findById(user.getUserId());
-
         if(optional.isPresent()){
             Optional<Status> optionalStatus = statusD.findById(user.getUserStatusByStatusId().getStatusId());
             Status resultStatus = optionalStatus.get();
@@ -85,10 +97,6 @@ public class UserService {
             return user;
         }
 
-//       if(user.getUserStatusByStatusId().getStatusName().equals("DELETED") || user.getUserStatusByStatusId().getStatusName().equals("UNACTIVE")  ){
-//            Optional<Plan> a = planD.findById(user.getUserId());
-//            a.get().setPlanStatusByStatusId(comstatus);
-//       }
         return null;
     }
 

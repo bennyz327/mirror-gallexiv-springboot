@@ -1,6 +1,7 @@
 package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,30 +22,15 @@ public class Tag {
     @Column(name = "tagName",unique = true)
     private String tagName;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "tagByTagId")
-    private Collection<TagPost> tagPostsByTagId;
+//    @OneToMany(mappedBy = "tagByTagId")
+//    private Collection<TagPost> tagPostsByTagId;
 
-    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "tagPost", joinColumns = {@JoinColumn(name = "tagId")}, inverseJoinColumns = {@JoinColumn(name = "postId")})
+    @JsonIncludeProperties({"postId"})
     private Collection<Post> postsByTagId;
 
-//    public int getTagId() {
-//        return tagId;
-//    }
-//
-//    public void setTagId(int tagId) {
-//        this.tagId = tagId;
-//    }
-//
-//    public String getTagName() {
-//        return tagName;
-//    }
-//
-//    public void setTagName(String tagName) {
-//        this.tagName = tagName;
-//    }
-//
+
 //    @Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;
