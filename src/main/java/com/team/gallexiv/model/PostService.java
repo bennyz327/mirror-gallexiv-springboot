@@ -3,6 +3,8 @@ package com.team.gallexiv.model;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,17 +36,31 @@ public class PostService {
         return postD.findAll();
     }
 
-    //新增貼文 //少了tag判斷
+    //新增貼文
     public Post insertPost(Post post) {
-        Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
-        if (optionalPlan.isEmpty()) {
-            return null;
-        }
-//        Optional<Tag> optionalTag = tagD.findByTagName();
-//        optionalTag.get().getTagName().equals(tagD.findByTagName());
 
-        Optional<Post> optional = postD.findById(post.getUserinfoByUserId().getUserId());
+        Optional<Userinfo> optional = userD.findById(post.getUserinfoByUserId().getUserId());
         if (optional.isPresent()) {
+
+            Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
+            if (optionalPlan.isPresent()) {
+                post.setPlanByPlanId(optionalPlan.get());
+            }
+
+            Collection<Tag> inputTags = post.getTagsByPostId();
+            Collection<Tag> newTags = new ArrayList<>();
+
+            for (Tag inputTag : inputTags) {
+                Optional<Tag> TagFindRsOptional = tagD.findByTagName(inputTag.getTagName());
+
+                if (TagFindRsOptional.isPresent()) {
+                    newTags.add(TagFindRsOptional.get());
+                } else {
+                    newTags.add(inputTag);
+                }
+            }
+            post.setTagsByPostId(newTags);
+
             return postD.save(post);
         }
         return null;
@@ -62,18 +78,8 @@ public class PostService {
 
     //更新貼文
     public void updatePostById(Post post) {
-        //輸入值得tag
+
         Optional<Post> optional = postD.findById(post.getPostId());
-//        Optional<Tag> optionalTag = tagD.findById(post.getPostId());
-//        Tag tag = optionalTag.get();
-//        String tagName = optionalTag.get().getTagName();
-//        //取的所有tag比對
-//        if(tagD.findByTagName(tagName).isPresent()){
-//            tag.setTagName(tagName);
-//        }
-//        else {
-//            tagD.save(post);
-//        }
 
         if (optional.isPresent()) {
             Post result = optional.get();
@@ -81,10 +87,23 @@ public class PostService {
             result.setPostContent(post.getPostContent());
             result.setPostPublic(post.getPostPublic());
             result.setPostAgeLimit(post.getPostAgeLimit());
-            result.setTagsByPostId(post.getTagsByPostId());
-        }
-    }
 
+            Collection<Tag> inputTags = post.getTagsByPostId();
+            Collection<Tag> existingTags = new ArrayList<>();
+
+            for (Tag inputTag : inputTags) {
+                Optional<Tag> existingTagOptional = tagD.findByTagName(inputTag.getTagName());
+
+                if (existingTagOptional.isPresent()) {
+                    existingTags.add(existingTagOptional.get());
+                } else {
+                    existingTags.add(inputTag);
+                }
+            }
+            result.setTagsByPostId(existingTags);
+        }
+
+    }
 
     public Userinfo getPostOwner(int id) {
         System.out.println("--查詢貼文作者--");

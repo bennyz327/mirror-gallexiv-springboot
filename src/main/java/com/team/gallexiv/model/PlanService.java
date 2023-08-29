@@ -1,5 +1,6 @@
 package com.team.gallexiv.model;
 
+import com.team.gallexiv.lang.VueData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,13 +61,13 @@ public class PlanService {
     }
 
     //刪除plan
-    public String deletePlanById(Plan plan) {
+    public VueData deletePlanById(Plan plan) {
         Optional<Plan> planOptional = planD.findById(plan.getPlanId());
         if (planOptional.isPresent()) {
            planD.deleteById(plan.getPlanId());
-           return "刪除成功";
+           return VueData.ok();
         }
-        return "刪除失敗";
+        return VueData.error("刪除失敗");
     }
 
     //更新plan

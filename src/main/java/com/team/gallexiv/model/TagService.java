@@ -30,10 +30,6 @@ public class TagService {
         return  tagD.findAll();
     }
 
-    //新增tag
-    public Tag insertTag(Tag tag){
-        return tagD.save(tag);
-    }
 
     //刪除tag
 //    public void deleteTagById(int tagId){
@@ -43,6 +39,15 @@ public class TagService {
 //        }
 //        tagD.deleteById(tagId);
 //    }
+
+    //新增tag
+    public Tag insertTag(Tag tag){
+        Optional<Tag> optionalTag = tagD.findByTagName(tag.getTagName());
+        if (optionalTag.isEmpty()) {
+           return tagD.save(tag);
+        }
+        return null;
+    }
 
     //更新tag
     public void updateTagById(int tagId, String tagName){
