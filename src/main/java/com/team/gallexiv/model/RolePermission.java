@@ -19,12 +19,10 @@ public class RolePermission {
     @Column(name = "RPId")
     private int rpId;
 
-
     @ManyToOne
     @JoinColumn(name = "roleId", referencedColumnName = "roleId", nullable = false)
     @JsonIncludeProperties({"roleId","roleName","roleStatusByStatusId"})
     private AccountRole accountRoleByRoleId;
-
 
     @ManyToOne
     @JoinColumn(name = "permissionId", referencedColumnName = "permissionId", nullable = false)

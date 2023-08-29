@@ -24,44 +24,32 @@ public class CommentService {
     }
 
     // 取得單筆comment
-    public Comment getPlanById(int commentId) {
-        Optional<Comment> comment = commentD.findById(commentId);
-        return comment.orElse(null);
+    public Comment getCommentById(Comment comment) {
+        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
+        return optionalComment.orElse(null);
     }
 
-    public PlanForShow getPlanForShowById(int planId) {
-        Optional<PlanForShow> plan = planForShowD.findById(planId);
-        return plan.orElse(null);
+    //取得全部comment
+    public List<Comment> getAllComment() {
+        return commentD.findAll();
     }
 
-    //取得全部plan
-    public List<Plan> getAllPlan() {
-        return planD.findAll();
-    }
+    //新增comment
+    public Comment insertComment(Comment comment) {
 
-    public List<PlanForShow> getAllPlanForShow() {
-        return planForShowD.findAll();
-    }
+        Optional<Userinfo> thisUser = userinfoD.findByUserId(comment.getUserinfoByUserId().getUserId());
 
-    //新增plan
-    public Plan insertPlan(int ownerId,Plan plan) {
+        int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
+        System.out.println("statusID: "+thisCommentStatusId);
+        Optional<Status> status = statusD.findById(thisCommentStatusId);
 
-        Userinfo thisUser = userinfoD.myfindById(ownerId);
-
-        Status thisPlanStatusObject = plan.getPlanStatusByStatusId();
-        int thisPlanStatusId = plan.getPlanId();
-
-//        System.out.println("查詢條件ID"+thisPlanStatusObject.getStatusId());
-//        Status status = statusD.findByStatusName(thisPlanStatusObject.getStatusCategory(),thisPlanStatusObject.getStatusName());
-//        System.out.println(status);
-
-//        Status status = statusD.getById(thisPlanStatusId);
-//        plan.setPlanStatusByStatusId(status);
-
-        if (thisUser!=null) {
-            plan.setOwnerIdByUserId(thisUser);
-            return planD.save(plan);
+        if (status.isPresent() && thisUser.isPresent()) {
+            System.out.println("有進去");
+            comment.setCommentStatusByStatusId(status.get());
+            comment.setUserinfoByUserId(thisUser.get());
+            return commentD.save(comment);
         }
+
         return null;
     }
 

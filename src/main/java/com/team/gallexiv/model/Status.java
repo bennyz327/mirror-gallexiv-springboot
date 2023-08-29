@@ -38,7 +38,6 @@ public class Status {
     @OneToMany(mappedBy = "pictureStatusByStatusId")
     private Collection<Picture> statusByPictureId;
 
-
     @OneToMany(mappedBy = "planStatusByStatusId")
     private Collection<Plan> statusByPlanId;
 
