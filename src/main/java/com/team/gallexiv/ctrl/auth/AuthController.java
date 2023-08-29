@@ -1,5 +1,6 @@
 package com.team.gallexiv.ctrl.auth;
 
+import com.google.code.kaptcha.Producer;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.UUID;
 
 @RestController
 public class AuthController extends BaseController {
@@ -29,23 +31,26 @@ public class AuthController extends BaseController {
         String key = UUID.randomUUID().toString();
         String code = producer.createText();
         BufferedImage image = producer.createImage(code);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, "jpg", baos);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "jpg", baos);
 
-        //轉成base64
-        Base64.Encoder encoder = Base64.getEncoder();
-        String str = "data:image/jpeg;base64,";
-        String base64Img = str + encoder.encodeToString(baos.toByteArray());
+            //轉成base64
+            Base64.Encoder encoder = Base64.getEncoder();
+            String str = "data:image/jpeg;base64,";
+            String base64Img = str + encoder.encodeToString(baos.toByteArray());
 
-        //儲存到MySQL
-        CaptchaInfo captchaInfo = new CaptchaInfo(key,code);
+            //儲存到MySQL
+            CaptchaInfo captchaInfo = new CaptchaInfo(key, code);
 
-        return VueData.ok(
-                MapUtil
-                        .builder()
-                        .put("token", key)
-                        .put("base64Img", base64Img)
-                        .build()
-        );
+            return VueData.ok(
+                    MapUtil
+                            .builder()
+                            .put("token", key)
+                            .put("base64Img", base64Img)
+                            .build()
+            );
+
+            return "captcha";
+        }
     }
 }
