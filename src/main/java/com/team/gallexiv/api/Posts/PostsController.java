@@ -48,7 +48,6 @@ public class PostsController {
         return postS.insertPost(post);
     }
 
-
     @DeleteMapping(path = "/posts/delete")
     @Operation(description = "刪除貼文")
     public String deletePost(@RequestBody Post post){

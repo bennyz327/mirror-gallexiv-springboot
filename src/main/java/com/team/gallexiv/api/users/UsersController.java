@@ -1,6 +1,5 @@
 package com.team.gallexiv.api.users;
 
-import com.team.gallexiv.model.Plan;
 import com.team.gallexiv.model.UserService;
 import com.team.gallexiv.model.Userinfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,22 +11,22 @@ import java.util.List;
 @RestController
 public class UsersController {
 
-    final UserService UserS;
+    final UserService userS;
 
     public UsersController(UserService UserS) {
-        this.UserS = UserS;
+        this.userS = UserS;
     }
 
     @GetMapping(path = "/userInfosById", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
     public Userinfo getUserById(@RequestBody Userinfo user) {
-        return UserS.getUserById(user);
+        return userS.getUserById(user);
     }
 
     @CrossOrigin
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public List<Userinfo> findAllUser() {
-        List<Userinfo> result = UserS.getAllUsers();
+        List<Userinfo> result = userS.getAllUsers();
 
         return result;
     }
@@ -36,20 +35,20 @@ public class UsersController {
     @Operation(description = "新增user")
     public Userinfo addUser( @RequestBody Userinfo user){
 //        System.out.println("收到"+plan);
-        return UserS.insertUser(user);
+        return userS.insertUser(user);
     }
 
     @Transactional
     @PutMapping(path = "/userInfos/delete")
     public Userinfo deleteUser(@RequestBody Userinfo user) {
-        return UserS.unableUserById(user);
+        return userS.unableUserById(user);
     }
 
     @Transactional
     @PutMapping(value = "/userInfos/update",consumes = "application/json")
     public String updateUser(@RequestBody Userinfo user) {
         System.out.println(user);
-        UserS.updateUserById(user);
+        userS.updateUserById(user);
         return ("更新成功");
 
     }

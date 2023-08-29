@@ -1,5 +1,6 @@
 package com.team.gallexiv.api.Plans;
 
+import com.team.gallexiv.lang.VueData;
 import com.team.gallexiv.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
@@ -19,8 +20,8 @@ public class PlansController {
 
     @GetMapping(path = "/plansById", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
-    public Plan getPlanById(@RequestBody Plan plan) {
-        return planS.getPlanById(plan);
+    public VueData getPlanById(@RequestBody Plan plan) {
+        return VueData.ok(planS.getPlanById(plan));
     }
 
     @GetMapping(path = "/plansForShow/{planId}", produces = "application/json")
@@ -52,8 +53,7 @@ public class PlansController {
 
     @DeleteMapping(path = "/plans/delete")
     @Operation(description = "刪除plan(GET BY ID)")
-    public String deletePlan(@RequestBody Plan plan) {
-
+    public VueData deletePlan(@RequestBody Plan plan) {
         return planS.deletePlanById(plan);
 
     }
