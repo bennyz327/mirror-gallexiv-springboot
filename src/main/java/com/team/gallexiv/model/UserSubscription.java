@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 
 @Setter
 @Getter
 @Entity
+@DynamicInsert
 @Table(name = "userSubscription", schema = "gallexiv")
 public class UserSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +23,7 @@ public class UserSubscription {
     @Basic
     @Column(name = "subscriptionStartTime")
     private Timestamp subscriptionStartTime;
-//    @Basic
-//    @Column(name = "subscriptionStatus")
-//    private String subscriptionStatus;
+
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private Userinfo userinfoByUserId;

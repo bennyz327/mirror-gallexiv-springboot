@@ -17,17 +17,9 @@ public class PostsController {
 
     final UserService userS;
 
-    @Autowired
     public PostsController(PostService postS, UserService userS) {
         this.postS = postS;
         this.userS = userS;
-    }
-
-    @CrossOrigin
-    @GetMapping(path = "/posts/{id}", produces = "application/json")
-    @Operation(description = "取得單筆貼文 (GET BY ID)")
-    public Post showPostsOb(@PathVariable int id) {
-        return postS.getPostById(id);
     }
 
     @GetMapping(path = "/posts/{id}/owner", produces = "application/json")
@@ -36,10 +28,11 @@ public class PostsController {
         return postS.getPostOwner(id);
     }
 
-    @PostMapping(path = "/posts/insert",produces = "application/json;charset=UTF-8")
-    @Operation(description = "新增貼文")
-    public Post addPost(@RequestBody Post post){
-        return postS.insertPost(post);
+    @CrossOrigin
+    @GetMapping(path = "/postsById", produces = "application/json")
+    @Operation(description = "取得單筆貼文 (GET BY ID)")
+    public Post showPostsOb(@RequestBody Post post) {
+        return postS.getPostById(post);
     }
 
     @CrossOrigin
@@ -49,17 +42,21 @@ public class PostsController {
         return postS.getAllPost();
     }
 
-    @DeleteMapping(path = "/posts/delete")
-    @Operation(description = "刪除貼文")
-    public String deletePost(@RequestParam Integer postId){
-        if(postId != null){
-            postS.deletePostById(postId);
-            return ("刪除成功");
-        }
-        return ("刪除失敗");
+    @PostMapping(path = "/posts/insert",produces = "application/json;charset=UTF-8")
+    @Operation(description = "新增貼文")
+    public Post addPost(@RequestBody Post post){
+        return postS.insertPost(post);
     }
 
-    @Transactional
+
+    @DeleteMapping(path = "/posts/delete")
+    @Operation(description = "刪除貼文")
+    public String deletePost(@RequestBody Post post){
+
+        return postS.deletePostById(post);
+    }
+
+    @Transactional  //少了tag跟picture
     @PutMapping("/posts/update")
     @Operation(description = "更新貼文")
     public String updatePost(@RequestBody Post post){

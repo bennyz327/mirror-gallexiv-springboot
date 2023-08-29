@@ -77,12 +77,12 @@ public class Userinfo {
     @Column(name = "last_modified")
     private Timestamp last_modified;
 
-    @JsonIncludeProperties({"commentId","commentText","commentStatusByStatusId",""})
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"commentId","commentText","commentStatusByStatusId"})
     private Collection<Comment> commentsByUserId;
 
-    @JsonIncludeProperties({"postId","postTitle","postStatusByStatusId"})
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"postId","postTitle","postStatusByStatusId"})
     private Collection<Post> postsListByUserId;
 
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
@@ -94,16 +94,18 @@ public class Userinfo {
     @JsonIncludeProperties({"roleId","roleName","roleStatusByStatusId"})
     private AccountRole accountRoleByRoleId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status", referencedColumnName = "code_id")
     @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status userStatusByStatusId;
 
-
     @OneToMany(mappedBy = "ownerIdByUserId")
     @JsonIncludeProperties({"planId","planName","planStatusByStatusId"})
     private Collection<Plan> planByPlanId;
+
+    @OneToMany(mappedBy = "userByUserId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonIncludeProperties({"likeId"})
+    private Collection<LikeFollow> likeFollowByPostId;
 
     @Override
     public String toString() {
