@@ -1,14 +1,13 @@
 package com.team.gallexiv.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public interface TagDao extends JpaRepository<Tag, Integer> {
+public interface UserSubscriptionDao extends JpaRepository<UserSubscription, Integer> {
 
-Optional<Tag> findByTagName(String name);
 
 }

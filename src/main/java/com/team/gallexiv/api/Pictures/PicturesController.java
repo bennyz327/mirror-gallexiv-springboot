@@ -1,4 +1,4 @@
-package com.team.gallexiv.api.picture;
+package com.team.gallexiv.api.Pictures;
 
 import com.team.gallexiv.model.UserService;
 import com.team.gallexiv.model.Userinfo;
@@ -16,9 +16,9 @@ public class PicturesController {
         this.userS = userS;
     }
 
-    @GetMapping(path = "/users/{id}", produces = "application/json")
-    @Operation(description = "取得使用者 (GET BY ID)")
-    public Userinfo showUsersOb(@PathVariable int id) {
-        return userS.getUserById(id);
-    }
+//    @GetMapping(path = "/users/{id}", produces = "application/json")
+//    @Operation(description = "取得使用者 (GET BY ID)")
+//    public Userinfo showUsersOb(@PathVariable int id) {
+//        return userS.getUserById(id);
+//    }
 }

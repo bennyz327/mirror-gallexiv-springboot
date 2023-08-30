@@ -1,5 +1,8 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,21 +15,30 @@ import java.util.Collection;
 @Entity
 @Table(name = "accountRole", schema = "gallexiv")
 public class AccountRole {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "roleId")
     private int roleId;
+
     @Basic
     @Column(name = "roleName")
     private String roleName;
-    @Basic
-    @Column(name = "roleStatus")
-    private String roleStatus;
-    @JsonManagedReference
+
+
     @OneToMany(mappedBy = "accountRoleByRoleId")
+    @JsonIncludeProperties({"rpId","permissionsByPermissionId"})
     private Collection<RolePermission> rolePermissionsByRoleId;
-    @JsonManagedReference
+
+
     @OneToMany(mappedBy = "accountRoleByRoleId")
-    private Collection<Userinfo> userinfosByRoleId;
+    @JsonIncludeProperties({"userId","userName"})
+    private Collection<Userinfo> userInfosByRoleId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_status", referencedColumnName = "code_id")
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
+    private Status roleStatusByStatusId;
+
 
 }

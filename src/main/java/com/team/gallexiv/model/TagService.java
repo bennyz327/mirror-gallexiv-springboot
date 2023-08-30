@@ -1,5 +1,9 @@
 package com.team.gallexiv.model;
 
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -9,58 +13,52 @@ import java.util.List;
 @Service
 public class TagService {
 
-    final TagDao tagDao;
+    final TagDao tagD;
 
-    TagService(TagDao tagDao) {
-        this.tagDao = tagDao;
+    public TagService(TagDao tagD){
+        this.tagD=tagD;
     }
 
-    public Collection<Tag> getAllTags() {
-        return tagDao.findAll();
+    // 取得單筆tag
+    public Tag getTagById(int tagId){
+        Optional<Tag> tag = tagD.findById(tagId);
+        return tag.orElse(null);
     }
 
-//    public List<Tag> find(String json) {
-//        try {
-//            JSONObject obj = new JSONObject(json);
-//            return tagDao.find(obj);
-//        } catch (Exception e) {
-//            e.printStackTrace();
+    //取得全部tag
+    public List<Tag> getAllTag(){
+        return  tagD.findAll();
+    }
+
+
+    //刪除tag
+//    public void deleteTagById(int tagId){
+//        Optional<Tag> tagOptional = tagD.findById(tagId);
+//        if(tagOptional.isEmpty()){
+//            return;
 //        }
-//        return null;
-//    }
-//
-//    public long count(String json) {
-//        try {
-//            JSONObject obj = new JSONObject(json);
-//            return tagDao.count(obj);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return 0;
+//        tagD.deleteById(tagId);
 //    }
 
-    public boolean deleteTag(int id) {
-        if (tagDao.existsById(id)) {
-            tagDao.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-
-    public Tag updateTag(int tagId, Tag tag) {
-        //檢查是否有此tag
-        if (tagDao.existsById(tagId)) {
-            //檢查是否有重複的tag
-            if (tagDao.findByTagName(tag.getTagName())==null){
-                return null;
-            }
-            //更新tag
-            Tag currentTag = tagDao.findById(tagId).get();
-            //直接更新物件
-            currentTag.setTagName(tag.getTagName());
-            return tagDao.save(currentTag);
+    //新增tag
+    public Tag insertTag(Tag tag){
+        Optional<Tag> optionalTag = tagD.findByTagName(tag.getTagName());
+        if (optionalTag.isEmpty()) {
+           return tagD.save(tag);
         }
         return null;
+    }
+
+    //更新tag
+    public void updateTagById(int tagId, String tagName){
+        Optional<Tag> optional = tagD.findById(tagId);
+
+        if(optional.isEmpty()){
+            return;
+        }
+        Tag result = optional.get();
+        result.setTagName(tagName);
+
     }
 
 }

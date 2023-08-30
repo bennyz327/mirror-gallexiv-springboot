@@ -1,64 +1,43 @@
 package com.team.gallexiv.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
+@DynamicInsert
 @Table(name = "userSubscription", schema = "gallexiv")
 public class UserSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "subscriptionId")
     private int subscriptionId;
-    @Basic
-    @Column(name = "userId")
-    private int userId;
-    @Basic
-    @Column(name = "planId")
-    private int planId;
+
     @Basic
     @Column(name = "subscriptionStartTime")
     private Timestamp subscriptionStartTime;
-    @Basic
-    @Column(name = "subscriptionStatus")
-    private String subscriptionStatus;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "userId", nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
     private Userinfo userinfoByUserId;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "planId", nullable = false)
+    @JoinColumn(name = "planId", referencedColumnName = "planId", nullable = false)
     private Plan planByPlanId;
 
-    public void setSubscriptionId(int subscriptionId) {
-        this.subscriptionId = subscriptionId;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscription_status", referencedColumnName = "code_Id")
+    @JsonIncludeProperties({"statusId","statusCategory","statusName"})
+    private Status subscriptionStatusByStatusId;
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
-    public void setPlanId(int planId) {
-        this.planId = planId;
-    }
-
-    public void setSubscriptionStartTime(Timestamp subscriptionStartTime) {
-        this.subscriptionStartTime = subscriptionStartTime;
-    }
-
-    public void setSubscriptionStatus(String subscriptionStatus) {
-        this.subscriptionStatus = subscriptionStatus;
-    }
-
-    public void setUserinfoByUserId(Userinfo userinfoByUserId) {
-        this.userinfoByUserId = userinfoByUserId;
-    }
-
-    public void setPlanByPlanId(Plan planByPlanId) {
-        this.planByPlanId = planByPlanId;
-    }
 
 //    @Override
 //    public boolean equals(Object o) {

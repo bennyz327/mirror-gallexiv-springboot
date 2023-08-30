@@ -1,15 +1,18 @@
 package com.team.gallexiv.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
 @Entity
+@DynamicInsert
 @Table(name = "picture", schema = "gallexiv")
 public class Picture {
 
@@ -26,9 +29,13 @@ public class Picture {
     @Column(name = "imgPath")
     private String imgPath;
 
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "picture_status", referencedColumnName = "code_id")
+    private Status pictureStatusByStatusId;
+
     @ManyToOne
     @JoinColumn(name = "postId", referencedColumnName = "postId")
+    @JsonIncludeProperties({"postId"})
     private Post postByPostId;
 
 }
