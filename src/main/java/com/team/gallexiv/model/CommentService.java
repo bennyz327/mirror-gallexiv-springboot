@@ -16,7 +16,8 @@ public class CommentService {
     final StatusDao statusD;
     final PostDao postD;
 
-    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD, CommentDao commentD,PostDao postD) {
+    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD,
+            CommentDao commentD, PostDao postD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
@@ -62,14 +63,15 @@ public class CommentService {
     }
 
     // 更新 comment
-    public void updateComment(Comment comment, String commentText) {
+    public Comment updateComment(Comment comment) {
         Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
 
         if (commentOptional.isEmpty()) {
-            return;
+            return null;
         }
         Comment updateComment = commentOptional.get();
-        updateComment.setCommentText(commentText);
+        updateComment.setCommentText(comment.getCommentText());
+        return updateComment;
     }
     // public void updateComment(Integer commentId, Comment comment) {
     // Optional<Comment> commentOptional = commentD.findById(commentId);

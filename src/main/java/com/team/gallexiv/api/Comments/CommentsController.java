@@ -23,8 +23,8 @@ public class CommentsController {
     }
 
     // 取得單筆 comment by id
-    @GetMapping(path = "/comments/{commentId}", produces = "application/json;charset=UTF-8")
-    public Comment getCommentById(@PathVariable Comment comment) {
+    @GetMapping(path = "/comments/findById", produces = "application/json;charset=UTF-8")
+    public Comment getCommentById(@RequestBody Comment comment) {
         return commentS.getCommentById(comment);
     }
 
@@ -45,7 +45,7 @@ public class CommentsController {
 
     // 刪除 comment
     @DeleteMapping(path = "comments/delete")
-    public String deleteComment(@RequestParam Comment commentId) {
+    public String deleteComment(@RequestBody Comment commentId) {
         commentS.deleteCommentById(commentId);
         return "ok";
     }
@@ -61,10 +61,8 @@ public class CommentsController {
     // 更新 comment
     @Transactional
     @PutMapping(path = "comments/update")
-    public String updateComment(@RequestParam Comment comment,
-            @RequestParam("commentText") String commentText) {
-        commentS.updateComment(comment, commentText);
-        return "ok";
+    public Comment updateComment(@RequestBody Comment comment) {
+        return commentS.updateComment(comment);
     }
     // @Transactional
     // @PutMapping(path = "comments/update/{commentId}", produces =
