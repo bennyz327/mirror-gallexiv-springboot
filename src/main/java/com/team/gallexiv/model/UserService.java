@@ -57,6 +57,7 @@ public class UserService {
         return userD.findAll();
     }
 
+    //TODO 無法更新pWord
     //新增使用者
     public Userinfo insertUser(Userinfo user) {
 
@@ -101,6 +102,7 @@ public class UserService {
     }
 
     //更新user
+    //TODO 無法更新pWord
     public void updateUserById(Userinfo user) {
         Optional<Userinfo> optional = userD.findById(user.getUserId());
 
