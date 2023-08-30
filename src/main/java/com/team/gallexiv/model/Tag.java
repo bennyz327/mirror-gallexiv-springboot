@@ -17,6 +17,7 @@ public class Tag {
     @Id
     @Column(name = "tagId")
     private int tagId;
+
     @Basic
     @Column(name = "tagName",unique = true)
     private String tagName;
