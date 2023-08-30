@@ -15,12 +15,12 @@ public class CommentService {
     final UserDao userinfoD;
     final StatusDao statusD;
 
-    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD,CommentDao commentD) {
+    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD, CommentDao commentD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
         this.statusD = statusD;
-        this.commentD =commentD;
+        this.commentD = commentD;
     }
 
     // 取得單筆comment
@@ -40,7 +40,7 @@ public class CommentService {
         Optional<Userinfo> thisUser = userinfoD.findByUserId(comment.getUserinfoByUserId().getUserId());
 
         int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
-        System.out.println("statusID: "+thisCommentStatusId);
+        System.out.println("statusID: " + thisCommentStatusId);
         Optional<Status> status = statusD.findById(thisCommentStatusId);
 
         if (status.isPresent() && thisUser.isPresent()) {
@@ -52,35 +52,4 @@ public class CommentService {
 
         return null;
     }
-
-    //刪除plan
-    public void deletePlanById(int planId) {
-        Optional<Plan> planOptional = planD.findById(planId);
-        if (planOptional.isEmpty()) {
-            return;
-        }
-        planD.deleteById(planId);
-    }
-
-    //更新plan
-    public void updatePlanById(int planId, String planName, int planPrice, String planDescription, int planStatusNum, String planPicture) {
-        Optional<Plan> optional = planD.findById(planId);
-
-        if (optional.isEmpty()) {
-            return;
-        }
-        Plan result = optional.get();
-        result.setPlanName(planName);
-        result.setPlanPrice(planPrice);
-        result.setPlanStatusByStatusId(new Status(planStatusNum));
-        result.setPlanDescription(planDescription);
-        result.setPlanPicture(planPicture);
-    }
-
-//    public Plan updateBenny(Plan planToupdate){
-//
-//
-//        return planD.save(planToupdate);
-//    }
-
 }
