@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "comment", schema = "gallexiv")
 public class Comment {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "commentId")
@@ -54,8 +55,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentCommentId", referencedColumnName = "commentId")
-    @JsonIncludeProperties({"parentCommentId"})
-//    @JsonIncludeProperties({ "userId", "parentCommentId", "commentText" })
+    @JsonIncludeProperties({ "userId", "parentCommentId", "commentText" })
     private Comment commentByParentCommentId;
 
     @OneToMany(mappedBy = "commentByParentCommentId")

@@ -64,7 +64,7 @@ public class PostsController {
 
     @GetMapping("/posts/postTitle")
     @Operation(description = "模糊查詢貼文")
-    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle) {
+    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle){
         return postS.findPostByTitleLike(postTitle);
     }
 

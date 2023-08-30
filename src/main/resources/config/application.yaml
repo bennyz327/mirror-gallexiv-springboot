@@ -19,8 +19,8 @@ spring:
         format_sql: true
   datasource:
     url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
-    username: lleon
-    password: 1010
+    username: Vic
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     hiddenmethod:

@@ -71,16 +71,22 @@ public class Post {
     @JsonIncludeProperties({ "likeId" })
     private Collection<LikeFollow> likeFollowByPostId;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH })
-    @JoinTable(name = "tagPost", joinColumns = { @JoinColumn(name = "postId") }, inverseJoinColumns = {
-            @JoinColumn(name = "tagId") })
-    @JsonIncludeProperties({ "tagId", "tagName" })
+    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonIncludeProperties({"likeId"})
+    private Collection<LikeFollow> likeFollowByPostId;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @JoinTable(name = "tagPost",
+            joinColumns = {@JoinColumn(name = "postId")},
+            inverseJoinColumns = {@JoinColumn(name = "tagId")}
+    )
+    @JsonIncludeProperties({"tagId","tagName"})
     private Collection<Tag> tagsByPostId;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_status", referencedColumnName = "code_id")
-    @JsonIncludeProperties({ "statusId", "statusType", "statusCategory", "statusName" })
+    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status postStatusByStatusId;
 
 }

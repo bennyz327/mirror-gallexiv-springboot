@@ -26,8 +26,7 @@ public class UserService {
     final UserSubscriptionDao userSubscriptionD;
     final AccountRoleDao accountRoleD;
 
-    public UserService(UserDao userD, CommentDao commentD, PostDao postD, UserSubscriptionDao userSubD, PlanDao planD,
-            StatusDao statusD, UserSubscriptionDao userSubscriptionD, AccountRoleDao accountRoleD) {
+    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -131,10 +130,8 @@ public class UserService {
             result.setGender(user.getGender() != null ? user.getGender() : result.getGender());
             result.setAvatar(user.getAvatar() != null ? user.getAvatar() : result.getAvatar());
             result.setIntro(user.getIntro() != null ? user.getIntro() : result.getIntro());
-            result.setAccountRoleByRoleId(user.getAccountRoleByRoleId() != null ? user.getAccountRoleByRoleId()
-                    : result.getAccountRoleByRoleId());
-            result.setUserStatusByStatusId(user.getUserStatusByStatusId() != null ? user.getUserStatusByStatusId()
-                    : result.getUserStatusByStatusId());
+            result.setAccountRoleByRoleId(user.getAccountRoleByRoleId() != null ? user.getAccountRoleByRoleId() : result.getAccountRoleByRoleId());
+            result.setUserStatusByStatusId(user.getUserStatusByStatusId() != null ? user.getUserStatusByStatusId() : result.getUserStatusByStatusId());
             result.setFirst_name(user.getFirst_name() != null ? user.getFirst_name() : result.getFirst_name());
             result.setLast_name(user.getLast_name() != null ? user.getLast_name() : result.getLast_name());
             result.setModified_by(user.getModified_by() != null ? user.getModified_by() : result.getModified_by());
@@ -145,3 +142,4 @@ public class UserService {
         return VueData.error("更新失敗");
     }
 }
+
