@@ -21,9 +21,9 @@ public class CommentService {
     }
 
     // 取得單筆 comment
-    public Comment getCommentById(int commentId) {
-        Optional<Comment> comment = commentD.findById(commentId);
-        return comment.orElse(null);
+    public Comment getCommentById(Comment comment) {
+        Optional<Comment> foundComment = commentD.findById(comment.getCommentId());
+        return foundComment.orElse(null);
     }
 
     // 取得全部 comment
@@ -32,12 +32,12 @@ public class CommentService {
     }
 
     // 刪除 comment
-    public void deleteCommentById(Integer commentId) {
-        Optional<Comment> commentOptional = commentD.findById(commentId);
+    public void deleteCommentById(Comment comment) {
+        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
         if (commentOptional.isEmpty()) {
             return;
         }
-        commentD.deleteById(commentId);
+        commentD.deleteById(comment.getCommentId());
     }
 
     // 新增 comment
@@ -57,8 +57,8 @@ public class CommentService {
     }
 
     // 更新 comment
-    public void updateComment(Integer commentId, String commentText) {
-        Optional<Comment> commentOptional = commentD.findById(commentId);
+    public void updateComment(Comment comment, String commentText) {
+        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
 
         if (commentOptional.isEmpty()) {
             return;
