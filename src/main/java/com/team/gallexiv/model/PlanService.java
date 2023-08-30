@@ -14,7 +14,7 @@ public class PlanService {
     final UserDao userinfoD;
     final StatusDao statusD;
 
-    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD,StatusDao statusD) {
+    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
@@ -22,56 +22,67 @@ public class PlanService {
     }
 
     // 取得單筆plan
-    public Plan getPlanById(Plan plan) {
+    public VueData getPlanById(Plan plan) {
         Optional<Plan> optionalPlan = planD.findById(plan.getPlanId());
-        return optionalPlan.orElse(null);
+        if (optionalPlan.isPresent()) {
+            return VueData.ok(optionalPlan.orElse(null));
+        }
+        return VueData.error("查詢失敗");
     }
 
+    // --------先略過此處-------------
     public PlanForShow getPlanForShowById(int planId) {
         Optional<PlanForShow> plan = planForShowD.findById(planId);
         return plan.orElse(null);
     }
+    // -----------------------------
 
-    //取得全部plan
-    public List<Plan> getAllPlan() {
-        return planD.findAll();
+    // 取得全部plan
+    public VueData getAllPlan() {
+        List<Plan> result = planD.findAll();
+        if (result.isEmpty()) {
+            return VueData.error("查詢失敗");
+        }
+        return VueData.ok(result);
     }
 
+    // --------先略過此處-------------
     public List<PlanForShow> getAllPlanForShow() {
         return planForShowD.findAll();
     }
+    // -----------------------------
 
-    //新增plan
-    public Plan insertPlan(Plan plan) {
+    // 新增plan
+    public VueData insertPlan(Plan plan) {
 
         Optional<Userinfo> thisUser = userinfoD.findByUserId(plan.getOwnerIdByUserId().getUserId());
 
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
-        System.out.println("statusID: "+thisPlanStatusId);
+        System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
 
         if (status.isPresent() && thisUser.isPresent()) {
             System.out.println("有進去");
             plan.setPlanStatusByStatusId(status.get());
             plan.setOwnerIdByUserId(thisUser.get());
-            return planD.save(plan);
+            return VueData.ok(planD.save(plan));
         }
 
-        return null;
+        return VueData.error("新增失敗");
     }
 
-    //刪除plan
+    // 刪除plan
     public VueData deletePlanById(Plan plan) {
         Optional<Plan> planOptional = planD.findById(plan.getPlanId());
         if (planOptional.isPresent()) {
-           planD.deleteById(plan.getPlanId());
-           return VueData.ok();
+            planD.deleteById(plan.getPlanId());
+            return VueData.ok();
         }
         return VueData.error("刪除失敗");
     }
 
-    //更新plan
-    public Plan updatePlanById(Plan plan) {
+    // 更新plan
+    public VueData updatePlanById(Plan plan) {
         Optional<Plan> optional = planD.findById(plan.getPlanId());
 
         if (optional.isPresent()) {
@@ -81,9 +92,9 @@ public class PlanService {
             result.setPlanStatusByStatusId(new Status(plan.getPlanStatusByStatusId().getStatusId()));
             result.setPlanDescription(plan.getPlanDescription());
             result.setPlanPicture(plan.getPlanPicture());
-            return result;
+            return VueData.ok(result);
         }
-        return null;
+        return VueData.error("更新失敗");
 
     }
 

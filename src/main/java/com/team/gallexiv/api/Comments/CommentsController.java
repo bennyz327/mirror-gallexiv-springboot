@@ -1,7 +1,7 @@
 package com.team.gallexiv.api.Comments;
 
+import com.team.gallexiv.lang.VueData;
 import com.team.gallexiv.model.*;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ public class CommentsController {
 
     // 取得單筆 comment by id
     @GetMapping(path = "/comments/findById", produces = "application/json;charset=UTF-8")
-    public Comment getCommentById(@RequestBody Comment comment) {
+    public VueData getCommentById(@RequestBody Comment comment) {
         return commentS.getCommentById(comment);
     }
 
@@ -38,21 +38,20 @@ public class CommentsController {
     // return response;
     // }
     @GetMapping(path = "/comments/findAll", produces = "application/json;charset=UTF-8")
-    public List<Comment> getAllComment() {
-        List<Comment> result = commentS.getAllComment();
-        return result;
+    public VueData getAllComment() {
+        commentS.getAllComment();
+        return commentS.getAllComment();
     }
 
     // 刪除 comment
     @DeleteMapping(path = "comments/delete")
-    public String deleteComment(@RequestBody Comment commentId) {
-        commentS.deleteCommentById(commentId);
-        return "ok";
+    public VueData deleteComment(@RequestBody Comment comment) {
+        return commentS.deleteCommentById(comment);
     }
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")
-    public Comment addComment(@RequestBody Comment comment) {
+    public VueData addComment(@RequestBody Comment comment) {
         Integer postId = comment.getPostByPostId().getPostId();
         Integer userId = comment.getUserinfoByUserId().getUserId();
         return commentS.insertComment(postId, userId, comment);
@@ -61,7 +60,7 @@ public class CommentsController {
     // 更新 comment
     @Transactional
     @PutMapping(path = "comments/update")
-    public Comment updateComment(@RequestBody Comment comment) {
+    public VueData updateComment(@RequestBody Comment comment) {
         return commentS.updateComment(comment);
     }
     // @Transactional
