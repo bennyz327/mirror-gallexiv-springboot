@@ -21,7 +21,7 @@ public class PlansController {
     @GetMapping(path = "/plansById", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
     public VueData getPlanById(@RequestBody Plan plan) {
-        return VueData.ok(planS.getPlanById(plan));
+        return planS.getPlanById(plan);
     }
 
     @GetMapping(path = "/plansForShow/{planId}", produces = "application/json")

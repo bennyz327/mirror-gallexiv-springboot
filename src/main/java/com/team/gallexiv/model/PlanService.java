@@ -22,9 +22,12 @@ public class PlanService {
     }
 
     // 取得單筆plan
-    public Plan getPlanById(Plan plan) {
+    public VueData getPlanById(Plan plan) {
         Optional<Plan> optionalPlan = planD.findById(plan.getPlanId());
-        return optionalPlan.orElse(null);
+        if (optionalPlan.isPresent()){
+            return VueData.ok(optionalPlan.get());
+        }
+        return VueData.error("查詢失敗");
     }
 
     public PlanForShow getPlanForShowById(int planId) {
