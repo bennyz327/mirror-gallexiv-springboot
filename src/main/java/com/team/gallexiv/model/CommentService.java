@@ -14,42 +14,72 @@ public class CommentService {
     final CommentDao commentD;
     final UserDao userinfoD;
     final StatusDao statusD;
+    final PostDao postD;
 
-    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD, CommentDao commentD) {
+    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD, CommentDao commentD,PostDao postD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
         this.statusD = statusD;
         this.commentD = commentD;
+        this.postD = postD;
     }
 
-    // 取得單筆comment
+    // 取得單筆 comment
     public Comment getCommentById(Comment comment) {
-        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
-        return optionalComment.orElse(null);
+        Optional<Comment> foundComment = commentD.findById(comment.getCommentId());
+        return foundComment.orElse(null);
     }
 
-    //取得全部comment
+    // 取得全部 comment
     public List<Comment> getAllComment() {
         return commentD.findAll();
     }
 
-    //新增comment
-    public Comment insertComment(Comment comment) {
+    // 刪除 comment
+    public void deleteCommentById(Comment comment) {
+        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
+        if (commentOptional.isEmpty()) {
+            return;
+        }
+        commentD.deleteById(comment.getCommentId());
+    }
 
-        Optional<Userinfo> thisUser = userinfoD.findByUserId(comment.getUserinfoByUserId().getUserId());
-
+    // 新增 comment
+    public Comment insertComment(Integer postId, Integer userId, Comment comment) {
+        Optional<Post> thisPost = postD.findById(postId);
+        Optional<Userinfo> thisUser = userinfoD.findById(userId);
         int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
-        System.out.println("statusID: " + thisCommentStatusId);
-        Optional<Status> status = statusD.findById(thisCommentStatusId);
+        Optional<Status> commentOptional = statusD.findById(thisCommentStatusId);
 
-        if (status.isPresent() && thisUser.isPresent()) {
-            System.out.println("有進去");
-            comment.setCommentStatusByStatusId(status.get());
+        if (thisPost.isPresent() && thisUser.isPresent() && commentOptional.isPresent()) {
+            comment.setPostByPostId(thisPost.get());
             comment.setUserinfoByUserId(thisUser.get());
+            comment.setCommentStatusByStatusId(commentOptional.get());
             return commentD.save(comment);
         }
-
         return null;
     }
+
+    // 更新 comment
+    public void updateComment(Comment comment, String commentText) {
+        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
+
+        if (commentOptional.isEmpty()) {
+            return;
+        }
+        Comment updateComment = commentOptional.get();
+        updateComment.setCommentText(commentText);
+    }
+    // public void updateComment(Integer commentId, Comment comment) {
+    // Optional<Comment> commentOptional = commentD.findById(commentId);
+
+    // if (commentOptional.isPresent()) {
+    // Comment updateComment = commentOptional.get();
+    // updateComment.setCommentText(updateComment.getCommentText());
+    // // return commentD.save(updateComment);
+    // }
+    // return;
+
+    // }
 }
