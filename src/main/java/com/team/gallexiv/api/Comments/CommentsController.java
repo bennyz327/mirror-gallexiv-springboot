@@ -5,9 +5,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
+// @RequestMapping(path = { "/pages/ajax" })
 public class CommentsController {
 
     final CommentService commentS;
@@ -20,13 +24,20 @@ public class CommentsController {
 
     // 取得單筆 comment by id
     @GetMapping(path = "/comments/{commentId}", produces = "application/json;charset=UTF-8")
-    public Comment getCommentById(@PathVariable Integer commentId) {
-        return commentS.getCommentById(commentId);
+    public Comment getCommentById(@PathVariable Comment comment) {
+        return commentS.getCommentById(comment);
     }
 
     // 取得全部 comment
-    @CrossOrigin
-    @GetMapping(path = "/comments", produces = "application/json;charset=UTF-8")
+    // @GetMapping(path = "/comments/findAll", produces =
+    // "application/json;charset=UTF-8")
+    // public Map<String, List<Comment>> getAllComment() {
+    // List<Comment> result = commentS.getAllComment();
+    // Map<String, List<Comment>> response = new HashMap<>();
+    // response.put("list", result);
+    // return response;
+    // }
+    @GetMapping(path = "/comments/findAll", produces = "application/json;charset=UTF-8")
     public List<Comment> getAllComment() {
         List<Comment> result = commentS.getAllComment();
         return result;
@@ -34,7 +45,7 @@ public class CommentsController {
 
     // 刪除 comment
     @DeleteMapping(path = "comments/delete")
-    public String deleteComment(@RequestParam Integer commentId) {
+    public String deleteComment(@RequestParam Comment commentId) {
         commentS.deleteCommentById(commentId);
         return "ok";
     }
@@ -50,9 +61,9 @@ public class CommentsController {
     // 更新 comment
     @Transactional
     @PutMapping(path = "comments/update")
-    public String updateComment(@RequestParam Integer commentId,
+    public String updateComment(@RequestParam Comment comment,
             @RequestParam("commentText") String commentText) {
-        commentS.updateComment(commentId, commentText);
+        commentS.updateComment(comment, commentText);
         return "ok";
     }
     // @Transactional
