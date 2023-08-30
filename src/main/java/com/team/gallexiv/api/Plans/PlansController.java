@@ -13,6 +13,7 @@ public class PlansController {
 
     final PlanService planS;
     final UserService userS;
+
     public PlansController(PlanService planS, UserService userS) {
         this.planS = planS;
         this.userS = userS;
@@ -24,32 +25,36 @@ public class PlansController {
         return planS.getPlanById(plan);
     }
 
+    // --------先略過此處-------------
     @GetMapping(path = "/plansForShow/{planId}", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
     public PlanForShow getPlanShowById(@PathVariable int planId) {
         return planS.getPlanForShowById(planId);
     }
+    // -----------------------------
 
-    @PostMapping(path = "/plans/insert",produces = "application/json;charset=UTF-8")
+    @PostMapping(path = "/plans/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public Plan addPlan(@RequestBody Plan plan){
-        System.out.println("收到"+plan);
+    public VueData addPlan(@RequestBody Plan plan) {
+        System.out.println("收到" + plan);
         return planS.insertPlan(plan);
     }
 
     @CrossOrigin
-    @GetMapping(path="/plans",produces = "application/json;charset=UTF-8")
+    @GetMapping(path = "/plans", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部plan")
-    public List<Plan> findAllPlan(){
+    public VueData findAllPlan() {
         return planS.getAllPlan();
     }
 
+    // --------先略過此處-------------
     @CrossOrigin
-    @GetMapping(path="/plansForShow",produces = "application/json;charset=UTF-8")
-    public List<PlanForShow> findAllPlanForShow(){
+    @GetMapping(path = "/plansForShow", produces = "application/json;charset=UTF-8")
+    public List<PlanForShow> findAllPlanForShow() {
         List<PlanForShow> result = planS.getAllPlanForShow();
-        return  result;
+        return result;
     }
+    // -----------------------------
 
     @DeleteMapping(path = "/plans/delete")
     @Operation(description = "刪除plan(GET BY ID)")
@@ -58,10 +63,10 @@ public class PlansController {
 
     }
 
-    @Transactional //狀態更新會只有statusId
+    @Transactional // 狀態更新會只有statusId
     @PutMapping("/plans/update")
     @Operation(description = "更新plan")
-    public Plan updatePlan(@RequestBody Plan plan){
+    public VueData updatePlan(@RequestBody Plan plan) {
 
         return planS.updatePlanById(plan);
 

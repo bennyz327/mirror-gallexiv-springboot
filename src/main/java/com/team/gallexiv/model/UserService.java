@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team.gallexiv.lang.VueData;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -39,33 +41,37 @@ public class UserService {
         return userD.myfindById(id);
     }
 
+    // public Userinfo getUserById(int id) {
+    // Optional<Userinfo> post = userD.findById(id);
+    // return post.orElse(null);
+    // }
 
-//    public Userinfo getUserById(int id) {
-//        Optional<Userinfo> post = userD.findById(id);
-//        return post.orElse(null);
-//    }
-
-
-    //取得單筆user OK
-    public Userinfo getUserById(Userinfo user) {
+    // 取得單筆user OK
+    public VueData getUserById(Userinfo user) {
         Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
-        return optionalUserinfo.orElse(null);
+        if (optionalUserinfo.isPresent()) {
+            return VueData.ok(optionalUserinfo.orElse(null));
+        }
+        return VueData.error("查詢失敗");
     }
 
-    //取得所有user
-    public List<Userinfo> getAllUsers(){
-        return userD.findAll();
+    // 取得所有user
+    public VueData getAllUsers() {
+        List<Userinfo> result = userD.findAll();
+        if (result.isEmpty()) {
+            return VueData.error("查詢失敗");
+        }
+        return VueData.ok(result);
     }
 
-    //TODO 無法更新pWord
-    //新增使用者
+    // 新增使用者-----先略過不改成VueData
     public Userinfo insertUser(Userinfo user) {
 
-        String userName =user.getAccount();
+        String userName = user.getAccount();
         List<Userinfo> a = userD.findAll();
-        for(int i=0;i<a.size();i++){
+        for (int i = 0; i < a.size(); i++) {
             System.out.println(a.get(i).getUserName());
-            if(userName.equals(a.get(i).getUserName())){
+            if (userName.equals(a.get(i).getUserName())) {
                 System.out.println("帳號重複");
                 return null;
             }
@@ -73,50 +79,53 @@ public class UserService {
         return userD.save(user);
     }
 
-    //刪除user 少判斷
-    public Userinfo unableUserById(Userinfo user) {
-        Optional<Comment> optionalComment= commentD.findById(user.getUserId());
-        Status resultComment = optionalComment.get().getCommentStatusByStatusId();
+    // 刪除user 少判斷
+    public VueData unableUserById(Userinfo user) {
+        // Optional<Comment> optionalComment = commentD.findById(user.getUserId());
+        // Status resultComment = optionalComment.get().getCommentStatusByStatusId();
 
-        Optional<Post> optionalPost = postD.findById(user.getUserId());
-        Status resultPost = optionalPost.get().getPostStatusByStatusId();
+        // Optional<Post> optionalPost = postD.findById(user.getUserId());
+        // Status resultPost = optionalPost.get().getPostStatusByStatusId();
 
-        Optional<AccountRole> optionalAccountRole = accountRoleD.findById(user.getUserId());
-        Status resultAccountRole = optionalAccountRole.get().getRoleStatusByStatusId();
+        // Optional<AccountRole> optionalAccountRole =
+        // accountRoleD.findById(user.getUserId());
+        // Status resultAccountRole =
+        // optionalAccountRole.get().getRoleStatusByStatusId();
 
-        Optional<Plan> optionalPlan = planD.findById(user.getUserId());
-        Status resultPlan = optionalPlan.get().getPlanStatusByStatusId();
+        // Optional<Plan> optionalPlan = planD.findById(user.getUserId());
+        // Status resultPlan = optionalPlan.get().getPlanStatusByStatusId();
 
-
-        Optional<Userinfo> optional =userD.findById(user.getUserId());
-        if(optional.isPresent()){
+        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
+        if (optionalUserinfo.isPresent()) {
             Optional<Status> optionalStatus = statusD.findById(user.getUserStatusByStatusId().getStatusId());
             Status resultStatus = optionalStatus.get();
 
-            Userinfo result = optional.get();
+            Userinfo result = optionalUserinfo.get();
             result.setUserStatusByStatusId(resultStatus);
-            return user;
+            // return user;
+            return VueData.ok(user);
         }
 
-        return null;
+        // 無法顯示 VueData 返回結果
+        return VueData.error("更改狀態失敗");
     }
 
-    //更新user
-    //TODO 無法更新pWord
-    public void updateUserById(Userinfo user) {
-        Optional<Userinfo> optional = userD.findById(user.getUserId());
+    // 更新user
+    public VueData updateUserById(Userinfo user) {
+        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
 
-        System.out.println("要更新資料: "+user);
-        if (optional.isPresent()) {
+        System.out.println("要更新資料: " + user);
+        if (optionalUserinfo.isPresent()) {
             System.out.println("找到存在的使用者");
-            Userinfo result = optional.get();
+            Userinfo result = optionalUserinfo.get();
             System.out.println(result);
             result.setUserName(user.getUserName() != null ? user.getUserName() : result.getUserName());
             result.setAccount(user.getAccount() != null ? user.getAccount() : result.getAccount());
-            result.setPWord(user.getPWord() != null ? user.getPWord() : result.getPWord());
+            result.setPWord(user.getPWord() != null ? user.getPWord() : result.getPWord()); // ---暫時無法更改
 
             result.setUserEmail(user.getUserEmail() != null ? user.getUserEmail() : result.getUserEmail());
-            result.setEmail_verified(user.getEmail_verified() != null ? user.getEmail_verified() : result.getEmail_verified());
+            result.setEmail_verified(
+                    user.getEmail_verified() != null ? user.getEmail_verified() : result.getEmail_verified());
             result.setBirthday(user.getBirthday() != null ? user.getBirthday() : result.getBirthday());
             result.setGender(user.getGender() != null ? user.getGender() : result.getGender());
             result.setAvatar(user.getAvatar() != null ? user.getAvatar() : result.getAvatar());
@@ -127,8 +136,10 @@ public class UserService {
             result.setLast_name(user.getLast_name() != null ? user.getLast_name() : result.getLast_name());
             result.setModified_by(user.getModified_by() != null ? user.getModified_by() : result.getModified_by());
             userD.save(result);
+            return VueData.ok(result);
         }
         System.out.println("結束SERVICE");
+        return VueData.error("更新失敗");
     }
 }
 

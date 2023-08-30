@@ -3,6 +3,8 @@ package com.team.gallexiv.model;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.team.gallexiv.lang.VueData;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,22 +27,29 @@ public class PostService {
         this.planD = planD;
     }
 
-    //取得單筆貼文
-    public Post getPostById(Post post) {
+    // 取得單筆貼文
+    public VueData getPostById(Post post) {
         Optional<Post> optionalPost = postD.findById(post.getPostId());
-        return optionalPost.orElse(null);
+        if (optionalPost.isPresent()) {
+            return VueData.ok(optionalPost.orElse(null));
+        }
+        return VueData.error("查詢失敗");
     }
 
-    //取得全部貼文
-    public List<Post> getAllPost() {
-        return postD.findAll();
+    // 取得全部貼文
+    public VueData getAllPost() {
+        List<Post> result = postD.findAll();
+        if (result.isEmpty()) {
+            return VueData.error("查詢失敗");
+        }
+        return VueData.ok(result);
     }
 
-    //新增貼文
-    public Post insertPost(Post post) {
+    // 新增貼文
+    public VueData insertPost(Post post) {
 
-        Optional<Userinfo> optional = userD.findById(post.getUserinfoByUserId().getUserId());
-        if (optional.isPresent()) {
+        Optional<Userinfo> optionalUserinfo = userD.findById(post.getUserinfoByUserId().getUserId());
+        if (optionalUserinfo.isPresent()) {
 
             Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
             if (optionalPlan.isPresent()) {
@@ -61,23 +70,23 @@ public class PostService {
             }
             post.setTagsByPostId(newTags);
 
-            return postD.save(post);
+            return VueData.ok(postD.save(post));
         }
-        return null;
+        return VueData.error("新增失敗");
     }
 
-    //刪除貼文
-    public String deletePostById(Post post) {
+    // 刪除貼文
+    public VueData deletePostById(Post post) {
         Optional<Post> postOptional = postD.findById(post.getPostId());
         if (postOptional.isPresent()) {
             postD.deleteById(post.getPostId());
-            return "刪除成功";
+            return VueData.ok("刪除成功");
         }
-        return "刪除失敗";
+        return VueData.error("刪除失敗");
     }
 
-    //更新貼文
-    public void updatePostById(Post post) {
+    // 更新貼文
+    public VueData updatePostById(Post post) {
 
         Optional<Post> optional = postD.findById(post.getPostId());
 
@@ -101,7 +110,9 @@ public class PostService {
                 }
             }
             result.setTagsByPostId(existingTags);
+            return VueData.ok(result);
         }
+        return VueData.error("更新失敗");
 
     }
 
@@ -130,10 +141,9 @@ public class PostService {
         return null;
     }
 
-    //模糊查詢
+    // 模糊查詢
     public List<Post> findPostByTitleLike(@RequestParam("postTitle") String postTitle) {
         return postD.findByTitleLike(postTitle);
     }
-
 
 }

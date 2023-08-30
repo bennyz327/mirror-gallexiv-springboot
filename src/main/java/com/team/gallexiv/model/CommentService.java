@@ -2,18 +2,26 @@ package com.team.gallexiv.model;
 
 import org.springframework.stereotype.Service;
 
+import com.team.gallexiv.lang.VueData;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CommentService {
 
+    final PlanDao planD;
+    final PlanForShowDao planForShowD;
+
     final CommentDao commentD;
     final UserDao userinfoD;
     final StatusDao statusD;
     final PostDao postD;
 
-    public CommentService(UserDao userinfoD, StatusDao statusD, CommentDao commentD, PostDao postD) {
+    public CommentService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD,
+            CommentDao commentD, PostDao postD) {
+        this.planD = planD;
+        this.planForShowD = planForShowD;
         this.userinfoD = userinfoD;
         this.statusD = statusD;
         this.commentD = commentD;
@@ -21,27 +29,35 @@ public class CommentService {
     }
 
     // 取得單筆 comment
-    public Comment getCommentById(Comment comment) {
-        Optional<Comment> foundComment = commentD.findById(comment.getCommentId());
-        return foundComment.orElse(null);
+    public VueData getCommentById(Comment comment) {
+        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
+        if (optionalComment.isPresent()) {
+            return VueData.ok(optionalComment.orElse(null));
+        }
+        return VueData.error("查詢失敗");
     }
 
     // 取得全部 comment
-    public List<Comment> getAllComment() {
-        return commentD.findAll();
+    public VueData getAllComment() {
+        List<Comment> result = commentD.findAll();
+        if (result.isEmpty()) {
+            return VueData.error("查詢失敗");
+        }
+        return VueData.ok(result);
     }
 
     // 刪除 comment
-    public void deleteCommentById(Comment comment) {
-        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
-        if (commentOptional.isEmpty()) {
-            return;
+    public VueData deleteCommentById(Comment comment) {
+        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
+        if (optionalComment.isEmpty()) {
+            return VueData.error("刪除失敗");
         }
         commentD.deleteById(comment.getCommentId());
+        return VueData.ok("刪除成功");
     }
 
     // 新增 comment
-    public Comment insertComment(Integer postId, Integer userId, Comment comment) {
+    public VueData insertComment(Integer postId, Integer userId, Comment comment) {
         Optional<Post> thisPost = postD.findById(postId);
         Optional<Userinfo> thisUser = userinfoD.findById(userId);
         int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
@@ -51,20 +67,21 @@ public class CommentService {
             comment.setPostByPostId(thisPost.get());
             comment.setUserinfoByUserId(thisUser.get());
             comment.setCommentStatusByStatusId(commentOptional.get());
-            return commentD.save(comment);
+            return VueData.ok(commentD.save(comment));
         }
-        return null;
+        return VueData.error("新增失敗");
     }
 
     // 更新 comment
-    public void updateComment(Comment comment, String commentText) {
-        Optional<Comment> commentOptional = commentD.findById(comment.getCommentId());
+    public VueData updateComment(Comment comment) {
+        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
 
-        if (commentOptional.isEmpty()) {
-            return;
+        if (optionalComment.isEmpty()) {
+            return VueData.error("更新失敗");
         }
-        Comment updateComment = commentOptional.get();
-        updateComment.setCommentText(commentText);
+        Comment updateComment = optionalComment.get();
+        updateComment.setCommentText(comment.getCommentText());
+        return VueData.ok(updateComment);
     }
     // public void updateComment(Integer commentId, Comment comment) {
     // Optional<Comment> commentOptional = commentD.findById(commentId);
