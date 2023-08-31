@@ -1,8 +1,7 @@
 package com.team.gallexiv.data.model;
 
+import com.team.gallexiv.common.lang.VueData;
 import org.springframework.stereotype.Service;
-
-import com.team.gallexiv.lang.VueData;
 
 import java.util.List;
 import java.util.Optional;

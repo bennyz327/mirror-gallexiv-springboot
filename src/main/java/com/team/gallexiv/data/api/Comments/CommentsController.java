@@ -1,15 +1,11 @@
 package com.team.gallexiv.data.api.Comments;
 
-import com.team.gallexiv.lang.VueData;
-import com.team.gallexiv.model.*;
+import com.team.gallexiv.data.model.CommentService;
+import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.model.Comment;
+import com.team.gallexiv.data.model.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.team.gallexiv.data.model.CommentService;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")

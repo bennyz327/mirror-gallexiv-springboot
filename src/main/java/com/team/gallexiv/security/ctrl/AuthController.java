@@ -1,15 +1,7 @@
 package com.team.gallexiv.security.ctrl;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.map.MapUtil;
-import com.google.code.kaptcha.Producer;
-import com.team.gallexiv.lang.Const;
-import com.team.gallexiv.lang.VueData;
-import com.team.gallexiv.model.CaptchaInfo;
-import com.team.gallexiv.lang.VueData;
 import com.team.gallexiv.common.lang.Const;
 import com.team.gallexiv.common.lang.VueData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +39,7 @@ public class AuthController extends BaseController {
         Base64.Encoder encoder = Base64.getEncoder();
         String str = "data:image/jpeg;base64,";
 
-        String base64Img = str + encoder.encodeToString(outputStream.toByteArray());
+        String base64Img = str + encoder.encodeToString(baos.toByteArray());
 
         //TODO 開發階段限定
         //儲存到Redis並設定過期時間

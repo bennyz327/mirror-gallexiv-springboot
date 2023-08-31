@@ -1,12 +1,10 @@
 package com.team.gallexiv.data.model;
 
+import com.team.gallexiv.common.lang.VueData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.team.gallexiv.lang.VueData;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

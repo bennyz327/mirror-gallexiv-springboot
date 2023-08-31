@@ -3,13 +3,12 @@ package com.team.gallexiv.security;
 import cn.hutool.json.JSONUtil;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.JwtUtils;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

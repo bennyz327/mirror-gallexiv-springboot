@@ -1,15 +1,11 @@
 package com.team.gallexiv.data.api.users;
 
-import com.team.gallexiv.lang.VueData;
-import com.team.gallexiv.model.UserService;
-import com.team.gallexiv.model.Userinfo;
 import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.data.model.Userinfo;
+import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class UsersController {

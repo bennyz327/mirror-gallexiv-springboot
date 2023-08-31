@@ -1,7 +1,6 @@
 package com.team.gallexiv.data.model;
 
-import com.team.gallexiv.lang.VueData;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.team.gallexiv.common.lang.VueData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
