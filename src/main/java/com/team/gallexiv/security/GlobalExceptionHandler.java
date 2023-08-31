@@ -1,6 +1,6 @@
 package com.team.gallexiv.security;
 
-import com.team.gallexiv.lang.VueData;
+import com.team.gallexiv.common.lang.VueData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(value = AccessDeniedException.class)
     public VueData handler(AccessDeniedException e) {
-        log.info("security权限不足：----------------{}", e.getMessage());
+        log.info("security權限不足：----------------{}", e.getMessage());
         return VueData.error("權限不足");
     }
 

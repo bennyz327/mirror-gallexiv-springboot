@@ -20,6 +20,7 @@ public class SecurityConfiguration {
             "/login",
             "/logout",
             "favicon.ico",
+            "/test/**",
     };
 
     @Autowired

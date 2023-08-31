@@ -1,7 +1,7 @@
 package com.team.gallexiv.security;
 
 import cn.hutool.json.JSONUtil;
-import com.team.gallexiv.lang.VueData;
+import com.team.gallexiv.common.lang.VueData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
