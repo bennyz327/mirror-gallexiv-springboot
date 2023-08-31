@@ -1,4 +1,4 @@
-package com.team.gallexiv.common.exception;
+package com.team.gallexiv.security;
 
 import com.team.gallexiv.lang.VueData;
 import lombok.extern.slf4j.Slf4j;
