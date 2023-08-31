@@ -1,3 +1,4 @@
+#      TODO 開發環境清理
 server:
   port: 8080
 #  servlet:
@@ -18,7 +19,7 @@ spring:
         show_sql: true
         format_sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/gallexiv_v3?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
     username: benny
     password: benben327327
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,7 +43,8 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
-      host: 127.0.0.1
+#      host: 127.0.0.1
+      host: 192.168.0.205
       port: 6379
       database: 1
       connect-timeout: 10000
@@ -52,7 +54,7 @@ springdoc:
     path: /api/doc
 
 gallexiv:
-  # 網域用,分隔
+  # 網域用,分隔 改用Security之後可能不用這兩個設定了
   allowedOrigins: "http://localhost:3100"
   allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
   jwt:

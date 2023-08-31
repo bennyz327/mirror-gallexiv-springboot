@@ -1,8 +1,8 @@
 package com.team.gallexiv.security;
 
 import cn.hutool.json.JSONUtil;
-import com.team.gallexiv.lang.VueData;
-import com.team.gallexiv.utils.JwtUtils;
+import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.common.utils.JwtUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     JwtUtils jwtUtils;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
 
 
