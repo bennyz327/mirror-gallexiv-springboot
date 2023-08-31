@@ -55,3 +55,7 @@ gallexiv:
   # 網域用,分隔
   allowedOrigins: "http://localhost:3100"
   allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+  jwt:
+    expire: 604800
+    secret: "f4e2e52034348f86b67cde581c0f9eb5"
+    header: "Authorization"

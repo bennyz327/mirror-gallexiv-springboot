@@ -1,4 +1,4 @@
-package com.team.gallexiv.api;
+package com.team.gallexiv.ctrl.auth;
 
 import com.team.gallexiv.lang.VueData;
 import com.team.gallexiv.model.UserService;

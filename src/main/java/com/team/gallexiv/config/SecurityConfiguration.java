@@ -1,28 +1,56 @@
 package com.team.gallexiv.config;
 
+import com.team.gallexiv.security.CaptchaFilter;
+import com.team.gallexiv.security.LoginFailureHandler;
+import com.team.gallexiv.security.LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfiguration {
 
+    // 放行白名單
+    public static final String[] URL_WHITELIST = {
+            "/captcha",
+            "/login",
+            "/logout",
+            "favicon.ico",
+    };
+
+    @Autowired
+    LoginSuccessHandler loginSuccessHandler;
+    @Autowired
+    LoginFailureHandler loginFailureHandler;
+    @Autowired
+    CaptchaFilter captchaFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/captcha")
-                                .permitAll()
+                        .requestMatchers(URL_WHITELIST)
+                        .permitAll()
+                )
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers()
 //                        .hasAuthority("*")
 //                        .anyRequest()
 //                        .authenticated()
+//                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")
                         .usernameParameter("name")
                         .passwordParameter("passwd")
+                        .successHandler(loginSuccessHandler)
+                        .failureHandler(loginFailureHandler)
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
@@ -30,8 +58,8 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
-                );
-//        http.addFilterBefore(new CaptchaFilter(), CaptchaFilter.class);
+                )
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

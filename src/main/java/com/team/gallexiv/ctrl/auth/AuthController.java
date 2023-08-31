@@ -3,6 +3,7 @@ package com.team.gallexiv.ctrl.auth;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
+import com.team.gallexiv.lang.Const;
 import com.team.gallexiv.lang.VueData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,12 +26,12 @@ public class AuthController extends BaseController {
     @GetMapping("/captcha")
     public VueData captcha() throws IOException {
 
-        // 測試用資料
-        // String key = "aaaaa"
-        // String code = "11111"
+//         測試用資料
+         String key = "aaaaa";
+         String code = "11111";
 
-        String key = UUID.randomUUID().toString();
-        String code = producer.createText();
+//        String key = UUID.randomUUID().toString();
+//        String code = producer.createText();
 
         BufferedImage image = producer.createImage(code);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -42,7 +43,7 @@ public class AuthController extends BaseController {
         String base64Img = str + encoder.encodeToString(outputStream.toByteArray());
 
         //儲存到Redis並設定過期時間
-        redisUtil.set(key, code, 60 * 5);
+        redisUtil.hset(Const.CAPTCHA_KEY, key, code, 120);
 
         return VueData.ok(
                 MapUtil.builder()
