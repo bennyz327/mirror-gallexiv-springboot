@@ -33,8 +33,25 @@ spring:
     user:
       name: admin
       password: admin1234
+  data:
+    redis:
+      jedis:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+          max-wait: 1
+          min-idle: 0
+      host: 127.0.0.1
+      port: 6379
+      database: 1
+      connect-timeout: 10000
+      password: benben327327
 springdoc:
   swagger-ui:
     path: /api/doc
+
 gallexiv:
-  allowedApi: http://localhost:3000,http://localhost:3050
+  # 網域用,分隔
+  allowedOrigins: "http://localhost:3100"
+  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
