@@ -9,6 +9,8 @@ import java.util.Properties;
 
 @Component
 public class KaptchaConfig {
+
+    // TODO 可以套用更多驗證碼設定
     @Bean
     public DefaultKaptcha producer() {
         Properties properties = new Properties();
