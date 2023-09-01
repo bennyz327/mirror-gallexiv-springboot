@@ -1,4 +1,5 @@
-#      TODO 開發環境清理
+#      TODO 生產環境清理
+# 此設定檔為生產環境設定檔
 server:
   port: 8080
 #  servlet:
