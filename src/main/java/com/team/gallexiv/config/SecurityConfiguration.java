@@ -10,18 +10,29 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 public class SecurityConfiguration {
 
-    // 放行白名單
-    public static final String[] URL_WHITELIST = {
-            "/captcha",
-            "/login",
-            "/logout",
-            "favicon.ico",
-            "/test/**",
+    //完全開放的 URL/API 列表
+    AntPathRequestMatcher[] OPEN_URL = new AntPathRequestMatcher[]{
+            AntPathRequestMatcher.antMatcher(GET, "/captcha"),
+            AntPathRequestMatcher.antMatcher(POST, "/login"),
+            AntPathRequestMatcher.antMatcher(POST, "/logout"),
+            AntPathRequestMatcher.antMatcher(GET, "/test/**"),
     };
+    //需要管理員身份的 URL/API 列表
+    private final String ADMIN_API_CONTEXT_PATTERN = "/admin/**";
+    AntPathRequestMatcher[] ADMIN_API_URL = new AntPathRequestMatcher[]{
+            AntPathRequestMatcher.antMatcher(GET, ADMIN_API_CONTEXT_PATTERN),
+            AntPathRequestMatcher.antMatcher(POST, ADMIN_API_CONTEXT_PATTERN),
+            AntPathRequestMatcher.antMatcher(PUT, ADMIN_API_CONTEXT_PATTERN),
+            AntPathRequestMatcher.antMatcher(DELETE, ADMIN_API_CONTEXT_PATTERN),
+    };
+    //其餘涉及使用者都需要驗證
 
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
@@ -34,15 +45,13 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(URL_WHITELIST)
+                        .requestMatchers(OPEN_URL)
                         .permitAll()
+                        .requestMatchers(ADMIN_API_URL)
+                        .hasAuthority("admin")
+                        .anyRequest()
+                        .authenticated()
                 )
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers()
-//                        .hasAuthority("*")
-//                        .anyRequest()
-//                        .authenticated()
-//                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -63,7 +72,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 
 //    @Bean
 //    UserDetailsService userDetailsService() {
