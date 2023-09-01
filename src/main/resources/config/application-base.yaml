@@ -2,6 +2,8 @@
 # 可以同時載入多個設定檔，用逗號分隔，例如: spring.profiles.active=base,dev
 # 若有重複設定，寫在前面的設定檔會被後面的設定檔覆蓋
 spring:
+  application:
+    name: gallexiv
   datasource:
     # 需在自己的設定檔額外設定
     driver-class-name: com.mysql.cj.jdbc.Driver
