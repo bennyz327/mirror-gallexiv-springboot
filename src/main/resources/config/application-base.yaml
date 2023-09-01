@@ -1,0 +1,46 @@
+# 啟動時使用 spring.profiles.active=abc 參數，會載入 application-abc.yaml 的設定檔
+# 可以同時載入多個設定檔，用逗號分隔，例如: spring.profiles.active=base,dev
+# 若有重複設定，寫在前面的設定檔會被後面的設定檔覆蓋
+spring:
+  datasource:
+    # 需在自己的設定檔額外設定
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    database: mysql
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+    view:
+      prefix:
+      suffix:
+  data:
+    redis:
+      # 需在自己的設定檔額外設定
+      connect-timeout: 10000
+      jedis:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+          max-wait: 1
+          min-idle: 0
+springdoc:
+  swagger-ui:
+    path: /api/doc
+gallexiv:
+  jwt:
+    expire: 604800
+    secret: "f4e2e52034348f86b67cde581c0f9eb5"
+    header: "Authorization"
