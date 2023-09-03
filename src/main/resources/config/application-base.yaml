@@ -1,11 +1,12 @@
-#      TODO 生產環境清理
-# 此設定檔為生產環境設定檔
-server:
-  port: 8080
-#  servlet:
-#    context-path: /gallexiv
-#    https://子網域名.網域名.主域/context-path(/功能、系統名)
+# 啟動時使用 spring.profiles.active=abc 參數，會載入 application-abc.yaml 的設定檔
+# 可以同時載入多個設定檔，用逗號分隔，例如: spring.profiles.active=base,dev
+# 若有重複設定，寫在前面的設定檔會被後面的設定檔覆蓋
 spring:
+  application:
+    name: gallexiv
+  datasource:
+    # 需在自己的設定檔額外設定
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -19,11 +20,6 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         show_sql: true
         format_sql: true
-  datasource:
-    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
-    username: benny
-    password: benben327327
-    driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     hiddenmethod:
       filter:
@@ -31,12 +27,10 @@ spring:
     view:
       prefix:
       suffix:
-  security:
-    user:
-      name: admin
-      password: admin1234
   data:
     redis:
+      # 需在自己的設定檔額外設定
+      connect-timeout: 10000
       jedis:
         pool:
           enabled: true
@@ -44,20 +38,10 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
-#      host: 127.0.0.1
-      host: 192.168.0.205
-      port: 6379
-      database: 1
-      connect-timeout: 10000
-      password: benben327327
 springdoc:
   swagger-ui:
     path: /api/doc
-
 gallexiv:
-  # 網域用,分隔 改用Security之後可能不用這兩個設定了
-  allowedOrigins: "http://localhost:3100"
-  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
   jwt:
     expire: 604800
     secret: "f4e2e52034348f86b67cde581c0f9eb5"

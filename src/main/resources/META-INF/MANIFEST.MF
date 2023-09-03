@@ -1,0 +1,46 @@
+Manifest-Version: 1.0
+Main-Class: com.team.gallexiv.GallexivApplication
+Class-Path: logback-core-1.4.8.jar hibernate-commons-annotations-6.0.6.F
+ inal.jar micrometer-observation-1.11.2.jar filters-2.0.235.jar spring-b
+ oot-starter-json-3.1.2.jar spring-web-6.0.11.jar jaxb-runtime-4.0.3.jar
+  jaxb-core-4.0.3.jar hibernate-core-6.2.6.Final.jar byte-buddy-1.14.5.j
+ ar jakarta.inject-api-2.0.1.jar spring-boot-starter-3.1.2.jar spring-da
+ ta-redis-3.1.2.jar spring-core-6.0.11.jar jboss-logging-3.5.3.Final.jar
+  jakarta.xml.bind-api-4.0.0.jar slf4j-api-2.0.7.jar thymeleaf-spring6-3
+ .1.1.RELEASE.jar jjwt-0.9.1.jar spring-context-6.0.11.jar commons-lang3
+ -3.12.0.jar jackson-databind-2.15.2.jar reactor-core-3.5.8.jar antlr4-r
+ untime-4.10.1.jar netty-transport-4.1.94.Final.jar jandex-3.0.5.jar jul
+ -to-slf4j-2.0.7.jar spring-data-commons-3.1.2.jar unbescape-1.1.6.RELEA
+ SE.jar jackson-annotations-2.15.2.jar jakarta.annotation-api-2.1.1.jar 
+ spring-boot-3.1.2.jar spring-boot-starter-data-jpa-3.1.2.jar log4j-to-s
+ lf4j-2.20.0.jar jakarta.validation-api-3.0.2.jar swagger-models-jakarta
+ -2.2.15.jar spring-beans-6.0.11.jar spring-boot-autoconfigure-3.1.2.jar
+  classmate-1.5.1.jar spring-boot-starter-logging-3.1.2.jar spring-boot-
+ devtools-3.1.2.jar spring-aspects-6.0.11.jar istack-commons-runtime-4.1
+ .2.jar logback-classic-1.4.8.jar spring-security-crypto-6.1.2.jar netty
+ -common-4.1.94.Final.jar attoparser-2.0.6.RELEASE.jar spring-security-w
+ eb-6.1.2.jar lombok-1.18.28.jar jackson-datatype-jdk8-2.15.2.jar spring
+ -context-support-6.0.11.jar netty-buffer-4.1.94.Final.jar spring-webmvc
+ -6.0.11.jar spring-boot-starter-data-redis-3.1.2.jar lettuce-core-6.2.5
+ .RELEASE.jar springdoc-openapi-starter-webmvc-ui-2.2.0.jar jackson-core
+ -2.15.2.jar jakarta.activation-api-2.1.2.jar kaptcha-0.0.9.jar springdo
+ c-openapi-starter-webmvc-api-2.2.0.jar spring-security-core-6.1.2.jar l
+ og4j-api-2.20.0.jar spring-session-core-3.1.1.jar aspectjweaver-1.9.19.
+ jar micrometer-commons-1.11.2.jar spring-jcl-6.0.11.jar spring-oxm-6.0.
+ 11.jar jakarta.transaction-api-2.0.1.jar swagger-ui-5.2.0.jar spring-bo
+ ot-starter-web-3.1.2.jar swagger-annotations-jakarta-2.2.15.jar reactiv
+ e-streams-1.0.4.jar spring-boot-starter-aop-3.1.2.jar HikariCP-5.0.1.ja
+ r spring-tx-6.0.11.jar netty-transport-native-unix-common-4.1.94.Final.
+ jar spring-data-jpa-3.1.2.jar jackson-dataformat-yaml-2.15.2.jar txw2-4
+ .0.3.jar jackson-module-parameter-names-2.15.2.jar snakeyaml-1.33.jar m
+ ysql-connector-j-8.0.33.jar spring-expression-6.0.11.jar swagger-core-j
+ akarta-2.2.15.jar netty-handler-4.1.94.Final.jar jackson-datatype-jsr31
+ 0-2.15.2.jar spring-boot-configuration-processor-3.1.2.jar spring-boot-
+ starter-jdbc-3.1.2.jar spring-aop-6.0.11.jar spring-security-config-6.1
+ .2.jar jakarta.persistence-api-3.1.0.jar netty-codec-4.1.94.Final.jar s
+ pring-jdbc-6.0.11.jar angus-activation-2.0.1.jar spring-boot-starter-th
+ ymeleaf-3.1.2.jar springdoc-openapi-starter-common-2.2.0.jar spring-orm
+ -6.0.11.jar thymeleaf-3.1.1.RELEASE.jar spring-data-keyvalue-3.1.2.jar 
+ hutool-all-5.8.21.jar netty-resolver-4.1.94.Final.jar spring-boot-start
+ er-security-3.1.2.jar
+
