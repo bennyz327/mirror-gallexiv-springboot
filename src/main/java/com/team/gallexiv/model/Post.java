@@ -71,10 +71,6 @@ public class Post {
     @JsonIncludeProperties({ "likeId" })
     private Collection<LikeFollow> likeFollowByPostId;
 
-    @OneToMany(mappedBy = "postByPostId", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JsonIncludeProperties({"likeId"})
-    private Collection<LikeFollow> likeFollowByPostId;
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinTable(name = "tagPost",
             joinColumns = {@JoinColumn(name = "postId")},
