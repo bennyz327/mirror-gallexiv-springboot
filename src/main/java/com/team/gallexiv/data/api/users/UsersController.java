@@ -17,20 +17,19 @@ public class UsersController {
         this.userS = UserS;
     }
 
-//    @GetMapping(path = "/userInfosById", produces = "application/json")
-//    @Operation(description = "取得單筆user (GET BY ID)")
-//    public VueData getUserById(@RequestBody Userinfo user) {
-//        System.out.println("test");
-//        return userS.getUserById(user);
-//    }
-
-    @PostMapping(path = "/userInfosById")
-    public VueData getUserById(@RequestBody Userinfo user) {
-        System.out.println("test");
-        return userS.getUserById(user);
+    @GetMapping(path = "/userInfos/{userId}", produces = "application/json")
+    @Operation(description = "取得單筆user (GET BY ID)")
+    public VueData getUserById(@PathVariable int userId) {
+        return userS.getUserById(userId);
     }
 
-//    @CrossOrigin
+    @PostMapping(path = "/userInfos/login")
+    @Operation(description = "登入")
+    public VueData getUserByUserNameAndPassWord(@RequestBody Userinfo user) {
+        System.out.println("test");
+        return userS.checkLogin(user);
+    }
+
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {
         return userS.getAllUsers();

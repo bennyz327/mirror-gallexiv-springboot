@@ -17,6 +17,11 @@ public interface UserDao extends JpaRepository<Userinfo, Integer> {
     @Query("select u from Userinfo u where u.userId = ?1")
     Userinfo myfindById(Integer id);
 
+    @Query("select u from Userinfo u where u.userName = :userName AND u.pWord = :pWord")
+    Userinfo findUserNameAndUserPwd(String userName,String pWord);
+
+
+
 
 
 }

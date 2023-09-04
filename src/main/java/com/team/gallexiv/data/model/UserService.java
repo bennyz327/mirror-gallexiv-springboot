@@ -38,9 +38,19 @@ public class UserService {
     // return post.orElse(null);
     // }
 
+    // 取得登入資料帳號密碼
+    public VueData checkLogin(Userinfo user){
+        Userinfo userInfo = userD.findUserNameAndUserPwd(user.getUserName(), user.getPWord());
+
+        if(userInfo != null){
+            return VueData.ok(userInfo);
+        }
+        return VueData.error("帳號或密碼有誤");
+    }
+
     // 取得單筆user OK
-    public VueData getUserById(Userinfo user) {
-        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
+    public VueData getUserById(int userId) {
+        Optional<Userinfo> optionalUserinfo = userD.findById(userId);
         if (optionalUserinfo.isPresent()) {
             return VueData.ok(optionalUserinfo.orElse(null));
         }
