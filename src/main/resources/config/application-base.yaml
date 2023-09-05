@@ -43,6 +43,6 @@ springdoc:
     path: /api/doc
 gallexiv:
   jwt:
-    expire: 604800
-#    secret: f4e2e52034348f86b67cde581c0f9eb5 在方法中採用工具生成，不會固定
+    expire: 20
+#    expire: 604800
     header: Authorization
