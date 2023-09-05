@@ -49,8 +49,8 @@ public class VerifyTest extends BaseController {
     }
 
     @GetMapping("/test/pass")public VueData passEncode() {   // 密码加密
-        //模擬註冊
-        // TODO 資料庫密碼型態改變
+
+        //模擬資料庫密碼加密結果 TODO 資料庫密碼型態改變
         String pass = bCryptPasswordEncoder.encode("111111");      // 密码验证
         boolean matches = bCryptPasswordEncoder.matches("111111", pass);
         return VueData.ok(

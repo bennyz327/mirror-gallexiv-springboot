@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;
 import com.team.gallexiv.common.lang.Const;
 import com.team.gallexiv.common.lang.VueData;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+@Slf4j
 @RestController
 public class AuthController extends BaseController {
 
@@ -24,7 +26,7 @@ public class AuthController extends BaseController {
     public VueData captcha() throws IOException {
 
 //         測試用資料
-        //TODO 開發階段限定
+        //TODO Debug用
          String key = "aaaaa";
          String code = "11111";
 
@@ -41,10 +43,10 @@ public class AuthController extends BaseController {
 
         String base64Img = str + encoder.encodeToString(baos.toByteArray());
 
-        //TODO 開發階段限定
-        //儲存到Redis並設定過期時間
-        System.out.println("REDIS發送結果: "+redisUtil.hset(Const.CAPTCHA_KEY, key, code, 120));
-        System.out.println("本次的驗證碼key/code: "+key+"/"+redisUtil.hget(Const.CAPTCHA_KEY, key));
+        //TODO Debug用
+        boolean redisSendResult = redisUtil.hset(Const.CAPTCHA_KEY, key, code, 120);
+        log.info("REDIS發送結果: {}", redisSendResult);
+        log.info("本次的驗證碼key/code: {}/{}", key, redisUtil.hget(Const.CAPTCHA_KEY, key));
 
         return VueData.ok(
                 MapUtil.builder()
