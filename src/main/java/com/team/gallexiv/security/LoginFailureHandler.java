@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+@Slf4j
 @Component
 public class LoginFailureHandler implements AuthenticationFailureHandler {
     @Override
@@ -30,6 +32,8 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             return;
         }
 
+        log.info(request.getParameter("username"));
+        log.info(request.getParameter("password"));
         VueData result = VueData.error("查無用户名或密碼错误");
 
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));

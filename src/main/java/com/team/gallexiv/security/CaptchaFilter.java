@@ -48,8 +48,8 @@ public class CaptchaFilter extends OncePerRequestFilter {
         if (StringUtil.isNullOrEmpty(code) || StringUtil.isNullOrEmpty(token)) {
             throw new CaptchaException("驗證碼不能為空");
         }
-        System.out.println("code = " + code);
-        System.out.println("token = " + token);
+        log.info("code = " + code);
+        log.info("token = " + token);
         if (!code.equals(redisUtil.hget(Const.CAPTCHA_KEY, token))) {
             throw new CaptchaException("驗證碼錯誤");
         }

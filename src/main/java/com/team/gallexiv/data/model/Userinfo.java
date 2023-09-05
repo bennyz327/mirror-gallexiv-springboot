@@ -13,7 +13,7 @@ import java.util.Collection;
 @Setter
 @Entity
 @DynamicInsert
-@Table(name = "userinfo", schema = "gallexiv")
+@Table(name = "userinfo")
 public class Userinfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -106,6 +106,9 @@ public class Userinfo {
     @JsonIncludeProperties({"likeId"})
     private Collection<LikeFollow> likeFollowByPostId;
 
+    public Userinfo() {
+    }
+
     @Override
     public String toString() {
         return "Userinfo{" +
@@ -125,5 +128,11 @@ public class Userinfo {
                 ", modified_by=" + modified_by +
                 ", last_modified=" + last_modified +
                 '}';
+    }
+
+    static public Userinfo createUserByAccouut(String account) {
+        Userinfo new_user = new Userinfo();
+        new_user.setAccount(account);
+        return new_user;
     }
 }
