@@ -2,11 +2,15 @@ package com.team.gallexiv.data.api.Pictures;
 
 import com.team.gallexiv.data.model.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "圖片控制存取")
 public class PicturesController {
+
+    @Value("${gallexiv.upload.rootpath}")
+    private String rootPath;
     final UserService userS;
     public PicturesController(UserService userS) {
         this.userS = userS;
