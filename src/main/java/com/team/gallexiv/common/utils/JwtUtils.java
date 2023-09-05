@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+import static io.jsonwebtoken.security.Keys.secretKeyFor;
+
 @Data
 @Component
 @ConfigurationProperties(prefix = "gallexiv.jwt")
@@ -29,7 +31,9 @@ public class JwtUtils {
 				.setSubject(username)
 				.setIssuedAt(nowDate)
 				.setExpiration(expireDate)// 7天過期
-				.signWith(SignatureAlgorithm.HS512, secret)
+				//TODO 把外面的secret環境變數整理去除，改用內部生成的secret
+//				.signWith(SignatureAlgorithm.HS512, secret)
+				.signWith(SignatureAlgorithm.HS512, secretKeyFor(SignatureAlgorithm.HS512))
 				.compact();
 	}
 
