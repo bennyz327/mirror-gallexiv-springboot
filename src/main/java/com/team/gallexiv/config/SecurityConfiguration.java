@@ -79,6 +79,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
+                .addFilter(JwtAuthenticationFilter())
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
@@ -86,7 +87,6 @@ public class SecurityConfiguration {
 
     @Bean
     JwtAuthenticationFilter JwtAuthenticationFilter() throws Exception {
-        //TODO 不確定這樣注入Manager是否能行
         return new JwtAuthenticationFilter(authenticationManager());
     }
 

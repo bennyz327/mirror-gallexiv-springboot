@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+        log.info("開始驗證使用者");
         String jwt = request.getHeader(jwtUtils.getHeader());
         if (StrUtil.isBlankOrUndefined(jwt)) {
             chain.doFilter(request, response);
@@ -59,7 +60,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         String username = claim.getSubject();
-        log.info("已驗證使用者: {}", username);
+        log.info("已驗證使用者為: {}", username);
 
         //從資料庫獲取使用者權限資料
         Userinfo sysUser = userService.getUserByAccount(username);
@@ -71,7 +72,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         SecurityContextHolder.getContext().setAuthentication(token);
 
         //log印出資料已驗證使用者清單，確認是否成功
-        log.info("已驗證使用者清單: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         chain.doFilter(request, response);
     }
