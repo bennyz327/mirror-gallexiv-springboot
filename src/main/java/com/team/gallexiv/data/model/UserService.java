@@ -1,12 +1,20 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.common.utils.RedisUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@Transactional
 public class UserService {
 
     final UserDao userD;
@@ -17,8 +25,12 @@ public class UserService {
     final CommentDao commentD;
     final UserSubscriptionDao userSubscriptionD;
     final AccountRoleDao accountRoleD;
+    final RedisUtil redisUtil;
+    final EntityManager entityManager;
+    final PermissionsService permissionsService;
 
-    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD) {
+    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD,RedisUtil redisUtil,EntityManager entityManager,
+                       PermissionsService permissionsS) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -27,6 +39,9 @@ public class UserService {
         this.statusD = statusD;
         this.userSubscriptionD = userSubscriptionD;
         this.accountRoleD = accountRoleD;
+        this.redisUtil = redisUtil;
+        this.entityManager = entityManager;
+        this.permissionsService = permissionsS;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -45,6 +60,21 @@ public class UserService {
             return VueData.ok(optionalUserinfo.orElse(null));
         }
         return VueData.error("查詢失敗");
+    }
+    public VueData getUserByAccountObject(Userinfo user) {
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(user.getAccount());
+        if (optionalUserinfo.isPresent()) {
+            return VueData.ok(optionalUserinfo.orElse(null));
+        }
+        return VueData.error("查詢帳號失敗");
+    }
+
+    public Userinfo getUserByAccount(String accout){
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accout);
+        if (optionalUserinfo.isPresent()) {
+            return optionalUserinfo.orElse(null);
+        }
+        return null;
     }
 
     // 取得所有user
@@ -132,6 +162,65 @@ public class UserService {
         }
         System.out.println("結束SERVICE");
         return VueData.error("更新失敗");
+    }
+
+    public String getUserAuthorityInfo(Integer userId) {
+
+        Session session = entityManager.unwrap(Session.class);
+
+        Userinfo sysUser = session.find(Userinfo.class, userId);
+
+        String authority = "";
+
+        if (redisUtil.hasKey("GrantedAuthority:" + sysUser.getAccount())) {
+            log.info("從Redis獲取權限字串");
+            authority = (String) redisUtil.get("GrantedAuthority:" + sysUser.getAccount());
+            log.info("權限字串：{}", authority);
+
+        } else {
+            log.info("緩存無資料，準備從資料庫獲取權限字串");
+            // 获取角色编码
+//            String roleCodes = session.createQuery("select 'ROLE_' || r.code from AccountRole r where r.user.id = :userId", String.class)
+//                    .setParameter("userId", userId)
+//                    .getResultList()
+//                    .stream()
+//                    .collect(Collectors.joining(","));
+            // 獲取身份組編碼 一人只有一個身份
+//            String roleCode = session.createQuery("select 'ROLE_' || r.roleId from AccountRole r where r.user.id = :userId", String.class)
+//                    .setParameter("userId", userId)
+//                    .getSingleResult();
+            String roleCode = String.valueOf(userD.findById(userId).get().getAccountRoleByRoleId().getRoleId());
+
+            // 如果有身份組編碼
+            if (!roleCode.isEmpty()) {
+                // 將身份組編碼加入權限
+                authority = roleCode.concat(",");
+                log.info("找到所屬身份，組合身份組編碼後為：{}", authority);
+            }
+
+            // 獲得權限ID清單
+            List<Permissions> pIds = permissionsService.getPermissionsByUserId(userId);
+
+//            if (!pIds.isEmpty()) {
+//                List<Permissions> menus = session.createQuery("from Permissions where permissionId in :menuIds", Permissions.class)
+//                        .setParameter("pIds", pIds)
+//                        .getResultList();
+//                String menuPerms = menus.stream().map(Permissions::getPerms).collect(Collectors.joining(","));
+//                authority = authority.concat(menuPerms);
+//            }
+            if (!pIds.isEmpty()) {
+                String perms = pIds.stream().map(Permissions::getPermissionName).collect(Collectors.joining(","));
+                log.info("找到角色權限：{}", perms);
+                authority = authority.concat(perms);
+                log.info("組合權限字串後為：{}", authority);
+            }
+
+            redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, 60 * 60);
+        }
+
+        log.info("最終權限字串：{}", authority);
+        return authority;
+
     }
 }
 

@@ -1,5 +1,6 @@
 package com.team.gallexiv.data.model;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AccountRoleService {
@@ -19,5 +20,9 @@ public class AccountRoleService {
             result.setRoleStatusByStatusId(new Status(6));
         }
 
+    }
+
+    public List<AccountRole> getAccountRolesByUserId(Integer userId){
+        return accountRoleD.findByRoleId(userId);
     }
 }

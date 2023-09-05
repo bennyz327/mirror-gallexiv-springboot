@@ -1,13 +1,14 @@
 package com.team.gallexiv.config;
 
-import com.team.gallexiv.security.CaptchaFilter;
-import com.team.gallexiv.security.LoginFailureHandler;
-import com.team.gallexiv.security.LoginSuccessHandler;
+import com.team.gallexiv.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpMethod.*;
 @Configuration
 public class SecurityConfiguration {
 
+    //陣列導入用
     //完全開放的 URL/API 列表
     AntPathRequestMatcher[] OPEN_URL = new AntPathRequestMatcher[]{
             AntPathRequestMatcher.antMatcher(GET, "/captcha"),
@@ -40,15 +42,19 @@ public class SecurityConfiguration {
     LoginFailureHandler loginFailureHandler;
     @Autowired
     CaptchaFilter captchaFilter;
+    @Autowired
+    AuthenticationConfiguration authenticationConfiguration;
+    @Autowired
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(OPEN_URL)
-                        .permitAll()
-                        .requestMatchers(ADMIN_API_URL)
-                        .hasAuthority("admin")
+                        .requestMatchers(GET, "/captcha", "/login", "/test/**").permitAll()
+                        .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
                         .authenticated()
                 )
@@ -69,8 +75,30 @@ public class SecurityConfiguration {
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                 )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                )
+                .addFilter(JwtAuthenticationFilter())
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+        return httpSecurity.build();
+    }
+
+
+    @Bean
+    JwtAuthenticationFilter JwtAuthenticationFilter() throws Exception {
+        return new JwtAuthenticationFilter(authenticationManager());
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 //    @Bean

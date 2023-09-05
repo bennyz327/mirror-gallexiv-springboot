@@ -3,7 +3,7 @@ package com.team.gallexiv.common.lang;
 // 定義常數
 public class Const {
 
-    //TODO 開發環境清理
+    //TODO 開發環境變數清理
     public final static String DEFAULT_SUCCESS_MSG = "Yabai★Desune☆";
     public final static String CAPTCHA_KEY = "captcha";
     public final static Integer STATUS_ON = 0;

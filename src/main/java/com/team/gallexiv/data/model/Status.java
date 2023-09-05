@@ -9,7 +9,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Entity
-@Table(name = "code_mapping",schema = "gallexiv")
+@Table(name = "code_mapping")
 public class Status {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

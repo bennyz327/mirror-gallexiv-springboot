@@ -1,4 +1,4 @@
-package com.team.gallexiv.security;
+package com.team.gallexiv.common.exception;
 
 import com.team.gallexiv.common.lang.VueData;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public VueData handler(RuntimeException e) {
-        log.error("運行時異常：----------------{}", e);
+        log.error("運行時異常：----------------{}", e.getMessage());
         return VueData.error(e.getMessage());
     }
 }
