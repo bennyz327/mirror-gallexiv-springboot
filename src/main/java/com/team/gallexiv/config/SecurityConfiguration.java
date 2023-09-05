@@ -76,7 +76,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
-                        .requestMatchers(POST, "/**").permitAll()
+                        .requestMatchers(POST,"/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
@@ -135,7 +135,6 @@ public class SecurityConfiguration {
     JwtAuthenticationFilter JwtAuthenticationFilter() throws Exception {
         return new JwtAuthenticationFilter(authenticationManager());
     }
-
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
