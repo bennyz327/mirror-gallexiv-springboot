@@ -1,5 +1,6 @@
 package com.team.gallexiv.data.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Comment {
     private Timestamp commentTime;
     // private Instant commentTime; // for lleon's own memo
 
+    // 寫入DB前先建立時間 // TODO 為甚麼要加時間?
     @PrePersist
     public void onCommentCreate() {
         if (commentTime == null) {
@@ -55,6 +57,7 @@ public class Comment {
     private Comment commentByParentCommentId;
 
     @OneToMany(mappedBy = "commentByParentCommentId")
+    @JsonIncludeProperties({ "userId", "commentText", "parentCommentId" })
     private Collection<Comment> commentsByCommentId;
 
     @ManyToOne(fetch = FetchType.LAZY)

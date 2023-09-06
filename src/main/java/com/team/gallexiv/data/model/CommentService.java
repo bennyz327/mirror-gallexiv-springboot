@@ -1,10 +1,14 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+
+// import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -82,15 +86,34 @@ public class CommentService {
         updateComment.setCommentText(comment.getCommentText());
         return VueData.ok(updateComment);
     }
-    // public void updateComment(Integer commentId, Comment comment) {
-    // Optional<Comment> commentOptional = commentD.findById(commentId);
 
-    // if (commentOptional.isPresent()) {
-    // Comment updateComment = commentOptional.get();
-    // updateComment.setCommentText(updateComment.getCommentText());
-    // // return commentD.save(updateComment);
-    // }
-    // return;
+    // 由 PostId 找 comments 並排列
+    public VueData getCommentsByPostId(int postId) {
+        List<Comment> comments = commentD.findByPostByPostIdPostId(postId);
+        System.out.println(comments);
+        List<Comment> sortedComments = comments.stream().collect(Collectors.toList());
+        Collections.sort(sortedComments, (c1, c2) -> {
+            // 判斷是 parentCommentId 是否 null
+            if (c1.getCommentByParentCommentId() != null && c2.getCommentByParentCommentId() == null) {
+                return 1; // 如果 c1 有 parentCommentId，c2 沒有，則 c1 在 c2 之前
+            } else if (c1.getCommentByParentCommentId() == null && c2.getCommentByParentCommentId() != null) {
+                return -1; // 反之，如果 c2 有 parentCommentId，c1 沒有，則 c2 在 c1 之前
+            } else {
+                // 依照 commentTime 新舊，升序排序
+                int timeComparison = c1.getCommentTime().compareTo(c2.getCommentTime());
+                if (timeComparison == 0) {
+                    // 如果 commentTime 一樣，按照 commentId 升序排序
+                    return c1.getCommentId() - c2.getCommentId();
+                } else {
+                    return timeComparison;
+                }
+            }
+        });
+        if (!sortedComments.isEmpty()) {
 
-    // }
+            return VueData.ok(sortedComments);
+        }
+        return VueData.error("查詢失敗");
+    }
+
 }

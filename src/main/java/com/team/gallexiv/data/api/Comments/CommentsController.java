@@ -4,11 +4,13 @@ import com.team.gallexiv.data.model.CommentService;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.Comment;
 import com.team.gallexiv.data.model.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 // @RequestMapping(path = { "/pages/ajax" })
 public class CommentsController {
 
@@ -27,14 +29,6 @@ public class CommentsController {
     }
 
     // 取得全部 comment
-    // @GetMapping(path = "/comments/findAll", produces =
-    // "application/json;charset=UTF-8")
-    // public Map<String, List<Comment>> getAllComment() {
-    // List<Comment> result = commentS.getAllComment();
-    // Map<String, List<Comment>> response = new HashMap<>();
-    // response.put("list", result);
-    // return response;
-    // }
     @GetMapping(path = "/comments/findAll", produces = "application/json;charset=UTF-8")
     public VueData getAllComment() {
         commentS.getAllComment();
@@ -61,18 +55,11 @@ public class CommentsController {
     public VueData updateComment(@RequestBody Comment comment) {
         return commentS.updateComment(comment);
     }
-    // @Transactional
-    // @PutMapping(path = "comments/update/{commentId}", produces =
-    // "application/json;charset=UTF-8")
-    // public String updateComment(@PathVariable Integer commentId, @RequestBody
-    // Comment comment) {
-    // commentS.insertComment(comment);
-    // return "ok";
-    // }
 
-    // @PutMapping(path = "comments/update")
-    // public String updateComment() {
-    // return "ok";
-    // }
+    // 由PostId找comments
+    @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
+    public VueData getCommentsByPostId(@RequestParam int postId) {
+        return commentS.getCommentsByPostId(postId);
+    }
 
 }
