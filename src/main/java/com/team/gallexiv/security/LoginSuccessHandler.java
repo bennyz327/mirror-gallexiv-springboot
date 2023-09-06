@@ -33,11 +33,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = response.getOutputStream();
-        //設定算法和密鑰
-        SecretKey userKey = secretKeyFor(SignatureAlgorithm.HS512);
-        // TODO 要找一個資料表來存放不同使用者的密鑰
-        //  把 userKey.getEncoded() 方法返回的byte[]存入資料表
-        //生成jwt返回
+
+        // 生成jwt返回
+        // 密鑰透過環境變數取得，記錄在資料庫沒有意義
         String jwt = jwtUtils.generateToken(authentication.getName());
         response.setHeader(jwtUtils.getHeader(), jwt);
         VueData result = VueData.ok("登入成功");

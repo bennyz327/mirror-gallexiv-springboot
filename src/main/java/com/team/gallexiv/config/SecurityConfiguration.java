@@ -76,7 +76,6 @@ public class SecurityConfiguration {
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl(LOGIN_URI)
-                        .loginPage(LOGIN_URI_WITH_VERSION)
                         .usernameParameter("name")
                         .passwordParameter("passwd")
                         .successHandler(loginSuccessHandler)
