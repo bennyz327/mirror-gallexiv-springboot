@@ -42,7 +42,7 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
+        security: TRACE
 springdoc:
   swagger-ui:
     path: /api/doc

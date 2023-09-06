@@ -25,11 +25,10 @@ public class AuthController extends BaseController {
     @GetMapping("/captcha")
     public VueData captcha() throws IOException {
 
-//         測試用資料
-        //TODO Debug用
+        // TODO 生產環境清理
          String key = "aaaaa";
          String code = "11111";
-
+        //TODO 生產環境要用
 //        String key = UUID.randomUUID().toString();
 //        String code = producer.createText();
 
@@ -43,9 +42,11 @@ public class AuthController extends BaseController {
 
         String base64Img = str + encoder.encodeToString(baos.toByteArray());
 
-        //TODO Debug用
+
         boolean redisSendResult = redisUtil.hset(Const.CAPTCHA_KEY, key, code, 120);
         log.info("REDIS發送結果: {}", redisSendResult);
+
+        //TODO 生產環境清理
         log.info("本次的驗證碼key/code: {}/{}", key, redisUtil.hget(Const.CAPTCHA_KEY, key));
 
         return VueData.ok(
