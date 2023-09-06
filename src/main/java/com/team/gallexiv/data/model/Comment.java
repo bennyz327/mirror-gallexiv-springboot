@@ -1,5 +1,6 @@
 package com.team.gallexiv.data.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,24 +30,15 @@ public class Comment {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "commentTime")
     private Timestamp commentTime;
-    // private Instant commentTime; // for lleon's own memo
-
-    // 寫入DB前先建立時間 // TODO 為甚麼要加時間?
-    @PrePersist
-    public void onCommentCreate() {
-        if (commentTime == null) {
-            commentTime = new Timestamp(System.currentTimeMillis());
-        }
-    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
-    @JsonIncludeProperties({"postId"})
+    @JsonIncludeProperties({ "postId" })
     private Post postByPostId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
-    @JsonIncludeProperties({"userId","userName"})
+    @JsonIncludeProperties({ "userId", "userName" })
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,12 +47,13 @@ public class Comment {
     private Comment commentByParentCommentId;
 
     @OneToMany(mappedBy = "commentByParentCommentId")
+    @JsonIncludeProperties({ "userId", "commentText", "parentCommentId" })
     private Collection<Comment> commentsByCommentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_status", referencedColumnName = "code_id")
-    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
-//    @JsonIncludeProperties({ "statusId", "statusName" })
+    @JsonIncludeProperties({ "statusId", "statusType", "statusCategory", "statusName" })
+    // @JsonIncludeProperties({ "statusId", "statusName" })
     private Status commentStatusByStatusId;
 
 }
