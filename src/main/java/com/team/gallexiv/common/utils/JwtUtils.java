@@ -1,6 +1,7 @@
 package com.team.gallexiv.common.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
@@ -8,8 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
 @Data
@@ -19,29 +22,29 @@ public class JwtUtils {
 
 	private long expire;
 	private String header;
-	private SecretKey secretKey;
+	private String secretKey;
 
 	// 生成jwt
 	public String generateToken(String username) {
 
 		Date nowDate = new Date();
 		Date expireDate = new Date(nowDate.getTime() + 1000 * expire);
-		//設定算法和密鑰
-		secretKey = secretKeyFor(SignatureAlgorithm.HS512);
+        SecretKey userKey = hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
 		return Jwts.builder()
 				.setHeaderParam("typ", "JWT")
 				.setSubject(username)
 				.setIssuedAt(nowDate)
 				.setExpiration(expireDate)// 7天過期
-				.signWith(secretKey)
+				.signWith(userKey)
 				.compact();
 	}
 
 	// 解析jwt
-	public Claims getClaimByToken(String jwt) {
+	public Claims getClaimByToken(String jwt) throws ExpiredJwtException {
+        SecretKey userKey = hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
 		return Jwts.parserBuilder()
-				.setSigningKey(secretKey)
+				.setSigningKey(userKey)
 				.build()
 				.parseClaimsJws(jwt)
 				.getBody();

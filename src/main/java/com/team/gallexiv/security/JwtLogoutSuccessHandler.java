@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
+    //TODO 配置登出處功能
+    //TODO 測試權限管理是否生效
     @Autowired
     JwtUtils jwtUtils;
     @Override

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     };
     //其餘涉及使用者都需要驗證
 
-    //API版本號設定
+    //API版本號設定 TODO 版本號不會在這邊設定
     private final String LOGIN_URI_WITH_VERSION = API_VERSION_URI + LOGIN_URI;
 
     @Autowired
@@ -55,12 +55,13 @@ public class SecurityConfiguration {
     @Autowired
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    //這邊設定本APP第一個認證鍊，但其實認證鍊可以有多個
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         //TODO 統一用下面這行這種寫法
-                        .requestMatchers(POST, LOGIN_URI_WITH_VERSION).permitAll()
+                        .requestMatchers(POST, LOGIN_URI).permitAll()
 //                        .requestMatchers(POST,"/login").permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
@@ -69,9 +70,12 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        //不須要Session
+//                        .maximumSessions(1)
+//                        .maxSessionsPreventsLogin(true)
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl(LOGIN_URI_WITH_VERSION)
+                        .loginProcessingUrl(LOGIN_URI)
                         .loginPage(LOGIN_URI_WITH_VERSION)
                         .usernameParameter("name")
                         .passwordParameter("passwd")
@@ -86,16 +90,14 @@ public class SecurityConfiguration {
                 )
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
-                .addFilter(JwtAuthenticationFilter())
+                //登入用
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+                //驗證用
+                .addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
         return httpSecurity.build();
     }

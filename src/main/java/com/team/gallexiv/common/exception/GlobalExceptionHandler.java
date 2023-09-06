@@ -49,4 +49,5 @@ public class GlobalExceptionHandler {
         log.error("運行時異常：----------------{}", e.getMessage());
         return VueData.error(e.getMessage());
     }
+    
 }

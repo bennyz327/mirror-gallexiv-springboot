@@ -45,6 +45,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         if (Objects.equals(exception.getClass(), BadCredentialsException.class)) {
             VueData result = VueData.error("查無用户名或密碼错误");
+            log.info("查無用户名或密碼错误");
             log.info("本次驗證的使用者名稱: {}", request.getParameter(Const.USERNAME_PARAM));
             log.info("本次驗證的密碼: {}", request.getParameter(Const.PASSWORD_PARAM));
             outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
