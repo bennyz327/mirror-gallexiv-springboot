@@ -46,3 +46,5 @@ gallexiv:
     expire: 20
 #    expire: 604800
     header: Authorization
+  security:
+    apiversion: 1

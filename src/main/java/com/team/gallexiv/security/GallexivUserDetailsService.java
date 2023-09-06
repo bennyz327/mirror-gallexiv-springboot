@@ -43,4 +43,6 @@ public class GallexivUserDetailsService implements UserDetailsService {
 
         return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
+
+
 }

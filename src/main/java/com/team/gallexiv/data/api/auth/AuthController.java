@@ -1,4 +1,4 @@
-package com.team.gallexiv.security.ctrl;
+package com.team.gallexiv.data.api.auth;
 
 import cn.hutool.core.map.MapUtil;
 import com.google.code.kaptcha.Producer;

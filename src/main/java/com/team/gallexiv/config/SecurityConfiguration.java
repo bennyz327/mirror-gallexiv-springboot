@@ -2,6 +2,7 @@ package com.team.gallexiv.config;
 
 import com.team.gallexiv.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import static com.team.gallexiv.common.lang.Const.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
+@ConfigurationProperties(prefix = "gallexiv.security")
 public class SecurityConfiguration {
 
     //陣列導入用
@@ -36,6 +39,9 @@ public class SecurityConfiguration {
     };
     //其餘涉及使用者都需要驗證
 
+    //API版本號設定
+    private final String LOGIN_URI_WITH_VERSION = API_VERSION_URI + LOGIN_URI;
+
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
     @Autowired
@@ -53,7 +59,10 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(GET, "/captcha", "/login", "/test/**").permitAll()
+                        //TODO 統一用下面這行這種寫法
+                        .requestMatchers(POST, LOGIN_URI_WITH_VERSION).permitAll()
+//                        .requestMatchers(POST,"/login").permitAll()
+                        .requestMatchers(GET, "/captcha", "/test/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
                         .authenticated()
@@ -62,11 +71,17 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl("/login")
+                        .loginProcessingUrl(LOGIN_URI_WITH_VERSION)
+                        .loginPage(LOGIN_URI_WITH_VERSION)
                         .usernameParameter("name")
                         .passwordParameter("passwd")
                         .successHandler(loginSuccessHandler)
                         .failureHandler(loginFailureHandler)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
@@ -80,7 +95,8 @@ public class SecurityConfiguration {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .addFilter(JwtAuthenticationFilter())
-                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+        ;
         return httpSecurity.build();
     }
 

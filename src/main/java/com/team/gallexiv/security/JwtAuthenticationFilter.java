@@ -34,9 +34,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Autowired
     UserService userService;
 
-
-    //TODO 不確定這樣注入Manager是否能行
-    @Autowired
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
@@ -61,6 +58,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         String username = claim.getSubject();
         log.info("已驗證使用者為: {}", username);
+        log.info("本使用者前端token過期時間: {}", claim.getExpiration());
 
         //從資料庫獲取使用者權限資料
         Userinfo sysUser = userService.getUserByAccount(username);
@@ -74,6 +72,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         //log印出資料已驗證使用者清單，確認是否成功
         log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+        //TODO 這裡成功卻進入驗證失敗處理器
         chain.doFilter(request, response);
     }
 }

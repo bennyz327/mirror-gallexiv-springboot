@@ -1,4 +1,4 @@
-package com.team.gallexiv.security.ctrl;
+package com.team.gallexiv.data.api.auth;
 
 import cn.hutool.core.map.MapUtil;
 import com.team.gallexiv.common.lang.VueData;
@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import static com.team.gallexiv.common.lang.Const.API_VERSION_URI;
+
+@RestController(API_VERSION_URI)
 public class VerifyTest extends BaseController {
 
     private final UserService userS;

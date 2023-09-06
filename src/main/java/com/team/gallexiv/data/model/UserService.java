@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,9 +29,10 @@ public class UserService {
     final RedisUtil redisUtil;
     final EntityManager entityManager;
     final PermissionsService permissionsService;
+    final RolePermissionsDao rolePermissionD;
 
     public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD,RedisUtil redisUtil,EntityManager entityManager,
-                       PermissionsService permissionsS) {
+                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -42,6 +44,7 @@ public class UserService {
         this.redisUtil = redisUtil;
         this.entityManager = entityManager;
         this.permissionsService = permissionsS;
+        this.rolePermissionD = rolePermissionD;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -179,13 +182,13 @@ public class UserService {
 
         } else {
             log.info("緩存無資料，準備從資料庫獲取權限字串");
-            // 获取角色编码
+// 获取角色编码
 //            String roleCodes = session.createQuery("select 'ROLE_' || r.code from AccountRole r where r.user.id = :userId", String.class)
 //                    .setParameter("userId", userId)
 //                    .getResultList()
 //                    .stream()
 //                    .collect(Collectors.joining(","));
-            // 獲取身份組編碼 一人只有一個身份
+// 獲取身份組編碼 一人只有一個身份
 //            String roleCode = session.createQuery("select 'ROLE_' || r.roleId from AccountRole r where r.user.id = :userId", String.class)
 //                    .setParameter("userId", userId)
 //                    .getSingleResult();
@@ -220,7 +223,29 @@ public class UserService {
 
         log.info("最終權限字串：{}", authority);
         return authority;
+    }
 
+    public void clearUserAuthorityInfo(String username) {
+        redisUtil.del("GrantedAuthority:" + username);
+    }
+
+    public void clearUserAuthorityInfoByRoleId(Integer roleId) {
+        AccountRole role = accountRoleD.findById(roleId).get();
+        List<Userinfo> userlist = userD.findByAccountRoleByRoleId(role);
+        log.info("即將清除身份ID為 {} 的使用者 {}", roleId, userlist);
+        for (Userinfo user : userlist) {
+            redisUtil.del("GrantedAuthority:" + user.getAccount());
+        }
+    }
+
+    public void clearUserAuthorityInfoByPermissionId(Integer permissionId) {
+        List<RolePermission> role_permission_list = rolePermissionD.findByPermissionsByPermissionId_PermissionId(permissionId);
+        List<Collection<Userinfo>> roleUserMap = role_permission_list.stream().map(RolePermission::getAccountRoleByRoleId).map(AccountRole::getUserInfosByRoleId).toList();
+        List<Userinfo> userlist = roleUserMap.stream().flatMap(Collection::stream).toList();
+        log.info("即將清除權限ID {} 的使用者 {}", permissionId, userlist);
+        for (Userinfo user : userlist) {
+            redisUtil.del("GrantedAuthority:" + user.getAccount());
+        }
     }
 }
 

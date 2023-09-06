@@ -1,4 +1,4 @@
-package com.team.gallexiv.security.ctrl;
+package com.team.gallexiv.data.api.auth;
 
 import com.team.gallexiv.common.utils.JwtUtils;
 import com.team.gallexiv.common.utils.RedisUtil;
