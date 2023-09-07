@@ -49,6 +49,6 @@ springdoc:
 gallexiv:
   jwt:
     secretKey: d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4
-    expire: 300
+    expire: 1800
 #    expire: 604800
     header: Authorization

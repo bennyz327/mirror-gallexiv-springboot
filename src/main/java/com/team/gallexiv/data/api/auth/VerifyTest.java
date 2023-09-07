@@ -6,23 +6,17 @@ import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.UserService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.SecretKey;
-
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 
-import static com.team.gallexiv.common.lang.Const.API_VERSION_URI;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @RestController()
 public class VerifyTest extends BaseController {
@@ -66,7 +60,8 @@ public class VerifyTest extends BaseController {
 
     @GetMapping("/auth/getmyinfo")
     public VueData testGetMyInfo() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+//        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        String name = "隨便打";
         return VueData.ok("你的名稱為"+name);
     }
 
@@ -74,7 +69,8 @@ public class VerifyTest extends BaseController {
 //    @PreAuthorize(hasRole("allPermission"))
     public VueData passEncode(@RequestParam String pass) {   // 密码加密
 
-        //模擬資料庫密碼加密結果 TODO 資料庫密碼型態改變
+        //模擬資料庫密碼加密結果
+        // TODO 資料庫-密碼型態改變
         //測試用 幫密碼加密
         String encode_pass = bCryptPasswordEncoder.encode(pass);
         //自己比對一次密碼

@@ -45,6 +45,8 @@ public class GlobalExceptionHandler {
     }
 
 
+
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public VueData handler(RuntimeException e) {

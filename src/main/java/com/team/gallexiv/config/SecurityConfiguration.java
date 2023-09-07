@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import static com.team.gallexiv.common.lang.Const.*;
 import static org.springframework.http.HttpMethod.*;
@@ -41,8 +41,7 @@ public class SecurityConfiguration {
     };
     //其餘涉及使用者都需要驗證
 
-    //API版本號設定 TODO 版本號不會在這邊設定
-    private final String LOGIN_URI_WITH_VERSION = API_VERSION_URI + LOGIN_URI;
+    RequestMatcher logoutMatcher = new AntPathRequestMatcher(LOGOUT_URI, POST.name());
 
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
@@ -87,8 +86,9 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutRequestMatcher(logoutMatcher)
+//                        .logoutUrl(LOGOUT_URI)
+                        .logoutSuccessUrl(LOGIN_URI)
                         .logoutSuccessHandler(jwtLogoutSuccessHandler)
                         .permitAll()
                 )

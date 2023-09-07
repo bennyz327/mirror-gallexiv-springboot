@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
+
 @Slf4j
 @Service
 @Transactional
@@ -178,7 +180,8 @@ public class UserService {
         String authority = "";
 
         if (redisUtil.hasKey("GrantedAuthority:" + sysUser.getAccount())) {
-            log.info("從Redis獲取權限字串");
+            log.info("從Redis獲取權限字串並刷新");
+            redisUtil.expire("GrantedAuthority:" + sysUser.getAccount(), JWT_EXPIRE_SECONDS);
             authority = (String) redisUtil.get("GrantedAuthority:" + sysUser.getAccount());
             log.info("權限字串：{}", authority);
 
@@ -220,7 +223,7 @@ public class UserService {
                 log.info("組合權限字串後為：{}", authority);
             }
 
-            redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, 60 * 60);
+            redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, JWT_EXPIRE_SECONDS);
         }
 
         log.info("最終權限字串：{}", authority);
@@ -229,6 +232,7 @@ public class UserService {
 
     public void clearUserAuthorityInfo(String username) {
         redisUtil.del("GrantedAuthority:" + username);
+        redisUtil.del("RefreshExpire:" + username);
     }
 
     public void clearUserAuthorityInfoByRoleId(Integer roleId) {
@@ -250,15 +254,23 @@ public class UserService {
         }
     }
 
-    public boolean checkUserAuthorityInRedis(String account) {
+    public boolean checkUserAuthorityInRedis(String account, long tokenExpTime) {
         //查詢redis
         if (redisUtil.hasKey("GrantedAuthority:" + account)) {
-            log.info("從Redis獲取權限字串");
-            String authority = (String) redisUtil.get("GrantedAuthority:" + account);
-            log.info("找到緩存資料");
-            log.info("登入帳號為 {}", account);
-            log.info("權限字串：{}", authority);
-            return true;
+            long redisExpTime = (long) redisUtil.get("RefreshExpire:" + account);
+            log.info("Redis緩存的過期時間：{}", redisExpTime);
+            log.info("Token過期的時間：{}", tokenExpTime);
+            //因為有誤差，需加上2000毫秒來保證token過期時間在redis過期時間的後面
+            if (redisExpTime < (tokenExpTime+2000)) {
+                log.info("找到有效緩存資料");
+                String authority = (String) redisUtil.get("GrantedAuthority:" + account);
+                log.info("從Redis獲取權限字串");
+                log.info("登入帳號為 {}", account);
+                log.info("權限字串：{}", authority);
+                return true;
+            }
+            log.info("認證已棄用，判定為無權限");
+            return false;
         } else {
             log.info("緩存無資料，判定為無權限");
             return false;

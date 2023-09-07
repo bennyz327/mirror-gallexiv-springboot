@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.team.gallexiv.common.lang.Const.JWT_HEADER;
+
 @Slf4j
 @Component
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
@@ -27,7 +29,10 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     @Autowired
     UserService userS;
 
-    //TODO 測試權限管理是否生效
+    @Autowired
+    GallexivUserDetailsService gallexivUserDetailsService;
+
+    //TODO 測試權限限制是否生效
     @Autowired
     JwtUtils jwtUtils;
     @Override
@@ -35,8 +40,11 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
         log.info("進入登出成功處理器");
 
-        Authentication nowAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        // 1.盡量在回應中消除標頭的TOKEN
+        // 2.前端也需主動將自己定位成未登入，棄用原本的舊的TOKEN
+        // 3.權限驗證時檢查REDIS資料是否過期，若沒有則視為舊TOKEN，並提示重新登入
 
+        Authentication nowAuthentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("嘗試從驗證儲存中清除使用者權限資訊的緩存");
         if (authentication != null) {
             log.info("即將登出的使用者為:{}", authentication.getName());
@@ -53,9 +61,16 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
         if (jwt != null) {
             try {
                 Claims claims = jwtUtils.getClaimByToken(jwt);
-                String account = claims.getSubject();
-                log.info("即將清除的使用者為:{}", account);
-                userS.clearUserAuthorityInfo(account);
+                if(gallexivUserDetailsService.checkJwtClaimValidInRedis(claims)){
+                    log.info("jwt有效，可進行登出");
+                    String account = claims.getSubject();
+                    log.info("即將清除的使用者為:{}", account);
+                    userS.clearUserAuthorityInfo(account);
+                    log.info("即將清除驗證儲存的登入資訊");
+                    new SecurityContextLogoutHandler().logout(request, response, nowAuthentication);
+
+                }
+
             } catch (Exception e) {
                 log.info("透過jwt清除緩存失敗");
             }
@@ -63,15 +78,13 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
             log.info("透過jwt清除緩存失敗");
         }
 
-        log.info("即將清除驗證儲存的登入資訊");
-        new SecurityContextLogoutHandler().logout(request, response, nowAuthentication);
-        response.setContentType("application/json;charset=UTF-8");
 
+        response.setContentType("application/json;charset=UTF-8");
         log.info("即將清除標頭的token");
         response.setHeader(jwtUtils.getHeader(), "");
         ServletOutputStream out = response.getOutputStream();
-        VueData result = VueData.ok("登出成功");
-        out.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
+        //對於前端來說，保密操作結果即可
+        out.write(JSONUtil.toJsonStr(VueData.ok("操作完成")).getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
     }

@@ -43,11 +43,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         ServletOutputStream outputStream = response.getOutputStream();
 
         // 生成jwt返回
-        // 密鑰透過環境變數取得，記錄在資料庫沒有意義
+        // 密鑰透過環境變數取得
+        //將jwt的過期時間順便記錄到redis
         String jwt = jwtUtils.generateToken(authentication.getName());
         response.setHeader(jwtUtils.getHeader(), jwt);
 
-        //將驗證資訊寫入redis
+
+        //將驗證資訊查出來並寫入redis
         Integer userId = userS.getUserByAccount(authentication.getName()).getUserId();
         userS.getUserAuthorityInfo(userId);
 

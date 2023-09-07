@@ -1,7 +1,7 @@
 package com.team.gallexiv.security;
 
 import cn.hutool.core.util.StrUtil;
-import com.team.gallexiv.common.exception.GlobalExceptionHandler;
+import com.team.gallexiv.common.exception.JwtTokenException;
 import com.team.gallexiv.common.utils.JwtUtils;
 import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.model.UserService;
@@ -29,6 +29,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
+
+    @Autowired
+    LoginFailureHandler loginFailureHandler;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -61,7 +64,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         try {
-
             Claims claim = jwtUtils.getClaimByToken(jwt);
             if (claim == null) {
                 log.info("token 異常，請重新登入");
@@ -71,7 +73,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 log.info("token 已過期，請重新登入");
                 throw new JwtException("token 已過期");
             }
-            if (!securityUserDetailService.checkUserAuthorityInRedis(claim.getSubject())) {
+            if (!securityUserDetailService.checkJwtClaimValidInRedis(claim)) {
                 log.info("token 無效，請重新登入");
                 throw new JwtException("token 無效");
             }
@@ -92,18 +94,18 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             //log印出資料已驗證使用者清單，確認是否成功
             log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+            whenTokenValid(request,response,chain);
         } catch (JwtException e) {
             log.info("token異常--->{}", e.getMessage());
             //若token異常，則需要跳轉到驗證失敗處理器
-            //TODO 這裡的處理完邏輯還是會有運行時異常，待解決
-            chain.doFilter(request, response);
+            loginFailureHandler.onAuthenticationFailure(request, response, new JwtTokenException(e.getMessage()));
         }
 
+    }
 
 
-
-        // 若TOKEN驗證成功，且端點為驗證端點，不要再呼叫doFilter去經過後面的檢查
-        // 直接跳轉到登入成功處理器刷新token
+    private void whenTokenValid(HttpServletRequest request, HttpServletResponse response,FilterChain chain) throws IOException, ServletException {
+        // 都會刷新token
         if (request.getRequestURI().equals(LOGIN_URI)) {
             log.info("重複登入，即將跳轉到登入成功處理器");
             loginSuccessHandler.onAuthenticationSuccess(request, response, SecurityContextHolder.getContext().getAuthentication());
@@ -112,10 +114,5 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             log.info("登入成功，即將放行");
             chain.doFilter(request, response);
         }
-        // TODO 若重複登入的話新舊給的TOKEN變成都能用，要想辦法讓舊的TOKEN失效
-        // TODO 基本款
-        // 前端主動刪除舊的TOKEN並替換成新的TOKEN
-        // TODO 額外安全升級
-        // 權限驗證時檢查REDIS是否有該使用者權限資料，若沒有則視為舊TOKEN，並提示重新登入
     }
 }

@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
@@ -21,16 +23,22 @@ import static io.jsonwebtoken.security.Keys.secretKeyFor;
 @ConfigurationProperties(prefix = "gallexiv.jwt")
 public class JwtUtils {
 
-	private long expire;
+	private long expire = JWT_EXPIRE_SECONDS;
 	private String header;
 	@Value("${gallexiv.jwt.secret}")
 	private String secretKey;
+
+	@Autowired
+	RedisUtil redisUtil;
 
 	// 生成jwt
 	public String generateToken(String username) {
 
 		Date nowDate = new Date();
 		Date expireDate = new Date(nowDate.getTime() + 1000 * expire);
+		long time = expireDate.getTime();
+		redisUtil.set("RefreshExpire:" + username, time, JWT_EXPIRE_SECONDS);
+
         SecretKey userKey = hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
 		return Jwts.builder()

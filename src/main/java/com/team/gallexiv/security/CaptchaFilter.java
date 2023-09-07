@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.team.gallexiv.common.lang.Const.CAPTCHA_KEY;
+import static com.team.gallexiv.common.lang.Const.CAPTCHA_REDIS_KEY;
 import static com.team.gallexiv.common.lang.Const.LOGIN_URI;
 
 @Slf4j
@@ -43,7 +43,6 @@ public class CaptchaFilter extends OncePerRequestFilter {
         } else {
             filterChain.doFilter(request, response);
         }
-//        filterChain.doFilter(request, response);
     }
 
     private void validate(HttpServletRequest request) {
@@ -54,11 +53,11 @@ public class CaptchaFilter extends OncePerRequestFilter {
         }
         log.info("code = " + code);
         log.info("token = " + token);
-        if (!code.equals(redisUtil.hget(CAPTCHA_KEY, token))) {
+        if (!code.equals(redisUtil.hget(CAPTCHA_REDIS_KEY, token))) {
             throw new CaptchaException("驗證碼錯誤");
         }
         System.out.println("驗證碼正確");
         // 一次性使用，驗證碼從Redis刪除
-        redisUtil.hdel(CAPTCHA_KEY, token);
+        redisUtil.hdel(CAPTCHA_REDIS_KEY, token);
     }
 }
