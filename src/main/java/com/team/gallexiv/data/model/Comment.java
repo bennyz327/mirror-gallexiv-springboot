@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
@@ -12,7 +13,7 @@ import java.util.Collection;
 @Setter
 @Getter
 @Entity
-@Table(name = "comment", schema = "gallexiv")
+@Table(name = "comment")
 public class Comment {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,6 @@ public class Comment {
     private Timestamp commentTime;
     // private Instant commentTime; // for lleon's own memo
 
-    // 寫入DB前先建立時間 // TODO 為甚麼要加時間?
     @PrePersist
     public void onCommentCreate() {
         if (commentTime == null) {

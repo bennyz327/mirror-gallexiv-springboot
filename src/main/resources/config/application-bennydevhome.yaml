@@ -16,6 +16,7 @@ spring:
 server:
   port: 8080
   servlet:
+    # 也可以用來區分的 API 的 版本
     # http(s)://(子網域名.)網域名.主域/context-path/(api/end-point)
     context-path:
 gallexiv:

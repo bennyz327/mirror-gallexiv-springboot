@@ -37,6 +37,14 @@ public class VueData implements Serializable {
         return result;
     }
 
+    public static VueData ok(String msg,Object data) {
+        VueData result = new VueData();
+        result.setCode(200);
+        result.setMsg(msg);
+        result.setData(data);
+        return result;
+    }
+
     public static VueData error(String msg) {
         VueData result = new VueData();
         result.setCode(400);

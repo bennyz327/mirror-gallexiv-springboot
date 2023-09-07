@@ -8,7 +8,8 @@ import java.util.Collection;
 
 public class GallexivAccountUser implements UserDetails {
 
-    //Todo 先用Int 之後再改Long
+    //TODO 用Long較合理
+
     private Integer userId;
 
     private String password;

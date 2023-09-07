@@ -1,7 +1,6 @@
 package com.team.gallexiv.security;
 
 import com.team.gallexiv.common.exception.CaptchaException;
-import com.team.gallexiv.common.lang.Const;
 import com.team.gallexiv.common.utils.RedisUtil;
 import io.netty.util.internal.StringUtil;
 import jakarta.servlet.FilterChain;
@@ -14,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.team.gallexiv.common.lang.Const.CAPTCHA_REDIS_KEY;
+import static com.team.gallexiv.common.lang.Const.LOGIN_URI;
 
 @Slf4j
 @Component
@@ -28,18 +30,19 @@ public class CaptchaFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String url = request.getRequestURI();
-        String loginUrl = "/login";
-        if (loginUrl.equals(url) && request.getMethod().equals("POST")) {
+        if (LOGIN_URI.equals(url) && request.getMethod().equals("POST")) {
             log.info("獲取 Login Chain 正在效驗驗證碼 -- " + url);
             try {
                 validate(request);
+                filterChain.doFilter(request, response);
             } catch (CaptchaException e) {
                 log.info(e.getMessage());
                 // 交给登錄失敗處理器
                 loginFailureHandler.onAuthenticationFailure(request, response, e);
             }
+        } else {
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 
     private void validate(HttpServletRequest request) {
@@ -50,11 +53,11 @@ public class CaptchaFilter extends OncePerRequestFilter {
         }
         log.info("code = " + code);
         log.info("token = " + token);
-        if (!code.equals(redisUtil.hget(Const.CAPTCHA_KEY, token))) {
+        if (!code.equals(redisUtil.hget(CAPTCHA_REDIS_KEY, token))) {
             throw new CaptchaException("驗證碼錯誤");
         }
         System.out.println("驗證碼正確");
         // 一次性使用，驗證碼從Redis刪除
-        redisUtil.hdel(Const.CAPTCHA_KEY, token);
+        redisUtil.hdel(CAPTCHA_REDIS_KEY, token);
     }
 }

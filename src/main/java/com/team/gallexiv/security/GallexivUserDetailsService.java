@@ -3,6 +3,7 @@ package com.team.gallexiv.security;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.data.model.Userinfo;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -43,4 +44,11 @@ public class GallexivUserDetailsService implements UserDetailsService {
 
         return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
+
+    public boolean checkJwtClaimValidInRedis(Claims claim){
+        String account = claim.getSubject();
+        long tokenExp = claim.getExpiration().getTime();
+        return userService.checkUserAuthorityInRedis(account,tokenExp);
+    }
+
 }

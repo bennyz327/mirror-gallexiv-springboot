@@ -17,17 +17,17 @@ import java.util.Arrays;
 public class WebConfiguration implements WebMvcConfigurer {
 
     //從application.properties取得設定值 TODO 測試刪除
-//    @Value("${gallexiv.allowedOrigins}")
-//    private String allowApps;
-//    @Value("${gallexiv.allowedMethods}")
-//    private String allowMethods;
+    @Value("${gallexiv.allowedOrigins}")
+    private String allowApps;
+    @Value("${gallexiv.allowedMethods}")
+    private String allowMethods;
 
     // TODO 測試刪除
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        CorsRegistration reg = registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE");
-//        reg.allowedOrigins(allowApps.split(","));
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        CorsRegistration reg = registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE");
+        reg.allowedOrigins(allowApps.split(","));
+    }
 
     // TODO 測試刪除
 //    @Bean

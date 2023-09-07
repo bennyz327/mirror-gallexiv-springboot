@@ -8,9 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
 
 @Slf4j
 @Service
@@ -28,9 +31,10 @@ public class UserService {
     final RedisUtil redisUtil;
     final EntityManager entityManager;
     final PermissionsService permissionsService;
+    final RolePermissionsDao rolePermissionD;
 
-    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD,RedisUtil redisUtil,EntityManager entityManager,
-                       PermissionsService permissionsS) {
+    public UserService(UserDao userD, CommentDao commentD, PostDao postD, UserSubscriptionDao userSubD, PlanDao planD, StatusDao statusD, UserSubscriptionDao userSubscriptionD, AccountRoleDao accountRoleD, RedisUtil redisUtil, EntityManager entityManager,
+                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -42,6 +46,7 @@ public class UserService {
         this.redisUtil = redisUtil;
         this.entityManager = entityManager;
         this.permissionsService = permissionsS;
+        this.rolePermissionD = rolePermissionD;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -61,6 +66,7 @@ public class UserService {
         }
         return VueData.error("查詢失敗");
     }
+
     public VueData getUserByAccountObject(Userinfo user) {
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(user.getAccount());
         if (optionalUserinfo.isPresent()) {
@@ -69,7 +75,7 @@ public class UserService {
         return VueData.error("查詢帳號失敗");
     }
 
-    public Userinfo getUserByAccount(String accout){
+    public Userinfo getUserByAccount(String accout) {
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accout);
         if (optionalUserinfo.isPresent()) {
             return optionalUserinfo.orElse(null);
@@ -164,6 +170,7 @@ public class UserService {
         return VueData.error("更新失敗");
     }
 
+    //查詢權限字串並放入redis緩存
     public String getUserAuthorityInfo(Integer userId) {
 
         Session session = entityManager.unwrap(Session.class);
@@ -173,19 +180,20 @@ public class UserService {
         String authority = "";
 
         if (redisUtil.hasKey("GrantedAuthority:" + sysUser.getAccount())) {
-            log.info("從Redis獲取權限字串");
+            log.info("從Redis獲取權限字串並刷新");
+            redisUtil.expire("GrantedAuthority:" + sysUser.getAccount(), JWT_EXPIRE_SECONDS);
             authority = (String) redisUtil.get("GrantedAuthority:" + sysUser.getAccount());
             log.info("權限字串：{}", authority);
 
         } else {
             log.info("緩存無資料，準備從資料庫獲取權限字串");
-            // 获取角色编码
+// 获取角色编码
 //            String roleCodes = session.createQuery("select 'ROLE_' || r.code from AccountRole r where r.user.id = :userId", String.class)
 //                    .setParameter("userId", userId)
 //                    .getResultList()
 //                    .stream()
 //                    .collect(Collectors.joining(","));
-            // 獲取身份組編碼 一人只有一個身份
+// 獲取身份組編碼 一人只有一個身份
 //            String roleCode = session.createQuery("select 'ROLE_' || r.roleId from AccountRole r where r.user.id = :userId", String.class)
 //                    .setParameter("userId", userId)
 //                    .getSingleResult();
@@ -215,12 +223,58 @@ public class UserService {
                 log.info("組合權限字串後為：{}", authority);
             }
 
-            redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, 60 * 60);
+            redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, JWT_EXPIRE_SECONDS);
         }
 
         log.info("最終權限字串：{}", authority);
         return authority;
+    }
 
+    public void clearUserAuthorityInfo(String username) {
+        redisUtil.del("GrantedAuthority:" + username);
+        redisUtil.del("RefreshExpire:" + username);
+    }
+
+    public void clearUserAuthorityInfoByRoleId(Integer roleId) {
+        AccountRole role = accountRoleD.findById(roleId).get();
+        List<Userinfo> userlist = userD.findByAccountRoleByRoleId(role);
+        log.info("即將清除身份ID為 {} 的使用者 {}", roleId, userlist);
+        for (Userinfo user : userlist) {
+            redisUtil.del("GrantedAuthority:" + user.getAccount());
+        }
+    }
+
+    public void clearUserAuthorityInfoByPermissionId(Integer permissionId) {
+        List<RolePermission> role_permission_list = rolePermissionD.findByPermissionsByPermissionId_PermissionId(permissionId);
+        List<Collection<Userinfo>> roleUserMap = role_permission_list.stream().map(RolePermission::getAccountRoleByRoleId).map(AccountRole::getUserInfosByRoleId).toList();
+        List<Userinfo> userlist = roleUserMap.stream().flatMap(Collection::stream).toList();
+        log.info("即將清除權限ID {} 的使用者 {}", permissionId, userlist);
+        for (Userinfo user : userlist) {
+            redisUtil.del("GrantedAuthority:" + user.getAccount());
+        }
+    }
+
+    public boolean checkUserAuthorityInRedis(String account, long tokenExpTime) {
+        //查詢redis
+        if (redisUtil.hasKey("GrantedAuthority:" + account)) {
+            long redisExpTime = (long) redisUtil.get("RefreshExpire:" + account);
+            log.info("Redis緩存的過期時間：{}", redisExpTime);
+            log.info("Token過期的時間：{}", tokenExpTime);
+            //因為有誤差，需加上2000毫秒來保證token過期時間在redis過期時間的後面
+            if (redisExpTime < (tokenExpTime+2000)) {
+                log.info("找到有效緩存資料");
+                String authority = (String) redisUtil.get("GrantedAuthority:" + account);
+                log.info("從Redis獲取權限字串");
+                log.info("登入帳號為 {}", account);
+                log.info("權限字串：{}", authority);
+                return true;
+            }
+            log.info("認證已棄用，判定為無權限");
+            return false;
+        } else {
+            log.info("緩存無資料，判定為無權限");
+            return false;
+        }
     }
 }
 

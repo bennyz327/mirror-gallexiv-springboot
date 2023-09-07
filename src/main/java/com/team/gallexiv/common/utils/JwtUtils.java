@@ -1,15 +1,21 @@
 package com.team.gallexiv.common.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
+import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
 @Data
@@ -17,31 +23,38 @@ import static io.jsonwebtoken.security.Keys.secretKeyFor;
 @ConfigurationProperties(prefix = "gallexiv.jwt")
 public class JwtUtils {
 
-	private long expire;
+	private long expire = JWT_EXPIRE_SECONDS;
 	private String header;
-	private SecretKey secretKey;
+	@Value("${gallexiv.jwt.secret}")
+	private String secretKey;
+
+	@Autowired
+	RedisUtil redisUtil;
 
 	// 生成jwt
 	public String generateToken(String username) {
 
 		Date nowDate = new Date();
 		Date expireDate = new Date(nowDate.getTime() + 1000 * expire);
-		//設定算法和密鑰
-		secretKey = secretKeyFor(SignatureAlgorithm.HS512);
+		long time = expireDate.getTime();
+		redisUtil.set("RefreshExpire:" + username, time, JWT_EXPIRE_SECONDS);
+
+        SecretKey userKey = hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
 		return Jwts.builder()
 				.setHeaderParam("typ", "JWT")
 				.setSubject(username)
 				.setIssuedAt(nowDate)
 				.setExpiration(expireDate)// 7天過期
-				.signWith(secretKey)
+				.signWith(userKey)
 				.compact();
 	}
 
 	// 解析jwt
-	public Claims getClaimByToken(String jwt) {
+	public Claims getClaimByToken(String jwt) throws ExpiredJwtException {
+        SecretKey userKey = hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
 		return Jwts.parserBuilder()
-				.setSigningKey(secretKey)
+				.setSigningKey(userKey)
 				.build()
 				.parseClaimsJws(jwt)
 				.getBody();

@@ -38,11 +38,17 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
 springdoc:
   swagger-ui:
     path: /api/doc
 gallexiv:
   jwt:
-    expire: 20
+    secretKey: d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4
+    expire: 1800
 #    expire: 604800
     header: Authorization

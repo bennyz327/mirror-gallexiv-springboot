@@ -2,8 +2,10 @@ package com.team.gallexiv.config;
 
 import com.team.gallexiv.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,10 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import static com.team.gallexiv.common.lang.Const.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
+@ConfigurationProperties(prefix = "gallexiv.security")
 public class SecurityConfiguration {
 
     //陣列導入用
@@ -36,6 +41,8 @@ public class SecurityConfiguration {
     };
     //其餘涉及使用者都需要驗證
 
+    RequestMatcher logoutMatcher = new AntPathRequestMatcher(LOGOUT_URI, POST.name());
+
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
     @Autowired
@@ -48,39 +55,54 @@ public class SecurityConfiguration {
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Autowired
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
+    //TODO 有時間可以設定記住我功能
+    //這邊設定本APP第一個認證鍊，但其實認證鍊可以有多個
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(GET, "/captcha", "/login", "/test/**").permitAll()
+                        //TODO 統一用下面這行這種寫法
+                        .requestMatchers(POST, LOGIN_URI).permitAll()
+                        .requestMatchers(GET, "/captcha", "/test/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
                         .authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        //不須要Session
+//                        .maximumSessions(1)
+//                        .maxSessionsPreventsLogin(true)
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl("/login")
+                        .loginProcessingUrl(LOGIN_URI)
                         .usernameParameter("name")
                         .passwordParameter("passwd")
                         .successHandler(loginSuccessHandler)
                         .failureHandler(loginFailureHandler)
                         .permitAll()
                 )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(logoutMatcher)
+//                        .logoutUrl(LOGOUT_URI)
+                        .logoutSuccessUrl(LOGIN_URI)
+                        .logoutSuccessHandler(jwtLogoutSuccessHandler)
+                        .permitAll()
+                )
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
-                .addFilter(JwtAuthenticationFilter())
-                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class);
+                //登入用
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+                //驗證用
+                .addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        ;
         return httpSecurity.build();
     }
 
