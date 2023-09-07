@@ -14,7 +14,7 @@ import java.util.Collection;
 @Setter
 @Getter
 @Entity
-@Table(name = "comment")
+@Table(name = "comment", schema = "gallexiv")
 public class Comment {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,12 +43,12 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
-    @JsonIncludeProperties({"postId"})
+    @JsonIncludeProperties({ "postId" })
     private Post postByPostId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
-    @JsonIncludeProperties({"userId","userName"})
+    @JsonIncludeProperties({ "userId", "userName" })
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,8 +62,8 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_status", referencedColumnName = "code_id")
-    @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
-//    @JsonIncludeProperties({ "statusId", "statusName" })
+    @JsonIncludeProperties({ "statusId", "statusType", "statusCategory", "statusName" })
+    // @JsonIncludeProperties({ "statusId", "statusName" })
     private Status commentStatusByStatusId;
 
 }

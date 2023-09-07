@@ -1,11 +1,15 @@
 package com.team.gallexiv.data.api.Comments;
 
 import com.team.gallexiv.data.model.CommentService;
+import com.team.gallexiv.data.model.Post;
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.dto.CommentDto;
 import com.team.gallexiv.data.model.Comment;
 import com.team.gallexiv.data.model.UserService;
+import com.team.gallexiv.data.model.Userinfo;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +26,7 @@ public class CommentsController {
         this.userS = userS;
     }
 
+    // ------------給admin使用---------------//
     // 取得單筆 comment by id
     @GetMapping(path = "/comments/findById", produces = "application/json;charset=UTF-8")
     public VueData getCommentById(@RequestBody Comment comment) {
@@ -43,10 +48,13 @@ public class CommentsController {
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")
-    public VueData addComment(@RequestBody Comment comment) {
-        Integer postId = comment.getPostByPostId().getPostId();
-        Integer userId = comment.getUserinfoByUserId().getUserId();
-        return commentS.insertComment(postId, userId, comment);
+    // public VueData addComment(@RequestBody CommentDto commentDto, HttpSession
+    // httpSession) {
+    // httpSession.getAttribute();
+    public VueData addComment(@RequestBody CommentDto commentDto) {
+        Integer userId = 2;
+        return commentS.insertComment(userId, commentDto.getPostId(), commentDto.getCommentText(),
+                commentDto.getParentCommentId());
     }
 
     // 更新 comment
@@ -56,10 +64,23 @@ public class CommentsController {
         return commentS.updateComment(comment);
     }
 
+    // -------------------------------//
+
+    // ------------給一般user使用---------------//
+
     // 由PostId找comments
     @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
     public VueData getCommentsByPostId(@RequestParam int postId) {
         return commentS.getCommentsByPostId(postId);
     }
+
+    // 新增 comment
+    // @PostMapping(path = "/comments/forUserInsert", produces =
+    // "application/json;charset=UTF-8")
+    // public String addCommentByU(@RequestBody Comment comment) {
+    // Integer postId = 1;
+    // Integer userId = 3;
+    // return commentS.insertCommentByUser(postId, userId, comment);
+    // }
 
 }
