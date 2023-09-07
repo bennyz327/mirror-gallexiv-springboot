@@ -31,7 +31,7 @@ public class UserService {
     final PermissionsService permissionsService;
     final RolePermissionsDao rolePermissionD;
 
-    public UserService(UserDao userD,CommentDao commentD,PostDao postD,UserSubscriptionDao userSubD,PlanDao planD,StatusDao statusD,UserSubscriptionDao userSubscriptionD,AccountRoleDao accountRoleD,RedisUtil redisUtil,EntityManager entityManager,
+    public UserService(UserDao userD, CommentDao commentD, PostDao postD, UserSubscriptionDao userSubD, PlanDao planD, StatusDao statusD, UserSubscriptionDao userSubscriptionD, AccountRoleDao accountRoleD, RedisUtil redisUtil, EntityManager entityManager,
                        PermissionsService permissionsS, RolePermissionsDao rolePermissionD) {
         this.userD = userD;
         this.commentD = commentD;
@@ -64,6 +64,7 @@ public class UserService {
         }
         return VueData.error("查詢失敗");
     }
+
     public VueData getUserByAccountObject(Userinfo user) {
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(user.getAccount());
         if (optionalUserinfo.isPresent()) {
@@ -72,7 +73,7 @@ public class UserService {
         return VueData.error("查詢帳號失敗");
     }
 
-    public Userinfo getUserByAccount(String accout){
+    public Userinfo getUserByAccount(String accout) {
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accout);
         if (optionalUserinfo.isPresent()) {
             return optionalUserinfo.orElse(null);
@@ -167,6 +168,7 @@ public class UserService {
         return VueData.error("更新失敗");
     }
 
+    //查詢權限字串並放入redis緩存
     public String getUserAuthorityInfo(Integer userId) {
 
         Session session = entityManager.unwrap(Session.class);
@@ -245,6 +247,21 @@ public class UserService {
         log.info("即將清除權限ID {} 的使用者 {}", permissionId, userlist);
         for (Userinfo user : userlist) {
             redisUtil.del("GrantedAuthority:" + user.getAccount());
+        }
+    }
+
+    public boolean checkUserAuthorityInRedis(String account) {
+        //查詢redis
+        if (redisUtil.hasKey("GrantedAuthority:" + account)) {
+            log.info("從Redis獲取權限字串");
+            String authority = (String) redisUtil.get("GrantedAuthority:" + account);
+            log.info("找到緩存資料");
+            log.info("登入帳號為 {}", account);
+            log.info("權限字串：{}", authority);
+            return true;
+        } else {
+            log.info("緩存無資料，判定為無權限");
+            return false;
         }
     }
 }

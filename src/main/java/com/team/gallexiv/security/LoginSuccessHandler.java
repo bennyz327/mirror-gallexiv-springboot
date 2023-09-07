@@ -3,6 +3,8 @@ package com.team.gallexiv.security;
 import cn.hutool.json.JSONUtil;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.JwtUtils;
+import com.team.gallexiv.common.utils.RedisUtil;
+import com.team.gallexiv.data.model.UserService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +28,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Autowired
+    UserService userS;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
@@ -38,6 +46,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 密鑰透過環境變數取得，記錄在資料庫沒有意義
         String jwt = jwtUtils.generateToken(authentication.getName());
         response.setHeader(jwtUtils.getHeader(), jwt);
+
+        //將驗證資訊寫入redis
+        Integer userId = userS.getUserByAccount(authentication.getName()).getUserId();
+        userS.getUserAuthorityInfo(userId);
+
         VueData result = VueData.ok("登入成功");
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         outputStream.flush();

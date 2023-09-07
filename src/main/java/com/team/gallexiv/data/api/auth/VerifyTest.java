@@ -6,6 +6,7 @@ import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.UserService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.Map;
 import static com.team.gallexiv.common.lang.Const.API_VERSION_URI;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @RestController()
 public class VerifyTest extends BaseController {
@@ -69,6 +71,7 @@ public class VerifyTest extends BaseController {
     }
 
     @GetMapping("/test/pass")
+//    @PreAuthorize(hasRole("allPermission"))
     public VueData passEncode(@RequestParam String pass) {   // 密码加密
 
         //模擬資料庫密碼加密結果 TODO 資料庫密碼型態改變
@@ -115,4 +118,9 @@ public class VerifyTest extends BaseController {
         return VueData.ok("test", map);
     }
 
+    @GetMapping("/test/redisDelete")
+    public VueData redisDelete(@RequestParam String key) {
+        redisUtil.del(key);
+        return VueData.ok("已發送刪除指令");
+    }
 }

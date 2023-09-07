@@ -1,6 +1,7 @@
 package com.team.gallexiv.common.exception;
 
 import com.team.gallexiv.common.lang.VueData;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,11 +44,12 @@ public class GlobalExceptionHandler {
         return VueData.error(e.getMessage());
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = RuntimeException.class)
     public VueData handler(RuntimeException e) {
         log.error("運行時異常：----------------{}", e.getMessage());
         return VueData.error(e.getMessage());
     }
-    
+
 }

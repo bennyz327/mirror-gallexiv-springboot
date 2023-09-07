@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static com.team.gallexiv.common.lang.Const.*;
@@ -54,7 +56,10 @@ public class SecurityConfiguration {
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Autowired
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
+    //TODO 有時間可以設定記住我功能
     //這邊設定本APP第一個認證鍊，但其實認證鍊可以有多個
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -62,7 +67,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         //TODO 統一用下面這行這種寫法
                         .requestMatchers(POST, LOGIN_URI).permitAll()
-//                        .requestMatchers(POST,"/login").permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
@@ -85,6 +89,7 @@ public class SecurityConfiguration {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
+                        .logoutSuccessHandler(jwtLogoutSuccessHandler)
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable())

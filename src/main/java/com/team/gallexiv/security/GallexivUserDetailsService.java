@@ -44,5 +44,8 @@ public class GallexivUserDetailsService implements UserDetailsService {
         return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
 
+    public boolean checkUserAuthorityInRedis(String account){
+        return userService.checkUserAuthorityInRedis(account);
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.team.gallexiv.security;
 
 import cn.hutool.core.util.StrUtil;
+import com.team.gallexiv.common.exception.GlobalExceptionHandler;
 import com.team.gallexiv.common.utils.JwtUtils;
+import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.data.model.Userinfo;
 import io.jsonwebtoken.Claims;
@@ -14,11 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -39,12 +39,18 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Autowired
     UserService userService;
 
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Autowired
+    AuthenticationEntryPoint authenticationEntryPoint;
+
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, JwtException {
 
         log.info("開始辨識使用者");
         String jwt = request.getHeader(jwtUtils.getHeader());
@@ -54,31 +60,46 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        Claims claim = jwtUtils.getClaimByToken(jwt);
-        if (claim == null) {
-            log.info("token 異常，請重新登入");
-            throw new JwtException("token 異常");
+        try {
+
+            Claims claim = jwtUtils.getClaimByToken(jwt);
+            if (claim == null) {
+                log.info("token 異常，請重新登入");
+                throw new JwtException("token 異常");
+            }
+            if (jwtUtils.isTokenExpired(claim)) {
+                log.info("token 已過期，請重新登入");
+                throw new JwtException("token 已過期");
+            }
+            if (!securityUserDetailService.checkUserAuthorityInRedis(claim.getSubject())) {
+                log.info("token 無效，請重新登入");
+                throw new JwtException("token 無效");
+            }
+
+            String username = claim.getSubject();
+            log.info("驗證使用者成功 歡迎 {}", username);
+            log.info("本使用者前端token過期時間: {}", claim.getExpiration());
+
+            //從受信任的使用者名稱去資料庫獲取使用者權限資料
+            Userinfo sysUser = userService.getUserByAccount(username);
+            //將使用者資料封裝成 Authentication 的實現類 其中有將使用者權限資料放到redis的動作
+            UsernamePasswordAuthenticationToken token
+                    = new UsernamePasswordAuthenticationToken(username, null, securityUserDetailService.getUserAuthority(sysUser.getUserId()));
+
+            //將 Authentication 設定到 SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(token);
+
+            //log印出資料已驗證使用者清單，確認是否成功
+            log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        } catch (JwtException e) {
+            log.info("token異常--->{}", e.getMessage());
+            //若token異常，則需要跳轉到驗證失敗處理器
+            //TODO 這裡的處理完邏輯還是會有運行時異常，待解決
+            chain.doFilter(request, response);
         }
-        if (jwtUtils.isTokenExpired(claim)) {
-            log.info("token 已過期，請重新登入");
-            throw new JwtException("token 已過期");
-        }
 
-        String username = claim.getSubject();
-        log.info("驗證使用者成功 歡迎 {}", username);
-        log.info("本使用者前端token過期時間: {}", claim.getExpiration());
 
-        //從受信任的使用者名稱去資料庫獲取使用者權限資料
-        Userinfo sysUser = userService.getUserByAccount(username);
-        //將使用者資料封裝成 Authentication 的實現類
-        UsernamePasswordAuthenticationToken token
-                = new UsernamePasswordAuthenticationToken(username, null, securityUserDetailService.getUserAuthority(sysUser.getUserId()));
-
-        //將 Authentication 設定到 SecurityContext
-        SecurityContextHolder.getContext().setAuthentication(token);
-
-        //log印出資料已驗證使用者清單，確認是否成功
-        log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
 
         // 若TOKEN驗證成功，且端點為驗證端點，不要再呼叫doFilter去經過後面的檢查
