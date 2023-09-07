@@ -1,9 +1,11 @@
 package com.team.gallexiv.data.model;
 
+import com.jhlabs.math.VLNoise;
 import com.team.gallexiv.common.lang.VueData;
 
 // import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,19 +62,41 @@ public class CommentService {
     }
 
     // 新增 comment
-    public VueData insertComment(Integer postId, Integer userId, Comment comment) {
-        Optional<Post> thisPost = postD.findById(postId);
-        Optional<Userinfo> thisUser = userinfoD.findById(userId);
-        int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
-        Optional<Status> commentOptional = statusD.findById(thisCommentStatusId);
+    @Transactional
+    public VueData insertComment(Integer userId, Integer postId, String commentText, Integer parentCommentId) {
+        try {
+            Comment comment = new Comment();
+            Optional<Post> thisPost = postD.findById(postId);
+            Optional<Userinfo> thisUser = userinfoD.findByUserId(userId);
+            Integer thisCommentStatusId = 13;
+            Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
 
-        if (thisPost.isPresent() && thisUser.isPresent() && commentOptional.isPresent()) {
             comment.setPostByPostId(thisPost.get());
             comment.setUserinfoByUserId(thisUser.get());
-            comment.setCommentStatusByStatusId(commentOptional.get());
+            comment.setCommentText(commentText);
+            comment.setCommentStatusByStatusId(thisCommentStatus.get());
+
+            if (parentCommentId != null) {
+                Optional<Comment> parentComment = commentD.findById(parentCommentId);
+                comment.setCommentByParentCommentId(parentComment.get());
+            } else {
+                comment.setCommentByParentCommentId(null);
+            }
             return VueData.ok(commentD.save(comment));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VueData.error("新增失敗");
         }
-        return VueData.error("新增失敗");
+
+        // int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
+
+        // if (thisPost.isPresent() && thisUser.isPresent() &&
+        // commentStatus.isPresent()) {
+        // comment.setPostByPostId(thisPost.get());
+        // comment.setUserinfoByUserId(thisUser.get());
+        // comment.setCommentStatusByStatusId(commentStatus.get());
+        // }
     }
 
     // 更新 comment
@@ -87,10 +111,10 @@ public class CommentService {
         return VueData.ok(updateComment);
     }
 
+    // ------------給一般user使用---------------//
     // 由 PostId 找 comments 並排列
     public VueData getCommentsByPostId(int postId) {
         List<Comment> comments = commentD.findByPostByPostIdPostId(postId);
-        System.out.println(comments);
         List<Comment> sortedComments = comments.stream().collect(Collectors.toList());
         Collections.sort(sortedComments, (c1, c2) -> {
             // 判斷是 parentCommentId 是否 null
