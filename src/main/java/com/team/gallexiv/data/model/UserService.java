@@ -1,11 +1,16 @@
 package com.team.gallexiv.data.model;
 
+import cn.hutool.core.util.RandomUtil;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.RedisUtil;
+import com.team.gallexiv.data.dto.PreRegisterUserinfo;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -32,9 +37,11 @@ public class UserService {
     final EntityManager entityManager;
     final PermissionsService permissionsService;
     final RolePermissionsDao rolePermissionD;
+    private final BCryptPasswordEncoder bCryptPE;
 
+    @Autowired
     public UserService(UserDao userD, CommentDao commentD, PostDao postD, UserSubscriptionDao userSubD, PlanDao planD, StatusDao statusD, UserSubscriptionDao userSubscriptionD, AccountRoleDao accountRoleD, RedisUtil redisUtil, EntityManager entityManager,
-                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD) {
+                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -47,6 +54,7 @@ public class UserService {
         this.entityManager = entityManager;
         this.permissionsService = permissionsS;
         this.rolePermissionD = rolePermissionD;
+        this.bCryptPE = bCryptPasswordEncoder;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -97,9 +105,9 @@ public class UserService {
 
         String userName = user.getAccount();
         List<Userinfo> a = userD.findAll();
-        for (int i = 0; i < a.size(); i++) {
-            System.out.println(a.get(i).getUserName());
-            if (userName.equals(a.get(i).getUserName())) {
+        for (Userinfo userinfo : a) {
+            System.out.println(userinfo.getAccount());
+            if (userName.equals(userinfo.getAccount())) {
                 System.out.println("帳號重複");
                 return null;
             }
@@ -261,7 +269,7 @@ public class UserService {
             log.info("Redis緩存的過期時間：{}", redisExpTime);
             log.info("Token過期的時間：{}", tokenExpTime);
             //因為有誤差，需加上2000毫秒來保證token過期時間在redis過期時間的後面
-            if (redisExpTime < (tokenExpTime+2000)) {
+            if (redisExpTime < (tokenExpTime + 2000)) {
                 log.info("找到有效緩存資料");
                 String authority = (String) redisUtil.get("GrantedAuthority:" + account);
                 log.info("從Redis獲取權限字串");
@@ -275,6 +283,31 @@ public class UserService {
             log.info("緩存無資料，判定為無權限");
             return false;
         }
+    }
+
+    public Userinfo getUserByEmail(String email) {
+        Optional<Userinfo> optionalUserinfo = userD.findByUserEmail(email);
+        if (optionalUserinfo.isPresent()) {
+            return optionalUserinfo.orElse(null);
+        }
+        return null;
+    }
+
+    public PreRegisterUserinfo createAndAddPreRegisterUser(OAuth2User user) {
+        log.info("創建預註冊使用者");
+        Userinfo new_user = new Userinfo();
+        new_user.setUserName(String.valueOf(user.getAttributes().get("name")));
+        log.info("帳號名是"+ user.getName());
+        new_user.setAccount(user.getName());
+        String randomPassword = RandomUtil.randomString(8);
+        new_user.setPWord(bCryptPE.encode(randomPassword));
+        new_user.setUserEmail(String.valueOf(user.getAttributes().get("email")));
+        new_user.setAccountRoleByRoleId(accountRoleD.findById(3).get());
+        new_user.setUserStatusByStatusId(statusD.findById(5).get());
+        log.info("保存預註冊使用者資料");
+        userD.save(new_user);
+        log.info("返回生成的隨機密碼請用戶更改");
+        return new PreRegisterUserinfo(String.valueOf(user.getAttributes().get("name")), randomPassword, String.valueOf(user.getAttributes().get("email")));
     }
 }
 

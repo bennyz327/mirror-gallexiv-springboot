@@ -4,27 +4,25 @@ import cn.hutool.json.JSONUtil;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.JwtUtils;
 import com.team.gallexiv.common.utils.RedisUtil;
+import com.team.gallexiv.data.dto.PreRegisterUserinfo;
 import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.data.model.Userinfo;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static io.jsonwebtoken.security.Keys.secretKeyFor;
-
 @Slf4j
 @Component
-public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     JwtUtils jwtUtils;
@@ -50,15 +48,35 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setHeader(jwtUtils.getHeader(), jwt);
 
 
-        //到這之前要確定使用者有註冊進入後台資料庫，不然下面查詢會報錯
-        Integer userId = userS.getUserByAccount(authentication.getName()).getUserId();
+        log.info("看看憑證" + authentication);
+        log.info("看看 User " + authentication.getPrincipal());
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+
+        VueData result = VueData.ok();
+
+        //檢查是否有註冊過
+        String email = String.valueOf(oAuth2User.getAttributes().get("email"));
+        //如果沒有註冊過就新增一個預註冊的使用者
+        if (userS.getUserByEmail(email) == null) {
+            PreRegisterUserinfo preUser = userS.createAndAddPreRegisterUser(oAuth2User);
+            result.setMsg("新用戶登入，請設定新密碼");
+            result.setData(preUser);
+        } else {
+            result.setMsg("已成功登入");
+            result.setData(jwt);
+        }
+
+        //驗證機制用
+        Userinfo successUser = userS.getUserByAccount(authentication.getName());
+        Integer userId = successUser.getUserId();
         //透過ID將驗證資訊查出來並寫入redis
         userS.getUserAuthorityInfo(userId);
 
-        VueData result = VueData.ok("登入成功");
+
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
         outputStream.close();
+
     }
 }
 

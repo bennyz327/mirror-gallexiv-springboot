@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -109,6 +110,15 @@ public class Userinfo {
     public Userinfo() {
     }
 
+    public Userinfo(String userName, String userEmail, String account, String pWord, AccountRole role, Status status){
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.account = account;
+        this.pWord = pWord;
+        this.accountRoleByRoleId = role;
+        this.userStatusByStatusId = status;
+    }
+
     @Override
     public String toString() {
         return "Userinfo{" +
@@ -135,4 +145,5 @@ public class Userinfo {
         new_user.setAccount(account);
         return new_user;
     }
+
 }

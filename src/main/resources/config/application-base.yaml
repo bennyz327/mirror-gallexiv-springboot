@@ -38,6 +38,16 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1086051156003-dsdrq6ot29rao9lt40gb93o4v2n1tafn.apps.googleusercontent.com
+            client-secret: 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
+            client-name: google
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
 logging:
   level:
     org:

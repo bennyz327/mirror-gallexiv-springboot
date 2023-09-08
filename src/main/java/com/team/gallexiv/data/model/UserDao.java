@@ -22,4 +22,6 @@ public interface UserDao extends JpaRepository<Userinfo, Integer> {
 
     List<Userinfo> findByAccountRoleByRoleId(AccountRole accountRoleByRoleId);
 
+    Optional<Userinfo> findByUserEmail(String userEmail);
+
 }
