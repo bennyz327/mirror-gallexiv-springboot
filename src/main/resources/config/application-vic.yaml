@@ -9,7 +9,7 @@ spring:
       password: admin1234
   data:
     redis:
-      host: 192.168.0.205
+      host: 172.18.135.72
       port: 6379
       database: 1
       password: benben327327

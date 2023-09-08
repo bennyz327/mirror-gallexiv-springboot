@@ -36,6 +36,14 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "gallexiv.security")
 public class SecurityConfiguration {
 
+    //陣列導入用
+    //完全開放的 URL/API 列表
+    AntPathRequestMatcher[] OPEN_URL = new AntPathRequestMatcher[]{
+            AntPathRequestMatcher.antMatcher(GET, "/captcha"),
+            AntPathRequestMatcher.antMatcher(POST, "/login"),
+            AntPathRequestMatcher.antMatcher(POST, "/logout"),
+            AntPathRequestMatcher.antMatcher(GET, "/test/**"),
+    };
     //需要管理員身份的 URL/API 列表
     private final String ADMIN_API_CONTEXT_PATTERN = "/admin/**";
     AntPathRequestMatcher[] ADMIN_API_URL = new AntPathRequestMatcher[]{

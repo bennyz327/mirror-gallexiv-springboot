@@ -1,17 +1,19 @@
 package com.team.gallexiv.data.api.Pictures;
 
+import cn.hutool.core.io.IoUtil;
 import com.team.gallexiv.data.model.Picture;
 import com.team.gallexiv.data.model.PictureService;
 import com.team.gallexiv.data.model.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @Tag(name = "圖片控制存取")
@@ -19,9 +21,9 @@ public class PicturesController {
     final UserService userS;
     final PictureService pictureS;
 
-    public PicturesController(UserService userS,PictureService pictureS) {
+    public PicturesController(UserService userS, PictureService pictureS) {
         this.userS = userS;
-        this.pictureS =pictureS;
+        this.pictureS = pictureS;
     }
 
     @PostMapping(path = "/uploadPicture", produces = "application/json;charset=UTF-8")
@@ -61,5 +63,54 @@ public class PicturesController {
     private void savePicture(Picture picture) {
         pictureS.savePicture(picture);
     }
+
+    @GetMapping(
+            value = "/test/getImage",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
+    public @ResponseBody byte[] getImageWithMediaTypeTest() throws IOException {
+        // 指定本地文件路径
+        String imagePath = "D:\\upload\\user1\\1.jpg";
+
+        try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
+            // 读取文件内容并返回字节数组
+            byte[] imageBytes = new byte[fileInputStream.available()];
+            fileInputStream.read(imageBytes);
+            return imageBytes;
+        } catch (IOException e) {
+            // 处理文件读取错误
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @GetMapping(
+            value = "/test/p/{pid}",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
+    public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
+
+        Integer userId = 1;
+
+
+        // 指定本地文件路径
+        StringBuilder imagePathB;
+
+        String env_ImgPath;
+
+        String imagePath = "D:\\upload";
+
+        try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
+            // 读取文件内容并返回字节数组
+            byte[] imageBytes = new byte[fileInputStream.available()];
+            fileInputStream.read(imageBytes);
+            return imageBytes;
+        } catch (IOException e) {
+            // 处理文件读取错误
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 
 }
