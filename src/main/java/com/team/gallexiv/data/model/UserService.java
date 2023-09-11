@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -67,14 +68,14 @@ public class UserService {
     // }
 
     // 取得登入資料帳號密碼
-    public VueData checkLogin(Userinfo user){
-        Userinfo userInfo = userD.findUserNameAndUserPwd(user.getUserName(), user.getPWord());
-
-        if(userInfo != null){
-            return VueData.ok(userInfo);
-        }
-        return VueData.error("帳號或密碼有誤");
-    }
+//    public VueData checkLogin(Userinfo user){
+//        Userinfo userInfo = userD.findUserNameAndUserPwd(user.getUserName(), user.getPWord());
+//
+//        if(userInfo != null){
+//            return VueData.ok(userInfo);
+//        }
+//        return VueData.error("帳號或密碼有誤");
+//    }
 
     // 取得單筆user OK
     public VueData getUserById(int userId) {

@@ -5,6 +5,7 @@ import com.team.gallexiv.data.model.Picture;
 import com.team.gallexiv.data.model.PictureService;
 import com.team.gallexiv.data.model.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
+
+@Slf4j
 @RestController
 @Tag(name = "圖片控制存取")
 public class PicturesController {
@@ -94,11 +98,11 @@ public class PicturesController {
 
 
         // 指定本地文件路径
-        StringBuilder imagePathB;
 
-        String env_ImgPath;
+        String imagePath = IMG_ROOTPATH;
+        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
 
-        String imagePath = "D:\\upload";
+        log.info(imagePath);
 
         try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
             // 读取文件内容并返回字节数组
@@ -106,8 +110,9 @@ public class PicturesController {
             fileInputStream.read(imageBytes);
             return imageBytes;
         } catch (IOException e) {
-            // 处理文件读取错误
-            e.printStackTrace();
+            //
+            log.error("例外狀況",e);
+//            e.printStackTrace();
             throw e;
         }
     }

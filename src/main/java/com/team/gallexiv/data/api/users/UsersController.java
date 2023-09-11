@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
+
 @RestController
 @CrossOrigin()
 public class UsersController {
@@ -23,12 +25,12 @@ public class UsersController {
         return userS.getUserById(userId);
     }
 
-    @PostMapping(path = "/userInfos/login")
-    @Operation(description = "登入")
-    public VueData getUserByUserNameAndPassWord(@RequestBody Userinfo user) {
-        System.out.println("test");
-        return userS.checkLogin(user);
-    }
+//    @PostMapping(path = "/userInfos/login")
+//    @Operation(description = "登入")
+//    public VueData getUserByUserNameAndPassWord(@RequestBody Userinfo user) {
+//        System.out.println("test");
+//        return userS.checkLogin(user);
+//    }
 
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {
@@ -56,5 +58,8 @@ public class UsersController {
         return userS.updateUserById(user);
 
     }
+//    public String inputAvatar(@RequestBody Userinfo user){
+//
+//    }
 
 }

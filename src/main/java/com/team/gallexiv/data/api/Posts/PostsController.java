@@ -49,6 +49,7 @@ public class PostsController {
         return postS.getAllPost();
     }
 
+    @CrossOrigin(origins = "http://localhost:3100")
     @PostMapping(path = "/posts/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增貼文")
     public VueData addPost(@RequestBody Post post) {
