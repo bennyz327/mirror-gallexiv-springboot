@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2ClientConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -75,7 +76,7 @@ public class SecurityConfiguration {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         //不須要Session.maximumSessions(1).maxSessionsPreventsLogin(true)
                 )
-                //GOOGLE oauth2 登入
+                //GOOGLE oauth2 登入 TODO 在linux上面會有問題，待解決
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauthLoginSuccessHandler)
                         .failureHandler(loginFailureHandler)
@@ -118,7 +119,6 @@ public class SecurityConfiguration {
     AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
 
 //若要非持久帳號測試，可以用下面的設定方法
 //    @Bean
