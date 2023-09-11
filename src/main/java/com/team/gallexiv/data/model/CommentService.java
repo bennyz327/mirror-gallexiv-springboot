@@ -3,6 +3,9 @@ package com.team.gallexiv.data.model;
 import com.jhlabs.math.VLNoise;
 import com.team.gallexiv.common.lang.VueData;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 // import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,14 +54,24 @@ public class CommentService {
         return VueData.ok(result);
     }
 
-    // 刪除 comment
-    public VueData deleteCommentById(Comment comment) {
-        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
-        if (optionalComment.isEmpty()) {
+    // 刪除 comment (更改 status = 14)
+    @Transactional
+    public VueData deleteCommentById(Integer commentId) {
+        try {
+            Optional<Comment> optionalComment = commentD.findById(commentId);
+            Integer thisCommentStatusId = 14;
+            Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
+            if (optionalComment != null) {
+                Comment deleteComment = optionalComment.get();
+                deleteComment.setCommentStatusByStatusId(thisCommentStatus.get());
+                commentD.save(deleteComment);
+            }
+            return VueData.ok("刪除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
             return VueData.error("刪除失敗");
         }
-        commentD.deleteById(comment.getCommentId());
-        return VueData.ok("刪除成功");
+
     }
 
     // 新增 comment
@@ -88,54 +101,38 @@ public class CommentService {
             e.printStackTrace();
             return VueData.error("新增失敗");
         }
-
-        // int thisCommentStatusId = comment.getCommentStatusByStatusId().getStatusId();
-
-        // if (thisPost.isPresent() && thisUser.isPresent() &&
-        // commentStatus.isPresent()) {
-        // comment.setPostByPostId(thisPost.get());
-        // comment.setUserinfoByUserId(thisUser.get());
-        // comment.setCommentStatusByStatusId(commentStatus.get());
-        // }
     }
 
     // 更新 comment
-    public VueData updateComment(Comment comment) {
-        Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
-
-        if (optionalComment.isEmpty()) {
+    @Transactional
+    public VueData updateComment(Integer commentId, String commentText) {
+        try {
+            Comment comment = new Comment();
+            Optional<Comment> thisCommentId = commentD.findById(commentId);
+            if (thisCommentId != null) {
+                comment.setCommentText(commentText);
+            }
+            return VueData.ok(commentD.save(comment));
+        } catch (Exception e) {
+            e.printStackTrace();
             return VueData.error("更新失敗");
         }
-        Comment updateComment = optionalComment.get();
-        updateComment.setCommentText(comment.getCommentText());
-        return VueData.ok(updateComment);
+
     }
 
     // ------------給一般user使用---------------//
-    // 由 PostId 找 comments 並排列
-    public VueData getCommentsByPostId(int postId) {
-        List<Comment> comments = commentD.findByPostByPostIdPostId(postId);
-        List<Comment> sortedComments = comments.stream().collect(Collectors.toList());
-        Collections.sort(sortedComments, (c1, c2) -> {
-            // 判斷是 parentCommentId 是否 null
-            if (c1.getCommentByParentCommentId() != null && c2.getCommentByParentCommentId() == null) {
-                return 1; // 如果 c1 有 parentCommentId，c2 沒有，則 c1 在 c2 之前
-            } else if (c1.getCommentByParentCommentId() == null && c2.getCommentByParentCommentId() != null) {
-                return -1; // 反之，如果 c2 有 parentCommentId，c1 沒有，則 c2 在 c1 之前
-            } else {
-                // 依照 commentTime 新舊，升序排序
-                int timeComparison = c1.getCommentTime().compareTo(c2.getCommentTime());
-                if (timeComparison == 0) {
-                    // 如果 commentTime 一樣，按照 commentId 升序排序
-                    return c1.getCommentId() - c2.getCommentId();
-                } else {
-                    return timeComparison;
-                }
-            }
-        });
-        if (!sortedComments.isEmpty()) {
+    // 由 PostId 找 comments 並排列分頁
+    // public Page<Comment> findByPage(Integer pageNumber){
+    // PageRequest pageRequest = PageRequest.of(pageNumber-1, 5,
+    // Sort.Direction.DESC,"commentTime");
+    // Page<Comment> a
+    // }
 
-            return VueData.ok(sortedComments);
+    // 由 PostId 找 comments 並排列
+    public VueData getCommentsByPostId(Integer postId) {
+        List<Comment> comments = commentD.findCommentIByPostIdAndStatus(postId);
+        if (!comments.isEmpty()) {
+            return VueData.ok(comments);
         }
         return VueData.error("查詢失敗");
     }

@@ -14,4 +14,8 @@ public interface CommentDao extends JpaRepository<Comment, Integer> {
     // 由PostId找comments
     List<Comment> findByPostByPostIdPostId(int postId);
 
+    // 由PostId找comments where status = 13
+    @Query("SELECT c FROM Comment c WHERE c.postByPostId.postId = :postId AND c.commentStatusByStatusId.statusId = 13 ORDER BY c.commentTime DESC")
+    List<Comment> findCommentIByPostIdAndStatus(@Param("postId") int postId);
+
 }

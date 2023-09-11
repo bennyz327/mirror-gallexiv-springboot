@@ -41,9 +41,39 @@ public class CommentsController {
     }
 
     // 刪除 comment
+
     @DeleteMapping(path = "comments/delete")
-    public VueData deleteComment(@RequestBody Comment comment) {
-        return commentS.deleteCommentById(comment);
+    public VueData deleteComment(@RequestParam Integer commentId) {
+        return commentS.deleteCommentById(commentId);
+    }
+
+    // 新增 comment
+    // @PostMapping(path = "/comments/insert", produces =
+    // "application/json;charset=UTF-8")
+    // // public VueData addComment(@RequestBody CommentDto commentDto, HttpSession
+    // // httpSession) {
+    // // httpSession.getAttribute();
+    // public VueData addComment(@RequestBody CommentDto commentDto) {
+    // Integer userId = 2;
+    // return commentS.insertComment(userId, commentDto.getPostId(),
+    // commentDto.getCommentText(),
+    // commentDto.getParentCommentId());
+    // }
+
+    // 更新 comment
+    @PutMapping(path = "comments/update")
+    public VueData updateCommentForAdmin(@RequestParam Integer commentId, String commentText) {
+        return commentS.updateComment(commentId, commentText);
+    }
+
+    // -------------------------------//
+
+    // ------------給一般user使用---------------//
+
+    // 由PostId找comments
+    @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
+    public VueData getCommentsByPostId(@RequestParam Integer postId) {
+        return commentS.getCommentsByPostId(postId);
     }
 
     // 新增 comment
@@ -56,31 +86,5 @@ public class CommentsController {
         return commentS.insertComment(userId, commentDto.getPostId(), commentDto.getCommentText(),
                 commentDto.getParentCommentId());
     }
-
-    // 更新 comment
-    @Transactional
-    @PutMapping(path = "comments/update")
-    public VueData updateComment(@RequestBody Comment comment) {
-        return commentS.updateComment(comment);
-    }
-
-    // -------------------------------//
-
-    // ------------給一般user使用---------------//
-
-    // 由PostId找comments
-    @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
-    public VueData getCommentsByPostId(@RequestParam int postId) {
-        return commentS.getCommentsByPostId(postId);
-    }
-
-    // 新增 comment
-    // @PostMapping(path = "/comments/forUserInsert", produces =
-    // "application/json;charset=UTF-8")
-    // public String addCommentByU(@RequestBody Comment comment) {
-    // Integer postId = 1;
-    // Integer userId = 3;
-    // return commentS.insertCommentByUser(postId, userId, comment);
-    // }
 
 }
