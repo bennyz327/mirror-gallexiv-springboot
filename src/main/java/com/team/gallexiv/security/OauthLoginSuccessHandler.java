@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.team.gallexiv.common.lang.Const.FRONTEND_URL;
+
 @Slf4j
 @Component
 public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -73,10 +75,11 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
         userS.getUserAuthorityInfo(userId);
 
 
-        outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
-        outputStream.flush();
-        outputStream.close();
-
+//        outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
+//        outputStream.flush();
+//        outputStream.close();
+        //將JWT寫入GET參數
+        response.sendRedirect(FRONTEND_URL+"/200?token="+jwt);
     }
 }
 

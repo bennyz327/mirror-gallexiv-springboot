@@ -68,6 +68,7 @@ public class SecurityConfiguration {
                         //TODO 統一用下面的寫法
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
+                        .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
                         .authenticated()
