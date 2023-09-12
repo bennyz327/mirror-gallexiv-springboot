@@ -25,7 +25,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     // TODO 測試刪除
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        CorsRegistration reg = registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE");
+        CorsRegistration reg = registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS");
         reg.allowedOrigins(allowApps.split(","));
     }
 
