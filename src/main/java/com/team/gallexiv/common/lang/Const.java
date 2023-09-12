@@ -4,7 +4,8 @@ package com.team.gallexiv.common.lang;
 public class Const {
 
     //TODO 生產環境清理
-    public final static String FRONTEND_URL = "http://localhost:3100";
+//    public final static String FRONTEND_URL = "http://localhost:3100";
+    public final static String FRONTEND_URL = "http://172.18.135.63:3100";
     public final static String DEFAULT_SUCCESS_MSG = "Yabai★Desune☆";
     public final static String CAPTCHA_REDIS_KEY = "captcha";
     public final static String USERNAME_PARAM = "name";

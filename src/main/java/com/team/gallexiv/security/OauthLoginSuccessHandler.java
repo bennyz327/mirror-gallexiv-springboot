@@ -1,5 +1,6 @@
 package com.team.gallexiv.security;
 
+import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.json.JSONUtil;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.JwtUtils;
@@ -58,6 +59,8 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         //檢查是否有註冊過
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
+        String name = String.valueOf(oAuth2User.getAttributes().get("name"));
+        String nameUnicode = UnicodeUtil.toUnicode(name);
         //如果沒有註冊過就新增一個預註冊的使用者
         if (userS.getUserByEmail(email) == null) {
             PreRegisterUserinfo preUser = userS.createAndAddPreRegisterUser(oAuth2User);
@@ -79,7 +82,7 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
 //        outputStream.flush();
 //        outputStream.close();
         //將JWT寫入GET參數
-        response.sendRedirect(FRONTEND_URL+"/200?token="+jwt);
+        response.sendRedirect(FRONTEND_URL+"/200?token="+jwt+"&username="+nameUnicode);
     }
 }
 
