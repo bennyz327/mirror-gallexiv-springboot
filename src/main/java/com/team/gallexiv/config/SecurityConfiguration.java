@@ -22,6 +22,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.team.gallexiv.common.lang.Const.*;
 import static org.springframework.http.HttpMethod.*;
@@ -64,12 +70,11 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         //TODO 統一用下面的寫法
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
-                        .requestMatchers(POST,"/test/**").permitAll()
+                        .requestMatchers(POST,"/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
@@ -111,6 +116,16 @@ public class SecurityConfiguration {
         return httpSecurity.build();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3100"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     JwtAuthenticationFilter JwtAuthenticationFilter() throws Exception {
