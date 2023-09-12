@@ -55,7 +55,7 @@ public class PostsController {
         return postS.insertPost(post);
     }
 
-    @CrossOrigin(origins = "http://172.18.135.63:3100")
+    @CrossOrigin(origins = "http://10.0.4.68:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

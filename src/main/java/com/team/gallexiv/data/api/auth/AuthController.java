@@ -6,8 +6,7 @@ import com.team.gallexiv.common.lang.Const;
 import com.team.gallexiv.common.lang.VueData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,6 +21,7 @@ public class AuthController extends BaseController {
     @Autowired
     Producer producer;
 
+    @CrossOrigin(origins = "http://10.0.4.68:3100")
     @GetMapping("/captcha")
     public VueData captcha() throws IOException {
 
