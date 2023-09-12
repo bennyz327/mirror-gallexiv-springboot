@@ -1,6 +1,8 @@
 package com.team.gallexiv.data.model;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpStatus;
+import cn.hutool.system.UserInfo;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.dto.PreRegisterUserinfo;
@@ -320,5 +322,13 @@ public class UserService {
         log.info("返回生成的隨機密碼請用戶更改");
         return new PreRegisterUserinfo(String.valueOf(user.getAttributes().get("name")), randomPassword, String.valueOf(user.getAttributes().get("email")));
     }
+    public Userinfo getUserEntityById (int userId){
+        Optional<Userinfo> optionalUserinfo = userD.findById(userId);
+        if (optionalUserinfo.isPresent()) {
+            return optionalUserinfo.orElse(null);
+        }
+        return null;
+    }
+
 }
 

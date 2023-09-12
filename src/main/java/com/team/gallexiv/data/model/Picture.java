@@ -37,4 +37,6 @@ public class Picture {
     @JsonIncludeProperties({"postId"})
     private Post postByPostId;
 
+    public Picture() {
+    }
 }

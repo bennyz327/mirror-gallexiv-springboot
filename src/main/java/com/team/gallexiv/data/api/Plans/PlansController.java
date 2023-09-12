@@ -22,10 +22,10 @@ public class PlansController {
         this.userS = userS;
     }
 
-    @GetMapping(path = "/plansById", produces = "application/json")
+    @GetMapping(path = "/plans/{planId}", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
-    public VueData getPlanById(@RequestBody Plan plan) {
-        return planS.getPlanById(plan);
+    public VueData getPlanById(@RequestBody Integer planId) {
+        return planS.getPlanById(planId);
     }
 
     // --------先略過此處-------------
@@ -59,10 +59,10 @@ public class PlansController {
     }
     // -----------------------------
 
-    @DeleteMapping(path = "/plans/delete")
+    @DeleteMapping(path = "/plans/{planId}/delete")
     @Operation(description = "刪除plan(GET BY ID)")
-    public VueData deletePlan(@RequestBody Plan plan) {
-        return planS.deletePlanById(plan);
+    public VueData deletePlan(@PathVariable Integer planId) {
+        return planS.deletePlanById(planId);
 
     }
 
