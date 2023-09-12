@@ -82,4 +82,20 @@ public class Post {
     @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status postStatusByStatusId;
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "tagsByPostId=" + tagsByPostId +
+                '}';
+    }
+
+    public Post() {
+    }
+
+    public Post(Userinfo user, String postTitle, String postContent, Collection<Tag> tagsByPostId) {
+        this.userinfoByUserId = user;
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+        this.tagsByPostId = tagsByPostId;
+    }
 }

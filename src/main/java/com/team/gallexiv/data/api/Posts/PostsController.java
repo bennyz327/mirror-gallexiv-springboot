@@ -1,9 +1,13 @@
 package com.team.gallexiv.data.api.Posts;
 
 import com.team.gallexiv.data.model.*;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
+import com.team.gallexiv.data.dto.PostDto;
+import com.team.gallexiv.data.model.Tag;
+import com.team.gallexiv.data.model.*;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@Tag(name = "貼文控制存取")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "貼文控制存取")
 public class PostsController {
 
     private final PostService postS;
@@ -27,10 +35,13 @@ public class PostsController {
 
     private final PictureService pictureS;
 
-    public PostsController(PostService postS, UserService userS, PictureService pictureS) {
+    private final TagService tagS;
+
+    public PostsController(PostService postS, UserService userS, PictureService pictureS, TagService tagS) {
         this.postS = postS;
         this.userS = userS;
         this.pictureS = pictureS;
+        this.tagS = tagS;
     }
 
     @GetMapping(path = "/posts/{id}/owner", produces = "application/json")
@@ -40,10 +51,10 @@ public class PostsController {
     }
 
     @CrossOrigin
-    @GetMapping(path = "/postsById", produces = "application/json")
+    @GetMapping(path = "/posts/{postId}", produces = "application/json")
     @Operation(description = "取得單筆貼文 (GET BY ID)")
-    public VueData showPostsOb(@RequestBody Post post) {
-        return postS.getPostById(post);
+    public VueData showPostsOb(@PathVariable Integer postId) {
+        return postS.getPostById(postId);
     }
 
     @CrossOrigin
@@ -61,12 +72,20 @@ public class PostsController {
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
     }
 
-    @DeleteMapping(path = "/posts/delete")
+    @DeleteMapping(path = "/posts/{postId}/delete")
     @Operation(description = "刪除貼文")
-    public VueData deletePost(@RequestBody Post post) {
-        return postS.deletePostById(post);
+    public VueData deletePost(@PathVariable Integer postId) {
+        return postS.deletePostById(postId);
     }
 
+    //    @Transactional // 少了tag跟picture
+//    @PutMapping("/posts/update")
+//    @Operation(description = "更新貼文")
+//    public VueData updatePost(@RequestBody Post post) {
+//        log.info("進PUT");
+//        log.info(post.toString());
+//        return postS.updatePostById(post);
+//    }
     @Transactional // 少了tag跟picture
     @PutMapping("/posts/update")
     @Operation(description = "更新貼文")

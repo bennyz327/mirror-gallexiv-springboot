@@ -21,6 +21,11 @@ public class TagService {
         return tag.orElse(null);
     }
 
+    public Tag getTagByName(String tagName){
+        Optional<Tag> tag = tagD.findByTagName(tagName);
+        return tag.orElse(null);
+    }
+
     //取得全部tag
     public VueData getAllTag() {
         List<Tag> result = tagD.findAll();

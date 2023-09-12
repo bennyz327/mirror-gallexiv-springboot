@@ -40,7 +40,7 @@ public class PicturesController {
         System.out.println("fileName:" + fileName);
 
         // 创建上传目录（如果不存在）
-        File uploadDir = new File("C:/upload");
+        File uploadDir = new File("C://upload");
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }

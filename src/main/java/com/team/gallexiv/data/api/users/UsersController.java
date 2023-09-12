@@ -25,13 +25,6 @@ public class UsersController {
         return userS.getUserById(userId);
     }
 
-//    @PostMapping(path = "/userInfos/login")
-//    @Operation(description = "登入")
-//    public VueData getUserByUserNameAndPassWord(@RequestBody Userinfo user) {
-//        System.out.println("test");
-//        return userS.checkLogin(user);
-//    }
-
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {
         return userS.getAllUsers();
@@ -40,7 +33,6 @@ public class UsersController {
     @PostMapping(path = "/userInfos/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增user")
     public Userinfo addUser(@RequestBody Userinfo user) {
-        // System.out.println("收到"+plan);
         return userS.insertUser(user);
     }
 
@@ -58,8 +50,5 @@ public class UsersController {
         return userS.updateUserById(user);
 
     }
-//    public String inputAvatar(@RequestBody Userinfo user){
-//
-//    }
 
 }

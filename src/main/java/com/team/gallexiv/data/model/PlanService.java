@@ -22,8 +22,8 @@ public class PlanService {
     }
 
     // 取得單筆plan
-    public VueData getPlanById(Plan plan) {
-        Optional<Plan> optionalPlan = planD.findById(plan.getPlanId());
+    public VueData getPlanById(Integer planId) {
+        Optional<Plan> optionalPlan = planD.findById(planId);
         if (optionalPlan.isPresent()) {
             return VueData.ok(optionalPlan.orElse(null));
         }
@@ -72,10 +72,10 @@ public class PlanService {
     }
 
     // 刪除plan
-    public VueData deletePlanById(Plan plan) {
-        Optional<Plan> planOptional = planD.findById(plan.getPlanId());
+    public VueData deletePlanById(Integer planId) {
+        Optional<Plan> planOptional = planD.findById(planId);
         if (planOptional.isPresent()) {
-            planD.deleteById(plan.getPlanId());
+            planD.deleteById(planId);
             return VueData.ok();
         }
         return VueData.error("刪除失敗");
