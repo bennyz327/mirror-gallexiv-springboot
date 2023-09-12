@@ -140,6 +140,15 @@ public class PostService {
         return null;
     }
 
+    public VueData getPostByUserId(int userId){
+
+        Optional<Userinfo> userinfo = userD.findByUserId(userId);
+        if(userinfo.isPresent()){
+            return VueData.ok(postD.findByUserinfoByUserId(userinfo.get()));
+        }
+        return VueData.error("查無該使用者貼文");
+    }
+
     // 模糊查詢
     public List<Post> findPostByTitleLike(@RequestParam("postTitle") String postTitle) {
         return postD.findByTitleLike(postTitle);

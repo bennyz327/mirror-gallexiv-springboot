@@ -6,6 +6,7 @@ import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.UserService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,8 +61,9 @@ public class VerifyTest extends BaseController {
 
     @GetMapping("/auth/getmyinfo")
     public VueData testGetMyInfo() {
-//        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        String name = "隨便打";
+        String accout = SecurityContextHolder.getContext().getAuthentication().getName();
+        String name = userS.getUserByAccount(accout).getUserName();
+//        String name = "隨便打";
         return VueData.ok("你的名稱為"+name);
     }
 

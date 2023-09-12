@@ -13,4 +13,5 @@ public interface PostDao extends JpaRepository<Post, Integer> {
     @Query("from Post where postTitle like %:postTitle%")
     List<Post> findByTitleLike(@Param("postTitle") String postTitle);
 
+    List<Post> findByUserinfoByUserId(Userinfo userinfo);
 }

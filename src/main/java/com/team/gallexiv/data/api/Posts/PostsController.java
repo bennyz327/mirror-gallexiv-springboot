@@ -8,11 +8,14 @@ import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @Tag(name = "貼文控制存取")
 public class PostsController {
@@ -50,6 +53,14 @@ public class PostsController {
     @Operation(description = "新增貼文")
     public VueData addPost(@RequestBody Post post) {
         return postS.insertPost(post);
+    }
+
+    @CrossOrigin(origins = "http://172.18.135.63:3100")
+    @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
+    public VueData findAllPersonPost() {
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("目前登入使用者"+accoutName);
+        return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
     }
 
     @DeleteMapping(path = "/posts/delete")

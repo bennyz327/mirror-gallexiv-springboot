@@ -1,11 +1,8 @@
-# 啟動時使用 spring.profiles.active=abc 參數，會載入 application-abc.yaml 的設定檔
-# 可以同時載入多個設定檔，用逗號分隔，例如: spring.profiles.active=base,dev
-# 若有重複設定，寫在前面的設定檔會被後面的設定檔覆蓋
+
 spring:
   application:
     name: gallexiv
   datasource:
-    # 需在自己的設定檔額外設定
     driver-class-name: com.mysql.cj.jdbc.Driver
   jackson:
     serialization:
@@ -29,7 +26,6 @@ spring:
       suffix:
   data:
     redis:
-      # 需在自己的設定檔額外設定
       connect-timeout: 10000
       jedis:
         pool:
@@ -38,6 +34,16 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 1086051156003-dsdrq6ot29rao9lt40gb93o4v2n1tafn.apps.googleusercontent.com
+#            client-secret: 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
+#            client-name: google
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
 logging:
   level:
     org:
@@ -49,6 +55,8 @@ springdoc:
 gallexiv:
   jwt:
     secretKey: d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4
-    expire: 1800
-#    expire: 604800
+    expire: 1800 # 604800
     header: Authorization
+# 啟動時使用 spring.profiles.active=abc 參數，會載入 application-abc.yaml 的設定檔
+# 可以同時載入多個設定檔，用逗號分隔，例如: spring.profiles.active=base,dev
+# 若有重複設定，寫在前面的設定檔會被後面的設定檔覆蓋
