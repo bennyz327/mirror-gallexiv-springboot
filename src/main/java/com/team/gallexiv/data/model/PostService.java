@@ -2,6 +2,7 @@ package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.dto.PostDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class PostService {
 
@@ -100,7 +102,10 @@ public class PostService {
     // 更新貼文
     public VueData updatePostById(Post post) {
 
+        log.info("get Id "+post.getPostId());
+
         Optional<Post> optional = postD.findById(post.getPostId());
+
 
         if (optional.isPresent()) {
             Post result = optional.get();

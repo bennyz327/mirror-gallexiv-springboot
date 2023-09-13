@@ -18,8 +18,10 @@ import java.io.InputStream;
 
 import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
 
+@CrossOrigin
 @Slf4j
 @RestController
+@RequestMapping("/p")
 @Tag(name = "圖片控制存取")
 public class PicturesController {
     final UserService userS;
@@ -30,7 +32,7 @@ public class PicturesController {
         this.pictureS = pictureS;
     }
 
-    @PostMapping(path = "/uploadPicture", produces = "application/json;charset=UTF-8")
+    @PostMapping(path = "/upload", produces = "application/json;charset=UTF-8")
     public String processAction(@RequestParam("myFiles") MultipartFile mf) throws IOException {
         if (mf.isEmpty()) {
             return "File is empty";
@@ -89,7 +91,7 @@ public class PicturesController {
     }
 
     @GetMapping(
-            value = "/test/p/{pid}",
+            value = "/test/{pid}",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
