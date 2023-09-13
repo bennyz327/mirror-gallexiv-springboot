@@ -64,6 +64,7 @@ public class PostsController {
         log.info(Arrays.toString(post.getTagArr()));
         log.info(post.getPostTitle());
         log.info(post.getPostContent());
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String[] tagArr = post.getTagArr();
 
@@ -74,7 +75,7 @@ public class PostsController {
             newTagC.add(tempTag);
         }
 
-        Post newPost = new Post(userS.getUserEntityById(post.getUserId()), post.getPostTitle(), post.getPostContent(), newTagC);
+        Post newPost = new Post(userS.getUserEntityById(userS.getUserByAccount(accoutName).getUserId()), post.getPostTitle(), post.getPostContent(), newTagC);
 
         Status newPostStatus =new Status(7);
         newPost.setPostStatusByStatusId(newPostStatus);
@@ -86,7 +87,9 @@ public class PostsController {
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
+        //從JWT解析請求者
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         log.info("目前登入使用者"+accoutName);
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
     }

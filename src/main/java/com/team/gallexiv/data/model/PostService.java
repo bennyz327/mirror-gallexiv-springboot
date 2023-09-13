@@ -2,6 +2,7 @@ package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.dto.PostDto;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
