@@ -36,6 +36,7 @@ public class CommentService {
         this.postD = postD;
     }
 
+    // ------------給admin使用---------------//
     // 取得單筆 comment
     public VueData getCommentById(Comment comment) {
         Optional<Comment> optionalComment = commentD.findById(comment.getCommentId());
@@ -53,16 +54,17 @@ public class CommentService {
         }
         return VueData.ok(result);
     }
+    // -----------------------------------//
 
-    // 刪除 comment (更改 status = 14)
+    // 刪除 comment (更改 status = 14)(admin 和一般 user 通用)
     @Transactional
     public VueData deleteCommentById(Integer commentId) {
         try {
-            Optional<Comment> optionalComment = commentD.findById(commentId);
+            Optional<Comment> thisComment = commentD.findById(commentId);
             Integer thisCommentStatusId = 14;
             Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
-            if (optionalComment != null) {
-                Comment deleteComment = optionalComment.get();
+            if (thisComment != null) {
+                Comment deleteComment = thisComment.get();
                 deleteComment.setCommentStatusByStatusId(thisCommentStatus.get());
                 commentD.save(deleteComment);
             }
@@ -107,12 +109,13 @@ public class CommentService {
     @Transactional
     public VueData updateComment(Integer commentId, String commentText) {
         try {
-            Comment comment = new Comment();
             Optional<Comment> thisCommentId = commentD.findById(commentId);
             if (thisCommentId != null) {
-                comment.setCommentText(commentText);
+                Comment updateComment = thisCommentId.get();
+                updateComment.setCommentText(commentText);
+                commentD.save(updateComment);
             }
-            return VueData.ok(commentD.save(comment));
+            return VueData.ok("更新成功");
         } catch (Exception e) {
             e.printStackTrace();
             return VueData.error("更新失敗");
@@ -121,18 +124,21 @@ public class CommentService {
     }
 
     // ------------給一般user使用---------------//
-    // 由 PostId 找 comments 並排列分頁
-    // public Page<Comment> findByPage(Integer pageNumber){
-    // PageRequest pageRequest = PageRequest.of(pageNumber-1, 5,
-    // Sort.Direction.DESC,"commentTime");
-    // Page<Comment> a
-    // }
 
-    // 由 PostId 找 comments 並排列
+    // 由 PostId 找 comments
     public VueData getCommentsByPostId(Integer postId) {
         List<Comment> comments = commentD.findCommentIByPostIdAndStatus(postId);
         if (!comments.isEmpty()) {
             return VueData.ok(comments);
+        }
+        return VueData.error("查詢失敗");
+    }
+
+    // 找到子留言
+    public VueData getSubComment(Integer parentCommentId) {
+        List<Comment> subComments = commentD.findSubComment(parentCommentId);
+        if (!subComments.isEmpty()) {
+            return VueData.ok(subComments);
         }
         return VueData.error("查詢失敗");
     }
