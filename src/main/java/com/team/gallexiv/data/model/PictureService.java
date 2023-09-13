@@ -20,7 +20,7 @@ public class PictureService {
         pictureD.save(picture);
     }
 
-    public List<Picture> getImgPathByPostId(Integer postId) {
+    public List<String> getImgPathByPostId(Integer postId) {
         return pictureD.fintImgPathByPostId(postId);
     }
 }

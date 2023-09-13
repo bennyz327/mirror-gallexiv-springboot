@@ -11,7 +11,7 @@ public interface PictureDao extends JpaRepository<Picture, Integer> {
 
     List<Picture> findByPostByPostIdPostId(Integer postId);
 
-    @Query("SELECT p FROM Picture p WHERE p.postByPostId.postId= :postId")
-    List<Picture> fintImgPathByPostId(Integer postId);
+    @Query("SELECT p.imgPath FROM Picture p WHERE p.postByPostId.postId= :postId")
+    List<String> fintImgPathByPostId(Integer postId);
 
 }

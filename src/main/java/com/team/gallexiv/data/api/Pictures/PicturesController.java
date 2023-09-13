@@ -51,30 +51,60 @@ public class PicturesController {
     // return ResponseEntity.ok(imageUrls);
     // }
 
-    @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<byte[]>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
-        List<Picture> pictures = pictureS.getImgPathByPostId(postId);
-        if (!pictures.isEmpty()) {
-            List<byte[]> imageBytesList = new ArrayList<>();
-            List<String> imagePaths = pictures.stream()
-                    .map(Picture::getImgPath)
-                    .collect(Collectors.toList());
-            System.out.println("imagePaths: " + imagePaths);
-            for (String imagePath : imagePaths) {
-                try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
-                    byte[] imageBytes = new byte[fileInputStream.available()];
-                    fileInputStream.read(imageBytes);
-                    imageBytesList.add(imageBytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    @GetMapping(value = "/test/p")
+    public ResponseEntity<List<String>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
+        List<String> pictures = pictureS.getImgPathByPostId(postId);
+        List<String> imageUrls = new ArrayList<>();
+
+        for (String picture : pictures) {
+            try (FileInputStream fileInputStream = new FileInputStream(new File(picture))) {
+                byte[] imageBytes = new byte[fileInputStream.available()];
+                fileInputStream.read(imageBytes);
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                String imageUrl = "data:image/png;base64," + base64Image;
+                imageUrls.add(imageUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            return ResponseEntity.ok(imageBytesList);
         }
 
-        return ResponseEntity.ok(Collections.emptyList());
+        return ResponseEntity.ok(imageUrls);
     }
+    private String getFileExtension(String filePath) {
+        int lastDotIndex = filePath.lastIndexOf('.');
+        if (lastDotIndex != -1) {
+            return filePath.substring(lastDotIndex + 1);
+        }
+        return "png"; // 如果无法从文件路径中提取扩展名，则默认为 PNG 格式
+    }
+
+    // @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
+    // public ResponseEntity<List<byte[]>> getImagesWithMediaType(@RequestParam
+    // Integer postId) throws IOException {
+    // List<Picture> pictures = pictureS.getImgPathByPostId(postId);
+    // if (!pictures.isEmpty()) {
+    // List<byte[]> imageBytesList = new ArrayList<>();
+    // List<String> imagePaths = pictures.stream()
+    // .map(Picture::getImgPath)
+    // .collect(Collectors.toList());
+    // System.out.println("imagePaths: " + imagePaths);
+    // for (String imagePath : imagePaths) {
+    // try (FileInputStream fileInputStream = new FileInputStream(new
+    // File(imagePath))) {
+    // byte[] imageBytes = new byte[fileInputStream.available()];
+    // fileInputStream.read(imageBytes);
+    // imageBytesList.add(imageBytes);
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // }
+
+    // return ResponseEntity.ok(imageBytesList);
+    // }
+
+    // return ResponseEntity.ok(Collections.emptyList());
+    // }
 
     // @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
     // public ResponseEntity<List<String>> getImagesWithBase64(@RequestParam Integer
