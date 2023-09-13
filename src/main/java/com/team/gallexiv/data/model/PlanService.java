@@ -1,8 +1,12 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,10 +57,21 @@ public class PlanService {
     // -----------------------------
 
     // 新增plan
-    public VueData insertPlan(Plan plan) {
+    public VueData insertPlan(Plan plan, MultipartFile mf)throws IOException {
+        String fileName = mf.getOriginalFilename();
+
+        String saveFileDir = "C:/uploadPicture/"+plan.getOwnerIdByUserId().getUserId();
+        File saveFilePath = new File(saveFileDir,fileName);
+
+        byte[] b1 = mf.getBytes();
+        mf.transferTo(saveFilePath);
+
+        if(fileName !=null && fileName.length()!=0){
+
+        }
+
 
         Optional<Userinfo> thisUser = userinfoD.findByUserId(plan.getOwnerIdByUserId().getUserId());
-
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
@@ -70,6 +85,8 @@ public class PlanService {
 
         return VueData.error("新增失敗");
     }
+
+
 
     // 刪除plan
     public VueData deletePlanById(Integer planId) {

@@ -8,7 +8,9 @@ import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,9 +40,9 @@ public class PlansController {
 
     @PostMapping(path = "/plans/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public VueData addPlan(@RequestBody Plan plan) {
+    public VueData addPlan(@RequestBody Plan plan, @RequestParam("myFile")MultipartFile mf)throws IOException {
         System.out.println("收到" + plan);
-        return planS.insertPlan(plan);
+        return planS.insertPlan(plan,mf);
     }
 
     @CrossOrigin
