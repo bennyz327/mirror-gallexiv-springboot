@@ -53,11 +53,7 @@ spring:
 springdoc:
   swagger-ui:
     path: /api/doc
-
 gallexiv:
-  # 網域用,分隔 改用Security之後可能不用這兩個設定了
-  allowedOrigins: "http://localhost:3100"
-  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
   jwt:
     expire: 604800
     secret: "f4e2e52034348f86b67cde581c0f9eb5"
