@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-// @RequestMapping(path = { "/pages/ajax" })
 public class CommentsController {
 
     final CommentService commentS;
@@ -47,19 +46,6 @@ public class CommentsController {
         return commentS.deleteCommentById(commentId);
     }
 
-    // 新增 comment
-    // @PostMapping(path = "/comments/insert", produces =
-    // "application/json;charset=UTF-8")
-    // // public VueData addComment(@RequestBody CommentDto commentDto, HttpSession
-    // // httpSession) {
-    // // httpSession.getAttribute();
-    // public VueData addComment(@RequestBody CommentDto commentDto) {
-    // Integer userId = 2;
-    // return commentS.insertComment(userId, commentDto.getPostId(),
-    // commentDto.getCommentText(),
-    // commentDto.getParentCommentId());
-    // }
-
     // 更新 comment
     @PutMapping(path = "comments/update")
     public VueData updateCommentForAdmin(@RequestParam Integer commentId, String commentText) {
@@ -73,15 +59,6 @@ public class CommentsController {
     public VueData getCommentsByPostId(@RequestParam Integer postId) {
         return commentS.getCommentsByPostId(postId);
     }
-
-    
-
-    // 找到子留言
-    // @GetMapping(path = "comments/findSubComment", produces =
-    // "application/json;charset=UTF-8")
-    // public VueData getSubComment(@RequestParam Integer parentCommentId) {
-    // return commentS.getSubComment(parentCommentId);
-    // }
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")

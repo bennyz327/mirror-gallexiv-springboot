@@ -48,7 +48,7 @@ public class PostsController {
     @CrossOrigin
     @GetMapping(path = "/posts/post", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得單筆貼文 (GET BY ID)")
-    public VueData showPostsOb(@RequestParam Integer postId) {
+    public VueData showPostForPostPage(@RequestParam Integer postId) {
         return postS.getPostById(postId);
     }
 

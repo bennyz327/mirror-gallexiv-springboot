@@ -43,18 +43,6 @@ public class PicturesController {
         this.pictureS = pictureS;
     }
 
-    // @GetMapping(path = "/users/{id}", produces = "application/json")
-    // @Operation(description = "取得使用者 (GET BY ID)")
-    // public Userinfo showUsersOb(@PathVariable int id) {
-    // return userS.getUserById(id);
-    //
-    // @GetMapping(path = "/test/p", produces = "application/json;charset=UTF-8")
-    // public ResponseEntity<List<String>> getImageUrls(@RequestParam Integer
-    // postId) {
-    // List<String> imageUrls = pictureS.getImgPathByPostId(postId);
-    // return ResponseEntity.ok(imageUrls);
-    // }
-
     @GetMapping(value = "/test/p")
     public ResponseEntity<List<String>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
         List<String> pictures = pictureS.getImgPathByPostId(postId);
@@ -75,6 +63,7 @@ public class PicturesController {
 
         return ResponseEntity.ok(imageUrls);
     }
+
     private String getFileExtension(String filePath) {
         int lastDotIndex = filePath.lastIndexOf('.');
         if (lastDotIndex != -1) {
@@ -83,100 +72,4 @@ public class PicturesController {
         return "png"; // 如果无法从文件路径中提取扩展名，则默认为 PNG 格式
     }
 
-    // @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<List<byte[]>> getImagesWithMediaType(@RequestParam
-    // Integer postId) throws IOException {
-    // List<Picture> pictures = pictureS.getImgPathByPostId(postId);
-    // if (!pictures.isEmpty()) {
-    // List<byte[]> imageBytesList = new ArrayList<>();
-    // List<String> imagePaths = pictures.stream()
-    // .map(Picture::getImgPath)
-    // .collect(Collectors.toList());
-    // System.out.println("imagePaths: " + imagePaths);
-    // for (String imagePath : imagePaths) {
-    // try (FileInputStream fileInputStream = new FileInputStream(new
-    // File(imagePath))) {
-    // byte[] imageBytes = new byte[fileInputStream.available()];
-    // fileInputStream.read(imageBytes);
-    // imageBytesList.add(imageBytes);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
-
-    // return ResponseEntity.ok(imageBytesList);
-    // }
-
-    // return ResponseEntity.ok(Collections.emptyList());
-    // }
-
-    // @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<List<String>> getImagesWithBase64(@RequestParam Integer
-    // postId) throws IOException {
-    // System.out.println("postId:" + postId);
-    // List<Picture> pictures = pictureS.getImgPathByPostId(postId);
-    // if (!pictures.isEmpty()) {
-    // List<String> base64Images = new ArrayList<>();
-    // List<String> imagePaths = pictures.stream()
-    // .map(Picture::getImgPath)
-    // .collect(Collectors.toList());
-    // System.out.println("imagePaths: " + imagePaths);
-    // for (String imagePath : imagePaths) {
-    // try (FileInputStream fileInputStream = new FileInputStream(new
-    // File(imagePath))) {
-    // byte[] imageBytes = new byte[fileInputStream.available()];
-    // fileInputStream.read(imageBytes);
-    // // 将图片字节数组转换为 Base64 字符串
-    // String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-    // base64Images.add(base64Image);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
-
-    // return ResponseEntity.ok(base64Images);
-    // }
-
-    // return ResponseEntity.ok(Collections.emptyList());
-    // }
-
-    // @GetMapping("/test/p")
-    // public ResponseEntity<MultiValueMap<String, Object>>
-    // getImagesAsMultipart(@RequestParam Integer postId)
-    // throws IOException {
-    // List<Picture> pictures = pictureS.getImgPathByPostId(postId);
-    // if (!pictures.isEmpty()) {
-    // MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    // for (Picture picture : pictures) {
-    // String imagePath = picture.getImgPath();
-    // File imageFile = new File(imagePath);
-    // if (imageFile.exists()) {
-    // try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
-    // byte[] imageBytes = new byte[fileInputStream.available()];
-    // fileInputStream.read(imageBytes);
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.setContentType(MediaType.IMAGE_PNG); // 根据图片类型设置对应的MediaType
-    // HttpEntity<byte[]> part = new HttpEntity<>(imageBytes, headers);
-    // body.add("file", part);
-    // }
-    // }
-    // }
-    // return ResponseEntity.ok()
-    // .contentType(MediaType.MULTIPART_MIXED)
-    // .body(body);
-    // }
-    // return ResponseEntity.notFound().build();
-    // }
-
-    // @GetMapping(value = "/test/p/{postId}", produces =
-    // MediaType.APPLICATION_JSON_VALUE)
-    // public ResponseEntity<List<String>> getImagesByPostId(@PathVariable Integer
-    // postId) throws IOException {
-    // // 在数据库中查询具有相应postId的所有图像路径
-    // List<String> imagePaths = imageService.findImagePathsByPostId(postId); //
-    // 假设有一个imageService来处理数据库查询
-
-    // // 返回图像路径列表作为JSON响应
-    // return ResponseEntity.ok(imagePaths);
-    // }
 }
