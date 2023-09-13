@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static com.team.gallexiv.common.lang.Const.FRONTEND_URL;
+import static com.team.gallexiv.common.lang.Const.FRONTEND_URL_MAP;
 
 @Slf4j
 @Component
@@ -82,7 +82,9 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
 //        outputStream.flush();
 //        outputStream.close();
         //將JWT寫入GET參數
-        response.sendRedirect(FRONTEND_URL+"/200?token="+jwt+"&username="+nameUnicode);
+
+        String frontUrl = FRONTEND_URL_MAP.get("localhost_fake_domain");
+        response.sendRedirect(frontUrl+"/200?token="+jwt+"&username="+nameUnicode);
     }
 }
 

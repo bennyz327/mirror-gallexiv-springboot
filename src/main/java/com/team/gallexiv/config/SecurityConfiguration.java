@@ -64,27 +64,30 @@ public class SecurityConfiguration {
     @Autowired
     JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
-    //TODO 有時間可以設定記住我功能
-    //這邊設定本APP第一個認證鍊，但其實認證鍊可以有多個
+    //這邊設定本APP第一個認證鍊，但認證鍊可以有多個 TODO 有時間可以設定記住我功能
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors
+                        .configurationSource(corsConfigurationSource())
+                )
+                //請求安全設定 統一用下面的寫法
                 .authorizeHttpRequests(auth -> auth
-                        //TODO 統一用下面的寫法
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**").permitAll()
-                        .requestMatchers(POST,"/**").permitAll()
+                        .requestMatchers(POST, "/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
                         .authenticated()
                 )
+                //不須要Session
                 .sessionManagement(session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        //不須要Session.maximumSessions(1).maxSessionsPreventsLogin(true)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        //.maximumSessions(1).maxSessionsPreventsLogin(true)
                 )
-                //GOOGLE oauth2 登入 TODO 在linux上面會有問題，待解決
+                //google登入
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauthLoginSuccessHandler)
                         .failureHandler(loginFailureHandler)
@@ -108,12 +111,23 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
-                //登入用
+                //登入驗證碼
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
-                //驗證用
+                //JWT身份驗證
                 .addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
         return httpSecurity.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(CORS_ALLOWED_ORIGINS);
+        configuration.setAllowedMethods(CORS_ALLOWED_METHODS);
+        configuration.setAllowedHeaders(CORS_ALLOWED_HEADERS);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 
