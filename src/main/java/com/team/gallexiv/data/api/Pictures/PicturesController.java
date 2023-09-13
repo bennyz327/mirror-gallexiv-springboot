@@ -57,7 +57,6 @@ public class PicturesController {
 
     @GetMapping(path = "/test/p", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<byte[]>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
-        System.out.println("postId:" + postId);
         List<Picture> pictures = pictureS.getImgPathByPostId(postId);
         if (!pictures.isEmpty()) {
             List<byte[]> imageBytesList = new ArrayList<>();
