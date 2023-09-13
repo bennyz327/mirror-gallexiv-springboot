@@ -36,7 +36,7 @@ public class PostsController {
     private final PictureService pictureS;
 
     private final TagService tagS;
-
+    
     public PostsController(PostService postS, UserService userS, PictureService pictureS, TagService tagS) {
         this.postS = postS;
         this.userS = userS;
@@ -67,6 +67,7 @@ public class PostsController {
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
+        //從JWT解析請求者
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("目前登入使用者" + accoutName);
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
