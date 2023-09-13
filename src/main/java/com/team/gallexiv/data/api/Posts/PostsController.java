@@ -44,16 +44,9 @@ public class PostsController {
     @CrossOrigin
     @GetMapping(path = "/posts/post", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得單筆貼文 (GET BY ID)")
-    public VueData showPostsOb(@RequestParam Integer postId) {
+    public VueData showPostForPostPage(@RequestParam Integer postId) {
         return postS.getPostById(postId);
     }
-
-    // @CrossOrigin
-    // @GetMapping(path = "/posts/{postId}", produces = "application/json")
-    // @Operation(description = "取得單筆貼文 (GET BY ID)")
-    // public VueData showPostsObForView(@PathVariable Integer postId) {
-    // return postS.getPostById(postId);
-    // }
 
     @CrossOrigin
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
@@ -62,29 +55,6 @@ public class PostsController {
         return postS.getAllPost();
     }
 
-    // @PostMapping(path = "/posts/insert", produces =
-    // "application/json;charset=UTF-8")
-    // @Operation(description = "新增貼文")
-    // public VueData addPost(@RequestBody PostDto post) {
-    // log.info("進PUT");
-    // log.info(Arrays.toString(post.getTagArr()));
-    // log.info(post.getPostTitle());
-    // log.info(post.getPostContent());
-    // String[] tagArr = post.getTagArr();
-
-    // Tag tempTag;
-    // Collection<Tag> newTagC = new ArrayList<>();
-    // for (String tagName : tagArr) {
-    // tempTag = new Tag(tagName);
-    // newTagC.add(tempTag);
-    // }
-
-    // Post newPost = new Post(post.getUserId(), post.getPostTitle(),
-    // post.getPostContent(), newTagC);
-    // return postS.insertPost(newPost);
-
-    // }
-
     @CrossOrigin(origins = "http://localhost:3100")
     @DeleteMapping(path = "/posts/delete")
     @Operation(description = "刪除貼文")
@@ -92,14 +62,6 @@ public class PostsController {
         return postS.deletePostById(postId);
     }
 
-    // @Transactional // 少了tag跟picture
-    // @PutMapping("/posts/update")
-    // @Operation(description = "更新貼文")
-    // public VueData updatePost(@RequestBody Post post) {
-    // log.info("進PUT");
-    // log.info(post.toString());
-    // return postS.updatePostById(post);
-    // }
     @Transactional // 少了tag跟picture
     @PutMapping("/posts/update")
     @Operation(description = "更新貼文")
