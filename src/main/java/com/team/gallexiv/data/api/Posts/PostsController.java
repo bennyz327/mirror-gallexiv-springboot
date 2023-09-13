@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
@@ -24,7 +26,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@Tag(name = "貼文控制存取")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "貼文控制存取")
 public class PostsController {
 
     final PostService postS;
@@ -91,10 +93,11 @@ public class PostsController {
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
     }
 
+    @CrossOrigin(origins = "http://localhost:3100")
     @DeleteMapping(path = "/posts/delete")
     @Operation(description = "刪除貼文")
-    public VueData deletePost(@RequestBody Post post) {
-        return postS.deletePostById(post);
+    public VueData deletePost(@RequestParam Integer postId) {
+        return postS.deletePostById(postId);
     }
 
     @Transactional // 少了tag跟picture
@@ -107,7 +110,7 @@ public class PostsController {
 
     @GetMapping("/posts/postTitle")
     @Operation(description = "模糊查詢貼文")
-    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle){
+    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle) {
         return postS.findPostByTitleLike(postTitle);
     }
 
