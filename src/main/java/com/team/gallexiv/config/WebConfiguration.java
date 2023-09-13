@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
+import java.util.List;
 
 // 跨域設定
 @Configuration
@@ -29,18 +30,15 @@ public class WebConfiguration implements WebMvcConfigurer {
         reg.allowedOrigins(allowApps.split(","));
     }
 
-    // TODO 測試刪除
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        //把字串轉List設定進去
-//        corsConfiguration.setAllowedOrigins(Arrays.asList(allowApps.split(",")));
-//        //把方法字串轉List設定進去
-//        corsConfiguration.setAllowedMethods(Arrays.asList(allowMethods.split(",")));
-//        //把設定給UrlBasedCorsConfigurationSource並回傳
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-//        return source;
-//    }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3100"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }
