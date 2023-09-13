@@ -1,0 +1,13 @@
+總結了 Spring 中 CORS 的相關原始碼，瞭解到了一些知識點：
+
+- 實現 WebMvcConfigurer.addCorsMappings 方法來進行的 CORS 配置，最後會在 Spring 的 Interceptor 或 Handler 中生效
+- 注入 CorsFilter 的方式會讓 CORS 驗證在 Filter 中生效
+- 引入 Spring Security 后，需要調用 HttpSecurity.cors 方法以保證 CorsFilter 會在身份驗證相關的 Filter 之前執行
+- HttpSecurity.cors + WebMvcConfigurer.addCorsMappings 是一種相對低效的方式，會導致跨域請求分別在 Filter 和 Interceptor 層各經歷一次 CORS 驗證
+- HttpSecurity.cors + CorsFilter 註冊 與 HttpSecurity.cors + CorsConfigurationSource 註冊 在運行的時候是等效的
+- 在 Spring 中，沒有通過 CORS 驗證的請求會得到狀態碼為 403 的回應
+
+參考資料:https://segmentfault.com/a/1190000019485883
+
+101976049684784052619
+bennyz327@gmail.com
