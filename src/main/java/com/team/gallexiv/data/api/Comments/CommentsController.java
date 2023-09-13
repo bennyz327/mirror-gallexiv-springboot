@@ -39,9 +39,9 @@ public class CommentsController {
         commentS.getAllComment();
         return commentS.getAllComment();
     }
+    // --------------------------------------//
 
-    // 刪除 comment
-
+    // 刪除 comment (admin 和一般 user 通用)
     @DeleteMapping(path = "comments/delete")
     public VueData deleteComment(@RequestParam Integer commentId) {
         return commentS.deleteCommentById(commentId);
@@ -66,8 +66,6 @@ public class CommentsController {
         return commentS.updateComment(commentId, commentText);
     }
 
-    // -------------------------------//
-
     // ------------給一般user使用---------------//
 
     // 由PostId找comments
@@ -75,6 +73,15 @@ public class CommentsController {
     public VueData getCommentsByPostId(@RequestParam Integer postId) {
         return commentS.getCommentsByPostId(postId);
     }
+
+    
+
+    // 找到子留言
+    // @GetMapping(path = "comments/findSubComment", produces =
+    // "application/json;charset=UTF-8")
+    // public VueData getSubComment(@RequestParam Integer parentCommentId) {
+    // return commentS.getSubComment(parentCommentId);
+    // }
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")

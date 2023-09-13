@@ -1,6 +1,7 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.dto.PostDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,8 +28,8 @@ public class PostService {
     }
 
     // 取得單筆貼文
-    public VueData getPostById(Post post) {
-        Optional<Post> optionalPost = postD.findById(post.getPostId());
+    public VueData getPostById(int postId) {
+        Optional<Post> optionalPost = postD.findById(postId);
         if (optionalPost.isPresent()) {
             return VueData.ok(optionalPost.orElse(null));
         }
@@ -75,19 +76,20 @@ public class PostService {
     }
 
     // 刪除貼文
-    public VueData deletePostById(Post post) {
-        Optional<Post> postOptional = postD.findById(post.getPostId());
+    public VueData deletePostById(Integer postId) {
+        Optional<Post> postOptional = postD.findById(postId);
         if (postOptional.isPresent()) {
-            postD.deleteById(post.getPostId());
+            postD.deleteById(postId);
             return VueData.ok("刪除成功");
         }
         return VueData.error("刪除失敗");
     }
 
-    // 更新貼文
-    public VueData updatePostById(Post post) {
 
-        Optional<Post> optional = postD.findById(post.getPostId());
+    // 更新貼文
+    public VueData updatePostById(int postId,Post post) {
+
+        Optional<Post> optional = postD.findById(postId);
 
         if (optional.isPresent()) {
             Post result = optional.get();

@@ -1,18 +1,25 @@
 package com.team.gallexiv.data.api.Posts;
 
-import com.team.gallexiv.data.model.Post;
-import com.team.gallexiv.data.model.PostService;
-import com.team.gallexiv.data.model.UserService;
-import com.team.gallexiv.data.model.Userinfo;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
+import com.team.gallexiv.data.dto.PostDto;
+import com.team.gallexiv.data.model.Tag;
+import com.team.gallexiv.data.model.*;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -24,9 +31,12 @@ public class PostsController {
 
     final UserService userS;
 
-    public PostsController(PostService postS, UserService userS) {
+    final TagService tagS;
+
+    public PostsController(PostService postS, UserService userS, TagService tagS) {
         this.postS = postS;
         this.userS = userS;
+        this.tagS = tagS;
     }
 
     @GetMapping(path = "/posts/{id}/owner", produces = "application/json")
@@ -36,11 +46,18 @@ public class PostsController {
     }
 
     @CrossOrigin
-    @GetMapping(path = "/postsById", produces = "application/json")
+    @GetMapping(path = "/posts/{postId}", produces = "application/json")
     @Operation(description = "取得單筆貼文 (GET BY ID)")
-    public VueData showPostsOb(@RequestBody Post post) {
-        return postS.getPostById(post);
+    public VueData showPostsOb(@PathVariable Integer postId) {
+        return postS.getPostById(postId);
     }
+
+    // @CrossOrigin
+    // @GetMapping(path = "/posts/{postId}", produces = "application/json")
+    // @Operation(description = "取得單筆貼文 (GET BY ID)")
+    // public VueData showPostsObForView(@PathVariable Integer postId) {
+    // return postS.getPostById(postId);
+    // }
 
     @CrossOrigin
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
@@ -49,11 +66,22 @@ public class PostsController {
         return postS.getAllPost();
     }
 
-    @PostMapping(path = "/posts/insert", produces = "application/json;charset=UTF-8")
-    @Operation(description = "新增貼文")
-    public VueData addPost(@RequestBody Post post) {
-        return postS.insertPost(post);
-    }
+    // @PostMapping(path = "/posts/insert", produces =
+    // "application/json;charset=UTF-8")
+    // @Operation(description = "新增貼文")
+    // public VueData addPost(@RequestBody PostDto post) {
+    // log.info("進PUT");
+    // log.info(Arrays.toString(post.getTagArr()));
+    // log.info(post.getPostTitle());
+    // log.info(post.getPostContent());
+    // String[] tagArr = post.getTagArr();
+
+    // Tag tempTag;
+    // Collection<Tag> newTagC = new ArrayList<>();
+    // for (String tagName : tagArr) {
+    // tempTag = new Tag(tagName);
+    // newTagC.add(tempTag);
+    // }
 
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
@@ -72,8 +100,9 @@ public class PostsController {
     @Transactional // 少了tag跟picture
     @PutMapping("/posts/update")
     @Operation(description = "更新貼文")
-    public VueData updatePost(@RequestBody Post post) {
-        return postS.updatePostById(post);
+    public VueData updatePost(@RequestParam Integer postId, @RequestBody Post post) {
+
+        return postS.updatePostById(postId, post);
     }
 
     @GetMapping("/posts/postTitle")
