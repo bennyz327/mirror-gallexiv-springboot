@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,15 @@ public class PlanService {
         Optional<Plan> optionalPlan = planD.findById(planId);
         if (thisUser.isPresent() && optionalPlan.isPresent()) {
             return VueData.ok(optionalPlan.orElse(null));
+        }
+        return VueData.error("查詢失敗");
+    }
+
+    public VueData getPlanByUserId(String account) {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        if (thisUser.isPresent()){
+            return VueData.ok(planD.findByOwnerIdByUserId(thisUser.get()));
         }
         return VueData.error("查詢失敗");
     }
@@ -71,25 +81,30 @@ public class PlanService {
 //        return null;
 //    }
 
-    public List<Plan> getAllPlanByUserId (Plan plan){
+    public List<Plan> getAllPlanByUserId (Integer userId){
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
-        planD.findById(optionalUserinfo.get().getUserId());
-        return null;
+        List<Plan> planList =new ArrayList<>();
+
+        planList.add(planD.findById(userId).get());
+
+        return planList;
     }
 
 
     // 新增plan
     public VueData insertPlan(Plan plan) {
+        //取得userId
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
 
         if (status.isPresent() && thisUser.isPresent()) {
             System.out.println("有進去");
+            //須加上把圖檔轉成base64，並稍微改一下getStatus邏輯
             plan.setPlanStatusByStatusId(status.get());
             plan.setOwnerIdByUserId(thisUser.get());
             return VueData.ok(planD.save(plan));
@@ -123,7 +138,7 @@ public class PlanService {
             result.setPlanPrice(plan.getPlanPrice());
             result.setPlanStatusByStatusId(new Status(plan.getPlanStatusByStatusId().getStatusId()));
             result.setPlanDescription(plan.getPlanDescription());
-            result.setPlanPicture(plan.getPlanPicture());
+            //增加轉成base64的功能
             result.setPlanPicture(plan.getPlanPicture());
             return VueData.ok(result);
         }
