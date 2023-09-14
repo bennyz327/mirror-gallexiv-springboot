@@ -6,6 +6,8 @@ server:
 #    context-path: /gallexiv
 #    https://子網域名.網域名.主域/context-path(/功能、系統名)
 spring:
+  profiles:
+    active: base,lleondev
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -44,7 +46,7 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
-#      host: 127.0.0.1
+      #      host: 127.0.0.1
       host: 192.168.0.205
       port: 6379
       database: 1
