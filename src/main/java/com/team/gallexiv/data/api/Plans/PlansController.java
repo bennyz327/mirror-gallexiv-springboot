@@ -1,9 +1,6 @@
 package com.team.gallexiv.data.api.Plans;
 
-import com.team.gallexiv.data.model.Plan;
-import com.team.gallexiv.data.model.PlanForShow;
-import com.team.gallexiv.data.model.PlanService;
-import com.team.gallexiv.data.model.UserService;
+import com.team.gallexiv.data.model.*;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
@@ -13,12 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PlansController {
 
     final PlanService planS;
     final UserService userS;
+
 
     public PlansController(PlanService planS, UserService userS) {
         this.planS = planS;
@@ -80,16 +79,10 @@ public class PlansController {
 
     }
 
-//    @GetMapping("plans/test")
-//    public void getAllPlanByUserId(Integer userId) {
-//        List<Plan> results =  planS.getAllPlanByUserId(userId);
-//
-//        for (Plan plan : results) {
-//            System.out.println(plan.getPlanId());
-//        }
-//
-//        return planS.getAllPlanByUserId();
-//
-//    }
+    @GetMapping("plans/test")
+    public VueData getAllPlanByUserId() {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return planS.getPlanByUserId(accountName);
+    }
 
 }

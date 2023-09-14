@@ -12,6 +12,9 @@ public interface PlanDao extends JpaRepository<Plan, Integer> {
 
 //    @Query("from Plan where userId = :UserId")
 //    List<Plan> getAllPlanByUserId(@Param("userId") Integer UserId);
+    public List<Plan> findByOwnerIdByUserId(Userinfo userinfo);
+
+    public Plan findByPlanStatusByStatusId(Status status);
 
 
 
