@@ -16,13 +16,7 @@ spring:
 server:
   port: 8080
   servlet:
-    # 也可以用來區分的 API 的 版本
-    # http(s)://(子網域名.)網域名.主域/context-path/(api/end-point)
-    context-path:
+    context-path: # 可以用來區分的 API 的 版本 # http(s)://(子網域名.)網域名.主域/context-path/(api/end-point)
 gallexiv:
   upload:
-    rootpath: D:/gallexiv/upload
-# 網域用,分隔 改用 Security 之後可能不用這兩個 allow 設定了
-# TODO 測試移除
-#  allowedOrigins: "http://localhost:3100"
-#  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+    rootpath: D:/gallexiv
