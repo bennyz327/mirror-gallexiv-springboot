@@ -16,9 +16,13 @@ public class TagService {
     }
 
     // 取得單筆tag
-    public Tag getTagById(int tagId){
+    public VueData getTagById(int tagId){
         Optional<Tag> tag = tagD.findById(tagId);
-        return tag.orElse(null);
+        if (tag.isPresent()) {
+            return VueData.ok(tag.orElse(null));
+        }
+        return VueData.error("查詢失敗");
+
     }
 
     public Tag getTagByName(String tagName){

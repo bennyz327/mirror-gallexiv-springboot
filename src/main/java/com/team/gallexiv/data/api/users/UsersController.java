@@ -5,6 +5,7 @@ import com.team.gallexiv.data.model.Userinfo;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
@@ -22,6 +23,7 @@ public class UsersController {
     @GetMapping(path = "/userInfos/{userId}", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
     public VueData getUserById(@PathVariable int userId) {
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userS.getUserById(userId);
     }
 

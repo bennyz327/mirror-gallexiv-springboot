@@ -88,10 +88,10 @@ public class PostsController {
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
         //從JWT解析請求者
-        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        log.info("目前登入使用者"+accoutName);
-        return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
+        log.info("目前登入使用者"+accountName);
+        return postS.getPostByUserId(userS.getUserByAccount(accountName).getUserId());
     }
 
     @CrossOrigin(origins = "http://localhost:3100")
