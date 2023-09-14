@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     public VueData handler(RuntimeException e) {
         log.error("運行時異常：----------------{}", e.getMessage());
-        return VueData.error(e.getMessage());
+        return VueData.error("抱歉 出了點小問題 喝杯咖啡後再試試吧");
     }
 
 }

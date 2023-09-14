@@ -25,8 +25,9 @@ public class JwtUtils {
 
 	private long expire = JWT_EXPIRE_SECONDS;
 	private String header;
-	@Value("${gallexiv.jwt.secret}")
-	private String secretKey;
+//	@Value("${gallexiv.jwt.secret}")
+//	private String secretKey;
+	private String secretKey = "d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4";
 
 	@Autowired
 	RedisUtil redisUtil;

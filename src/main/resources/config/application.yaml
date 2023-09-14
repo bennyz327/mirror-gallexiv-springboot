@@ -1,11 +1,8 @@
-#      TODO 生產環境清理
-# 此設定檔為生產環境設定檔
 server:
   port: 8080
-#  servlet:
-#    context-path: /gallexiv
-#    https://子網域名.網域名.主域/context-path(/功能、系統名)
 spring:
+  application:
+    name: gallexiv
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -20,7 +17,7 @@ spring:
         show_sql: true
         format_sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://172.18.135.72:3306/gallexiv_v3?useSSL=false&serverTimezone=UTC
     username: benny
     password: benben327327
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,15 +25,13 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-    view:
-      prefix:
-      suffix:
   security:
     user:
       name: admin
       password: admin1234
   data:
     redis:
+      connect-timeout: 10000
       jedis:
         pool:
           enabled: true
@@ -44,17 +39,14 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
-#      host: 127.0.0.1
-      host: 192.168.0.205
+      host: 172.18.135.72
       port: 6379
       database: 1
-      connect-timeout: 10000
       password: benben327327
-springdoc:
-  swagger-ui:
-    path: /api/doc
 gallexiv:
   jwt:
-    expire: 604800
-    secret: "f4e2e52034348f86b67cde581c0f9eb5"
-    header: "Authorization"
+    secretKey: d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4
+    expire: 300
+    header: Authorization
+  upload:
+    rootpath: /home/benny/upload/
