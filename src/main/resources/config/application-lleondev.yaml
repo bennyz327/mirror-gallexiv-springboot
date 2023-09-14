@@ -20,7 +20,7 @@ server:
     context-path:
 gallexiv:
   upload:
-    rootpath: D:/gallexiv/upload
+    rootpath: /Users/max/Desktop/ActionGroupProject/upload/defult
 #  網域用,分隔 改用 Security 之後可能不用這兩個 allow 設定了
 # TODO 測試移除
 #  allowedOrigins: "http://localhost:3100"

@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -78,6 +79,14 @@ public class PictureService {
         log.info("要放入圖片實體的POST: {}",matchPost);
         Picture newPic = new Picture(filePath,newStatus,matchPost);
         picD.save(newPic);
+    }
+
+    public void savePicture(Picture picture) {
+        picD.save(picture);
+    }
+
+    public List<String> getImgPathByPostId(Integer postId) {
+        return picD.fintImgPathByPostId(postId);
     }
 
 }
