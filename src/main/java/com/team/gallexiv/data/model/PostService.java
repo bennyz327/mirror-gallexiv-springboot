@@ -55,8 +55,8 @@ public class PostService {
 
     // 新增貼文
     public VueData insertPost(Post post) {
-
-        Optional<Userinfo> optionalUserinfo = userD.findById(post.getUserinfoByUserId().getUserId());
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
         if (optionalUserinfo.isPresent()) {
 
             if (!(post.getPlanByPlanId() == null)) {
@@ -102,12 +102,13 @@ public class PostService {
     // 更新貼文
     public VueData updatePostById(Post post) {
 
-        log.info("get Id "+post.getPostId());
-
+        log.info("getId "+post.getPostId());
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
         Optional<Post> optional = postD.findById(post.getPostId());
 
 
-        if (optional.isPresent()) {
+        if (optionalUserinfo.isPresent()&&optional.isPresent()) {
             Post result = optional.get();
             result.setPostTitle(post.getPostTitle());
             result.setPostContent(post.getPostContent());

@@ -36,7 +36,7 @@ public class PostsController {
     private final PictureService pictureS;
 
     private final TagService tagS;
-    
+
     public PostsController(PostService postS, UserService userS, PictureService pictureS, TagService tagS) {
         this.postS = postS;
         this.userS = userS;

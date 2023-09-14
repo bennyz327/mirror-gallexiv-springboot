@@ -7,6 +7,7 @@ import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,9 +41,10 @@ public class PlansController {
 
     @PostMapping(path = "/plans/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public VueData addPlan(@RequestBody Plan plan, @RequestParam("myFile")MultipartFile mf)throws IOException {
+    public VueData addPlan(@RequestBody Plan plan){
+
         System.out.println("收到" + plan);
-        return planS.insertPlan(plan,mf);
+        return planS.insertPlan(plan);
     }
 
     @CrossOrigin
