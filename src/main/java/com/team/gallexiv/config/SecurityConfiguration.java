@@ -85,7 +85,7 @@ public class SecurityConfiguration {
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**", "/tags", "/posts/**","/p/**","/userInfos").permitAll()
                         .requestMatchers(POST, "/p/**","/posts/**").permitAll()
-                        .requestMatchers(PUT,"/posts/**").permitAll()
+                        .requestMatchers(PUT,"/posts/**","/plans/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()

@@ -16,20 +16,22 @@ public class PlanService {
 
     final PlanDao planD;
     final PlanForShowDao planForShowD;
-    final UserDao userinfoD;
+    final UserDao userD;
     final StatusDao statusD;
 
-    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userinfoD, StatusDao statusD) {
+    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userD, StatusDao statusD) {
         this.planD = planD;
         this.planForShowD = planForShowD;
-        this.userinfoD = userinfoD;
+        this.userD = userD;
         this.statusD = statusD;
     }
 
     // 取得單筆plan
     public VueData getPlanById(Integer planId) {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
         Optional<Plan> optionalPlan = planD.findById(planId);
-        if (optionalPlan.isPresent()) {
+        if (thisUser.isPresent() && optionalPlan.isPresent()) {
             return VueData.ok(optionalPlan.orElse(null));
         }
         return VueData.error("查詢失敗");
@@ -57,11 +59,31 @@ public class PlanService {
     }
     // -----------------------------
 
+//    public List<Plan> getAllPlanByUserId (Integer userId){
+//        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        planD.getAllPlanByUserId(userId);
+//        Optional<Userinfo> thisUser = userinfoD.findByAccount(accountName);
+//        if(thisUser.isPresent()){
+//
+//            List<Plan> result = planD.getAllPlanByUserId(5);
+//            return result;
+//        }
+//        return null;
+//    }
+
+    public List<Plan> getAllPlanByUserId (Plan plan){
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
+        planD.findById(optionalUserinfo.get().getUserId());
+        return null;
+    }
+
+
     // 新增plan
     public VueData insertPlan(Plan plan) {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Userinfo> thisUser = userinfoD.findByAccount(accountName);
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
@@ -90,14 +112,18 @@ public class PlanService {
 
     // 更新plan
     public VueData updatePlanById(Plan plan) {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
         Optional<Plan> optional = planD.findById(plan.getPlanId());
 
-        if (optional.isPresent()) {
+        if (thisUser.isPresent() && optional.isPresent()) {
             Plan result = optional.get();
             result.setPlanName(plan.getPlanName());
             result.setPlanPrice(plan.getPlanPrice());
             result.setPlanStatusByStatusId(new Status(plan.getPlanStatusByStatusId().getStatusId()));
             result.setPlanDescription(plan.getPlanDescription());
+            result.setPlanPicture(plan.getPlanPicture());
             result.setPlanPicture(plan.getPlanPicture());
             return VueData.ok(result);
         }

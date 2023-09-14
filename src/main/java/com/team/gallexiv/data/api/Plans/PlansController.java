@@ -27,7 +27,7 @@ public class PlansController {
 
     @GetMapping(path = "/plans/{planId}", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
-    public VueData getPlanById(@RequestBody Integer planId) {
+    public VueData getOnePlan(@PathVariable Integer planId) {
         return planS.getPlanById(planId);
     }
 
@@ -74,9 +74,22 @@ public class PlansController {
     @PutMapping("/plans/update")
     @Operation(description = "更新plan")
     public VueData updatePlan(@RequestBody Plan plan) {
+        System.out.println(plan);
 
         return planS.updatePlanById(plan);
 
     }
+
+//    @GetMapping("plans/test")
+//    public void getAllPlanByUserId(Integer userId) {
+//        List<Plan> results =  planS.getAllPlanByUserId(userId);
+//
+//        for (Plan plan : results) {
+//            System.out.println(plan.getPlanId());
+//        }
+//
+//        return planS.getAllPlanByUserId();
+//
+//    }
 
 }
