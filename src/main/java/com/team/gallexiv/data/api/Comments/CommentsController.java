@@ -6,6 +6,8 @@ import com.team.gallexiv.data.dto.CommentDto;
 import com.team.gallexiv.data.model.Comment;
 import com.team.gallexiv.data.model.UserService;
 import jakarta.transaction.Transactional;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -60,7 +62,9 @@ public class CommentsController {
     // httpSession) {
     // httpSession.getAttribute();
     public VueData addComment(@RequestBody CommentDto commentDto) {
-        Integer userId = 2;
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer userId = userS.getUserByAccount(accoutName).getUserId();
+        System.out.println("userId:" + userId);
         return commentS.insertComment(userId, commentDto.getPostId(), commentDto.getCommentText(),
                 commentDto.getParentCommentId());
     }
