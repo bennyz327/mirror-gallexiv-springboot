@@ -36,6 +36,14 @@ import static org.springframework.http.HttpMethod.*;
 @ConfigurationProperties(prefix = "gallexiv.security")
 public class SecurityConfiguration {
 
+    //陣列導入用
+    //完全開放的 URL/API 列表
+    AntPathRequestMatcher[] OPEN_URL = new AntPathRequestMatcher[]{
+            AntPathRequestMatcher.antMatcher(GET, "/captcha"),
+            AntPathRequestMatcher.antMatcher(POST, "/login"),
+            AntPathRequestMatcher.antMatcher(POST, "/logout"),
+            AntPathRequestMatcher.antMatcher(GET, "/test/**"),
+    };
     //需要管理員身份的 URL/API 列表
     private final String ADMIN_API_CONTEXT_PATTERN = "/admin/**";
     AntPathRequestMatcher[] ADMIN_API_URL = new AntPathRequestMatcher[]{
@@ -75,8 +83,9 @@ public class SecurityConfiguration {
                 //請求安全設定 統一用下面的寫法
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(POST, LOGIN_URI).permitAll()
-                        .requestMatchers(GET, "/captcha", "/test/**").permitAll()
-                        .requestMatchers(POST, "/**").permitAll()
+                        .requestMatchers(GET, "/captcha", "/test/**", "/tags", "/posts/**","/p/**","/userInfos").permitAll()
+                        .requestMatchers(POST, "/p/**","/posts/**").permitAll()
+                        .requestMatchers(PUT,"/posts/**","/plans/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
                         .anyRequest()
@@ -135,7 +144,6 @@ public class SecurityConfiguration {
     JwtAuthenticationFilter JwtAuthenticationFilter() throws Exception {
         return new JwtAuthenticationFilter(authenticationManager());
     }
-
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {

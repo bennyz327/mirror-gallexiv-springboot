@@ -1,6 +1,8 @@
 package com.team.gallexiv.data.model;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpStatus;
+import cn.hutool.system.UserInfo;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.dto.PreRegisterUserinfo;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,9 +69,19 @@ public class UserService {
     // return post.orElse(null);
     // }
 
+    // 取得登入資料帳號密碼
+//    public VueData checkLogin(Userinfo user){
+//        Userinfo userInfo = userD.findUserNameAndUserPwd(user.getUserName(), user.getPWord());
+//
+//        if(userInfo != null){
+//            return VueData.ok(userInfo);
+//        }
+//        return VueData.error("帳號或密碼有誤");
+//    }
+
     // 取得單筆user OK
-    public VueData getUserById(Userinfo user) {
-        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
+    public VueData getUserById(int userId) {
+        Optional<Userinfo> optionalUserinfo = userD.findById(userId);
         if (optionalUserinfo.isPresent()) {
             return VueData.ok(optionalUserinfo.orElse(null));
         }
@@ -309,5 +322,13 @@ public class UserService {
         log.info("返回生成的隨機密碼請用戶更改");
         return new PreRegisterUserinfo(String.valueOf(user.getAttributes().get("name")), randomPassword, String.valueOf(user.getAttributes().get("email")));
     }
+    public Userinfo getUserEntityById (int userId){
+        Optional<Userinfo> optionalUserinfo = userD.findById(userId);
+        if (optionalUserinfo.isPresent()) {
+            return optionalUserinfo.orElse(null);
+        }
+        return null;
+    }
+
 }
 

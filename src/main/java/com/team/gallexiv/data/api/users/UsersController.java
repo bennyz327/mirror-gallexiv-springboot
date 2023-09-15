@@ -5,9 +5,13 @@ import com.team.gallexiv.data.model.Userinfo;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
+
 @RestController
+@CrossOrigin()
 public class UsersController {
 
     final UserService userS;
@@ -16,13 +20,13 @@ public class UsersController {
         this.userS = UserS;
     }
 
-    @GetMapping(path = "/userInfosById", produces = "application/json")
+    @GetMapping(path = "/userInfos/{userId}", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
-    public VueData getUserById(@RequestBody Userinfo user) {
-        return userS.getUserById(user);
+    public VueData getUserById(@PathVariable int userId) {
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userS.getUserById(userId);
     }
 
-//    @CrossOrigin
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {
         return userS.getAllUsers();
@@ -31,7 +35,6 @@ public class UsersController {
     @PostMapping(path = "/userInfos/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增user")
     public Userinfo addUser(@RequestBody Userinfo user) {
-        // System.out.println("收到"+plan);
         return userS.insertUser(user);
     }
 

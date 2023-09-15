@@ -1,5 +1,6 @@
 package com.team.gallexiv.data.model;
 
+import com.team.gallexiv.common.lang.VueData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,15 +16,29 @@ public class TagService {
     }
 
     // 取得單筆tag
-    public Tag getTagById(int tagId){
+    public VueData getTagById(int tagId){
         Optional<Tag> tag = tagD.findById(tagId);
+        if (tag.isPresent()) {
+            return VueData.ok(tag.orElse(null));
+        }
+        return VueData.error("查詢失敗");
+
+    }
+
+    public Tag getTagByName(String tagName){
+        Optional<Tag> tag = tagD.findByTagName(tagName);
         return tag.orElse(null);
     }
 
     //取得全部tag
-    public List<Tag> getAllTag(){
-        return  tagD.findAll();
+    public VueData getAllTag() {
+        List<Tag> result = tagD.findAll();
+        if (result.isEmpty()) {
+            return VueData.error("查詢失敗");
+        }
+        return VueData.ok(result);
     }
+
 
 
     //刪除tag

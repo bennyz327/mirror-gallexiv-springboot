@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
+    username: Vic
+    password: 1234
+  security:
+    user:
+      name: admin
+      password: admin1234
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 1
+      password:
+server:
+  port: 8080
+  servlet:
+    # http(s)://(子網域名.)網域名.主域/context-path/(api/end-point)
+    context-path:
+gallexiv:
+  # TODO 網域用,分隔 改用 Security 之後可能不用這兩個 allow 設定了
+  allowedOrigins: "http://localhost:3100"
+  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"

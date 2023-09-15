@@ -1,15 +1,16 @@
 package com.team.gallexiv.data.api.Plans;
 
-import com.team.gallexiv.data.model.Plan;
-import com.team.gallexiv.data.model.PlanForShow;
-import com.team.gallexiv.data.model.PlanService;
-import com.team.gallexiv.data.model.UserService;
+import com.team.gallexiv.data.model.*;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PlansController {
@@ -17,15 +18,16 @@ public class PlansController {
     final PlanService planS;
     final UserService userS;
 
+
     public PlansController(PlanService planS, UserService userS) {
         this.planS = planS;
         this.userS = userS;
     }
 
-    @GetMapping(path = "/plansById", produces = "application/json")
+    @GetMapping(path = "/plans/{planId}", produces = "application/json")
     @Operation(description = "取得單筆plan (GET BY ID)")
-    public VueData getPlanById(@RequestBody Plan plan) {
-        return planS.getPlanById(plan);
+    public VueData getOnePlan(@PathVariable Integer planId) {
+        return planS.getPlanById(planId);
     }
 
     // --------先略過此處-------------
@@ -38,7 +40,8 @@ public class PlansController {
 
     @PostMapping(path = "/plans/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public VueData addPlan(@RequestBody Plan plan) {
+    public VueData addPlan(@RequestBody Plan plan){
+
         System.out.println("收到" + plan);
         return planS.insertPlan(plan);
     }
@@ -59,10 +62,10 @@ public class PlansController {
     }
     // -----------------------------
 
-    @DeleteMapping(path = "/plans/delete")
+    @DeleteMapping(path = "/plans/{planId}/delete")
     @Operation(description = "刪除plan(GET BY ID)")
-    public VueData deletePlan(@RequestBody Plan plan) {
-        return planS.deletePlanById(plan);
+    public VueData deletePlan(@PathVariable Integer planId) {
+        return planS.deletePlanById(planId);
 
     }
 
@@ -70,9 +73,16 @@ public class PlansController {
     @PutMapping("/plans/update")
     @Operation(description = "更新plan")
     public VueData updatePlan(@RequestBody Plan plan) {
+        System.out.println(plan);
 
         return planS.updatePlanById(plan);
 
+    }
+
+    @GetMapping("plans/test")
+    public VueData getAllPlanByUserId() {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return planS.getPlanByUserId(accountName);
     }
 
 }

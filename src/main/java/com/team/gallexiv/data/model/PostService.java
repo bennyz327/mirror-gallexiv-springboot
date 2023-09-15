@@ -1,14 +1,23 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.dto.PostDto;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class PostService {
 
@@ -27,8 +36,8 @@ public class PostService {
     }
 
     // 取得單筆貼文
-    public VueData getPostById(Post post) {
-        Optional<Post> optionalPost = postD.findById(post.getPostId());
+    public VueData getPostById(int postId) {
+        Optional<Post> optionalPost = postD.findById(postId);
         if (optionalPost.isPresent()) {
             return VueData.ok(optionalPost.orElse(null));
         }
@@ -46,18 +55,21 @@ public class PostService {
 
     // 新增貼文
     public VueData insertPost(Post post) {
-
-        Optional<Userinfo> optionalUserinfo = userD.findById(post.getUserinfoByUserId().getUserId());
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
         if (optionalUserinfo.isPresent()) {
 
-            Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
-            if (optionalPlan.isPresent()) {
-                post.setPlanByPlanId(optionalPlan.get());
+            if (!(post.getPlanByPlanId() == null)) {
+                Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
+                if (optionalPlan.isPresent()) {
+                    post.setPlanByPlanId(optionalPlan.get());
+                }
             }
 
             Collection<Tag> inputTags = post.getTagsByPostId();
             Collection<Tag> newTags = new ArrayList<>();
-
+            System.out.println("test");
+            System.out.println(inputTags);
             for (Tag inputTag : inputTags) {
                 Optional<Tag> TagFindRsOptional = tagD.findByTagName(inputTag.getTagName());
 
@@ -69,27 +81,34 @@ public class PostService {
             }
             post.setTagsByPostId(newTags);
 
+
+
             return VueData.ok(postD.save(post));
         }
         return VueData.error("新增失敗");
     }
 
     // 刪除貼文
-    public VueData deletePostById(Post post) {
-        Optional<Post> postOptional = postD.findById(post.getPostId());
+    public VueData deletePostById(Integer postId) {
+        Optional<Post> postOptional = postD.findById(postId);
         if (postOptional.isPresent()) {
-            postD.deleteById(post.getPostId());
+            postD.deleteById(postId);
             return VueData.ok("刪除成功");
         }
         return VueData.error("刪除失敗");
     }
 
+
     // 更新貼文
     public VueData updatePostById(Post post) {
 
+        log.info("getId "+post.getPostId());
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
         Optional<Post> optional = postD.findById(post.getPostId());
 
-        if (optional.isPresent()) {
+
+        if (optionalUserinfo.isPresent()&&optional.isPresent()) {
             Post result = optional.get();
             result.setPostTitle(post.getPostTitle());
             result.setPostContent(post.getPostContent());
@@ -97,6 +116,7 @@ public class PostService {
             result.setPostAgeLimit(post.getPostAgeLimit());
 
             Collection<Tag> inputTags = post.getTagsByPostId();
+
             Collection<Tag> existingTags = new ArrayList<>();
 
             for (Tag inputTag : inputTags) {
