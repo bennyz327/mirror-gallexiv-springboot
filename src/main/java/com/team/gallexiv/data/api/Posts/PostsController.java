@@ -43,6 +43,13 @@ public class PostsController {
     }
 
     @CrossOrigin
+    @GetMapping(path = "/posts/post", produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得單筆貼文 (GET BY ID)")
+    public VueData showPostForPostPage(@RequestParam Integer postId) {
+        return postS.getPostByIdUseParam(postId);
+    }
+
+    @CrossOrigin
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
     public VueData findAllPost() {
@@ -59,7 +66,7 @@ public class PostsController {
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("目前登入使用者"+accoutName);
+        log.info("目前登入使用者" + accoutName);
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
     }
 
@@ -78,7 +85,7 @@ public class PostsController {
 
     @GetMapping("/posts/postTitle")
     @Operation(description = "模糊查詢貼文")
-    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle){
+    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle) {
         return postS.findPostByTitleLike(postTitle);
     }
 

@@ -35,6 +35,15 @@ public class PostService {
         return VueData.error("查詢失敗");
     }
 
+    // 取得單筆貼文 使用 RequestParam
+    public VueData getPostByIdUseParam(Integer postId) {
+        Optional<Post> optionalPost = postD.findById(postId);
+        if (optionalPost.isPresent()) {
+            return VueData.ok(optionalPost.orElse(null));
+        }
+        return VueData.error("查詢失敗");
+    }
+
     // 取得全部貼文
     public VueData getAllPost() {
         List<Post> result = postD.findAll();
@@ -140,10 +149,10 @@ public class PostService {
         return null;
     }
 
-    public VueData getPostByUserId(int userId){
+    public VueData getPostByUserId(int userId) {
 
         Optional<Userinfo> userinfo = userD.findByUserId(userId);
-        if(userinfo.isPresent()){
+        if (userinfo.isPresent()) {
             return VueData.ok(postD.findByUserinfoByUserId(userinfo.get()));
         }
         return VueData.error("查無該使用者貼文");
