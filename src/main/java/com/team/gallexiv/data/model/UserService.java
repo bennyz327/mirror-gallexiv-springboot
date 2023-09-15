@@ -195,24 +195,6 @@ public class UserService {
 
         } else {
             log.info("緩存無資料，準備從資料庫獲取權限字串");
-// 获取角色编码
-//            String roleCodes = session.createQuery("select 'ROLE_' || r.code from AccountRole r where r.user.id = :userId", String.class)
-//                    .setParameter("userId", userId)
-//                    .getResultList()
-//                    .stream()
-//                    .collect(Collectors.joining(","));
-// 獲取身份組編碼 一人只有一個身份
-//            String roleCode = session.createQuery("select 'ROLE_' || r.roleId from AccountRole r where r.user.id = :userId", String.class)
-//                    .setParameter("userId", userId)
-//                    .getSingleResult();
-            String roleCode = String.valueOf(userD.findById(userId).get().getAccountRoleByRoleId().getRoleId());
-
-            // 如果有身份組編碼
-            if (!roleCode.isEmpty()) {
-                // 將身份組編碼加入權限
-                authority = roleCode.concat(",");
-                log.info("找到所屬身份，組合身份組編碼後為：{}", authority);
-            }
 
             // 獲得權限ID清單
             List<Permissions> pIds = permissionsService.getPermissionsByUserId(userId);
@@ -234,8 +216,23 @@ public class UserService {
             redisUtil.set("GrantedAuthority:" + sysUser.getAccount(), authority, JWT_EXPIRE_SECONDS);
         }
 
-        log.info("最終權限字串：{}", authority);
+        log.info("角色權限字串：{}", authority);
         return authority;
+    }
+
+    public String getUserRoleStr(Integer userId) {
+        Optional<Userinfo> user = userD.findById(userId);
+        if (user.isPresent()) {
+            String roleName = String.valueOf(user.get().getAccountRoleByRoleId().getRoleName());
+            if (!roleName.isEmpty()) {
+                log.info("獲取的身份組為空");
+                return null;
+            }
+            log.info("找到所屬身份，身份組為：{}", roleName);
+            return roleName;
+        }
+        log.info("找不到使用者，無法獲取身份組");
+        return null;
     }
 
     public void clearUserAuthorityInfo(String username) {
@@ -297,7 +294,7 @@ public class UserService {
         log.info("創建預註冊使用者");
         Userinfo new_user = new Userinfo();
         new_user.setUserName(String.valueOf(user.getAttributes().get("name")));
-        log.info("帳號名是"+ user.getName());
+        log.info("帳號名是" + user.getName());
         new_user.setAccount(user.getName());
         String randomPassword = RandomUtil.randomString(8);
         new_user.setPWord(bCryptPE.encode(randomPassword));
