@@ -48,11 +48,13 @@ public class CaptchaFilter extends OncePerRequestFilter {
     private void validate(HttpServletRequest request) {
         String code = request.getParameter("code");
         String token = request.getParameter("token");
+        log.info("code = " + code);
+        log.info("token = " + token);
+
         if (StringUtil.isNullOrEmpty(code) || StringUtil.isNullOrEmpty(token)) {
             throw new CaptchaException("驗證碼不能為空");
         }
-        log.info("code = " + code);
-        log.info("token = " + token);
+
         if (!code.equals(redisUtil.hget(CAPTCHA_REDIS_KEY, token))) {
             throw new CaptchaException("驗證碼錯誤");
         }

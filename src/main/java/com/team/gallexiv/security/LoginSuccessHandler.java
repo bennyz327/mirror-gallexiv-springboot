@@ -38,7 +38,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
-        log.info("登入成功");
+        log.info("登入成功處理器");
 
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = response.getOutputStream();
@@ -49,11 +49,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String jwt = jwtUtils.generateToken(authentication.getName());
         response.setHeader(jwtUtils.getHeader(), jwt);
 
-
         //到這之前要確定使用者有註冊進入後台資料庫，不然下面查詢會報錯
         Integer userId = userS.getUserByAccount(authentication.getName()).getUserId();
-        //透過ID將驗證資訊查出來並寫入redis
-        userS.getUserAuthorityInfo(userId);
+
+        log.info("完成登入流程");
+        //透過ID將驗證資訊查出來並寫入redis，順便印出來
+        log.info("帳號權限為： {}",userS.getUserAuthorityInfo(userId));
 
         VueData result = VueData.ok("登入成功");
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));

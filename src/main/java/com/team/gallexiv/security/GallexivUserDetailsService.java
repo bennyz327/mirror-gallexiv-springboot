@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,12 +22,16 @@ public class GallexivUserDetailsService implements UserDetailsService {
     @Autowired
     UserService userService;
 
+    String ROLE_PREFIX = "ROLE_";
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+
+
         VueData rs = userService.getUserByAccountObject(Userinfo.createUserByAccouut(username));
         if(rs.getCode() == 400){
-            throw new UsernameNotFoundException("用户名或密码不正确!");
+            throw new UsernameNotFoundException("用户名或密碼無效！");
         }
         Userinfo userinfo = (Userinfo) rs.getData();
         return new GallexivAccountUser(userinfo.getUserId(),userinfo.getAccount(),userinfo.getPWord(),new TreeSet<>());
@@ -39,10 +44,18 @@ public class GallexivUserDetailsService implements UserDetailsService {
      */
     public List<GrantedAuthority> getUserAuthority(Integer userId){
 
-        // 角色(ROLE_admin)、菜单操作权限 sys:user:list
+        //菜單操作權限 sys:user:list
         String authority = userService.getUserAuthorityInfo(userId);
 
-        return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
+        List<GrantedAuthority> userAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
+
+        //角色(ROLE_admin) 有身份組的話，加入權限字串
+        String roleStr = userService.getUserRoleStr(userId);
+        if (roleStr != null) {
+            userAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + roleStr));
+        }
+
+        return userAuthorities;
     }
 
     public boolean checkJwtClaimValidInRedis(Claims claim){
