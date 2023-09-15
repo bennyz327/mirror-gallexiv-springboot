@@ -27,52 +27,41 @@ public class CommentsController {
     }
 
     // 取得全部 comment
-    // @GetMapping(path = "/comments/findAll", produces =
-    // "application/json;charset=UTF-8")
-    // public Map<String, List<Comment>> getAllComment() {
-    // List<Comment> result = commentS.getAllComment();
-    // Map<String, List<Comment>> response = new HashMap<>();
-    // response.put("list", result);
-    // return response;
-    // }
     @GetMapping(path = "/comments/findAll", produces = "application/json;charset=UTF-8")
     public VueData getAllComment() {
         commentS.getAllComment();
         return commentS.getAllComment();
     }
 
-    // 刪除 comment
+    // 刪除 comment (admin 和一般 user 通用)
     @DeleteMapping(path = "comments/delete")
-    public VueData deleteComment(@RequestBody Comment comment) {
-        return commentS.deleteCommentById(comment);
+    public VueData deleteComment(@RequestParam Integer commentId) {
+        return commentS.deleteCommentById(commentId);
+    }
+
+    // 更新 comment
+    @PutMapping(path = "comments/update")
+    public VueData updateCommentForAdmin(@RequestParam Integer commentId, String commentText) {
+        return commentS.updateComment(commentId, commentText);
+    }
+
+    // ------------給一般user使用---------------//
+
+    // 由PostId找comments
+    @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
+    public VueData getCommentsByPostId(@RequestParam Integer postId) {
+        return commentS.getCommentsByPostId(postId);
     }
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")
-    public VueData addComment(@RequestBody Comment comment) {
-        Integer postId = comment.getPostByPostId().getPostId();
-        Integer userId = comment.getUserinfoByUserId().getUserId();
-        return commentS.insertComment(postId, userId, comment);
+    // public VueData addComment(@RequestBody CommentDto commentDto, HttpSession
+    // httpSession) {
+    // httpSession.getAttribute();
+    public VueData addComment(@RequestBody CommentDto commentDto) {
+        Integer userId = 2;
+        return commentS.insertComment(userId, commentDto.getPostId(), commentDto.getCommentText(),
+                commentDto.getParentCommentId());
     }
-
-    // 更新 comment
-    @Transactional
-    @PutMapping(path = "comments/update")
-    public VueData updateComment(@RequestBody Comment comment) {
-        return commentS.updateComment(comment);
-    }
-    // @Transactional
-    // @PutMapping(path = "comments/update/{commentId}", produces =
-    // "application/json;charset=UTF-8")
-    // public String updateComment(@PathVariable Integer commentId, @RequestBody
-    // Comment comment) {
-    // commentS.insertComment(comment);
-    // return "ok";
-    // }
-
-    // @PutMapping(path = "comments/update")
-    // public String updateComment() {
-    // return "ok";
-    // }
 
 }
