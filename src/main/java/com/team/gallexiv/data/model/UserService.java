@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -82,6 +83,15 @@ public class UserService {
     // 取得單筆user OK
     public VueData getUserById(int userId) {
         Optional<Userinfo> optionalUserinfo = userD.findById(userId);
+        if (optionalUserinfo.isPresent()) {
+            return VueData.ok(optionalUserinfo.orElse(null));
+        }
+        return VueData.error("查詢失敗");
+    }
+
+    public VueData getUserById() {
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
         if (optionalUserinfo.isPresent()) {
             return VueData.ok(optionalUserinfo.orElse(null));
         }
