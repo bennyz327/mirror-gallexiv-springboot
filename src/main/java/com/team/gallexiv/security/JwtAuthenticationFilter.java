@@ -113,7 +113,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             loginSuccessHandler.onAuthenticationSuccess(request, response, SecurityContextHolder.getContext().getAuthentication());
         } else {
             //若非驗證端點則呼叫doFilter繼續檢查，理論上會進入權限檢查
-            log.info("登入成功，即將放行");
+            log.info("驗證成功，即將放行");
             chain.doFilter(request, response);
         }
     }

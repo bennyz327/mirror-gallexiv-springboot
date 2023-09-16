@@ -214,7 +214,7 @@ public class UserService {
             log.info("從Redis獲取權限字串並刷新");
             redisUtil.expire("GrantedAuthority:" + sysUser.getAccount(), JWT_EXPIRE_SECONDS);
             authority = (String) redisUtil.get("GrantedAuthority:" + sysUser.getAccount());
-            log.info("權限字串：{}", authority);
+            log.info("緩存中的權限字串：{}", authority);
 
         } else {
             log.info("緩存無資料，準備從資料庫獲取權限字串");
@@ -247,7 +247,7 @@ public class UserService {
         Optional<Userinfo> user = userD.findById(userId);
         if (user.isPresent()) {
             String roleName = String.valueOf(user.get().getAccountRoleByRoleId().getRoleName());
-            if (!roleName.isEmpty()) {
+            if (roleName.isEmpty()) {
                 log.info("獲取的身份組為空");
                 return null;
             }
@@ -295,24 +295,22 @@ public class UserService {
     public boolean checkUserAuthorityInRedis(String account, long tokenExpTime) {
         //查詢redis
         if (redisUtil.hasKey("GrantedAuthority:" + account)) {
+            log.info("緩存中找到有效緩存資料");
             long redisExpTime = (long) redisUtil.get("RefreshExpire:" + account);
             log.info("Redis緩存的過期時間：{}", redisExpTime);
             log.info("Token過期的時間：{}", tokenExpTime);
-            //因為有誤差，需加上2000毫秒來保證token過期時間在redis過期時間的後面
+            //因為有誤差，需加上2000毫秒間隔來錯開，以保證token過期時間在redis過期時間的後面
             if (redisExpTime < (tokenExpTime + 2000)) {
-                log.info("找到有效緩存資料");
                 String authority = (String) redisUtil.get("GrantedAuthority:" + account);
-                log.info("從Redis獲取權限字串");
-                log.info("登入帳號為 {}", account);
-                log.info("權限字串：{}", authority);
+                log.info("緩存中的登入帳號為 {}", account);
+                log.info("緩存中的權限字串：{}", authority);
                 return true;
             }
             log.info("認證已棄用，判定為無權限");
-            return false;
         } else {
             log.info("緩存無資料，判定為無權限");
-            return false;
         }
+        return false;
     }
 
     public Userinfo getUserByEmail(String email) {
