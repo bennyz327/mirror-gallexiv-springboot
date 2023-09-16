@@ -1,5 +1,7 @@
 package com.team.gallexiv.data.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -54,38 +53,50 @@ public class PostService {
     }
 
     // 新增貼文
-    public VueData insertPost(Post post) {
+    public String insertPost(Map<String, String> props) throws JsonProcessingException {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
+
         if (optionalUserinfo.isPresent()) {
+            for (String key : props.keySet()) {
 
-            if (!(post.getPlanByPlanId() == null)) {
-                Optional<Plan> optionalPlan = planD.findById(post.getPlanByPlanId().getPlanId());
-                if (optionalPlan.isPresent()) {
-                    post.setPlanByPlanId(optionalPlan.get());
+                System.out.println(key + " : " + props.get(key));
+
+                String[] tags = props.get("tags").split(",");
+                Collection<String> inputTags = Arrays.asList(tags);
+                Collection<Tag> newTags = new ArrayList<>();
+
+                System.out.println(inputTags);
+
+                for (String inputTag : inputTags) {
+                    Optional<Tag> TagFindRsOptional = tagD.findByTagName(inputTag);
+                    if (TagFindRsOptional.isPresent()) {
+                        newTags.add(TagFindRsOptional.get());
+                    } else {
+                        newTags.add(new Tag(inputTag));
+                    }
                 }
-            }
 
-            Collection<Tag> inputTags = post.getTagsByPostId();
-            Collection<Tag> newTags = new ArrayList<>();
-            System.out.println("test");
-            System.out.println(inputTags);
-            for (Tag inputTag : inputTags) {
-                Optional<Tag> TagFindRsOptional = tagD.findByTagName(inputTag.getTagName());
+                System.out.println(newTags.toString());
 
-                if (TagFindRsOptional.isPresent()) {
-                    newTags.add(TagFindRsOptional.get());
-                } else {
-                    newTags.add(inputTag);
+                //組裝Post Entity
+                Post newPost = new Post(optionalUserinfo.get(), props.get("title"), props.get("description"), newTags);
+                //取得Plan Entity 塞入
+                // TODO planId null 判斷
+                if (planD.findById(Integer.parseInt(props.get("planId"))).isPresent()) {
+                    log.info("找到Plan Entity");
+                    newPost.setPlanByPlanId(planD.findById(Integer.parseInt(props.get("planId"))).get());
                 }
+                newPost.setPostPublic(Integer.parseInt(props.get("isPublic")));
+                newPost.setPostAgeLimit(Integer.parseInt(props.get("nsfw")));
+                newPost.setPostStatusByStatusId(new Status(7));
+                log.info("Post 組裝完成");
+
+                return String.valueOf(postD.save(newPost).getPostId());
             }
-            post.setTagsByPostId(newTags);
-
-
-
-            return VueData.ok(postD.save(post));
+            return "新增失敗";
         }
-        return VueData.error("新增失敗");
+        return "查無使用者";
     }
 
     // 刪除貼文
@@ -102,13 +113,12 @@ public class PostService {
     // 更新貼文
     public VueData updatePostById(Post post) {
 
-        log.info("getId "+post.getPostId());
+        log.info("getId " + post.getPostId());
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
         Optional<Post> optional = postD.findById(post.getPostId());
 
-
-        if (optionalUserinfo.isPresent()&&optional.isPresent()) {
+        if (optionalUserinfo.isPresent() && optional.isPresent()) {
             Post result = optional.get();
             result.setPostTitle(post.getPostTitle());
             result.setPostContent(post.getPostContent());
@@ -160,10 +170,10 @@ public class PostService {
         return null;
     }
 
-    public VueData getPostByUserId(int userId){
+    public VueData getPostByUserId(int userId) {
 
         Optional<Userinfo> userinfo = userD.findByUserId(userId);
-        if(userinfo.isPresent()){
+        if (userinfo.isPresent()) {
             return VueData.ok(postD.findByUserinfoByUserId(userinfo.get()));
         }
         return VueData.error("查無該使用者貼文");

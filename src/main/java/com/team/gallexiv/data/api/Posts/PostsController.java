@@ -1,5 +1,6 @@
 package com.team.gallexiv.data.api.Posts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team.gallexiv.data.model.*;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
@@ -102,23 +103,29 @@ public class PostsController {
 
     // 同時上傳多張圖片和貼文資料
     @PostMapping(path = "/post/upload", produces = "application/json")
+    @Operation(description = "新增貼文")
     public VueData uploadPostAndFiles(
             @RequestPart("files") MultipartFile[] files,
-            @RequestPart("other") Map<String, String> props) {
+            @RequestPart("other") Map<String, String> props) throws JsonProcessingException {
 
         //辨識請求來源
         String account = "admin";
         int userId = 1;
 
+        log.info("Post 資料 準備新增");
+        //資料庫塞POST資料
+        String newPostIdStr = postS.insertPost(props);
+        log.info("Post 資料 新增完成");
+
+        //儲存到檔案系統，資料庫塞圖片資料
         log.info("上傳檔案數量: {}", files.length);
         log.info("所有檔案資訊: ");
         Collection<String> allProps = props.values();
         allProps.forEach(log::info);
         log.info("準備寫入檔案");
-        pictureS.uploadPictureByUserId(userId, files);
-        log.info("檔案寫入完成");
-
-        //postS.insertPost() // TODO 更新資料庫POST資料
+        //給內部 使用者ID、檔案、新圖片ID字串
+        log.info("圖片ID字串 {}",newPostIdStr);
+        pictureS.uploadPictureByUserId(userId, files, newPostIdStr);
 
         return VueData.ok("上傳成功");
     }
