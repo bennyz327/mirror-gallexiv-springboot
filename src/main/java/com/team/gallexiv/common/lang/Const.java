@@ -18,6 +18,7 @@ public class Const {
     public final static List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "DELETE","OPTIONS");
     public final static List<String> CORS_ALLOWED_ORIGINS = List.of("http://gallexiv.com:3100","http://localhost:3100");
     public final static List<String> CORS_ALLOWED_HEADERS = List.of("*");
+    public final static List<String> CORS_EXPOSED_HEADERS = List.of("Authorization");
     public final static String DEFAULT_SUCCESS_MSG = "Yabai★Desune☆";
     public final static String CAPTCHA_REDIS_KEY = "captcha";
     public final static String USERNAME_PARAM = "name";
