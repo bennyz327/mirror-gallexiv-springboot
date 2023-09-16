@@ -234,6 +234,16 @@ public class UserService {
         log.info("找不到使用者，無法獲取身份組");
         return null;
     }
+    public String getUserRoleStrByUserEntity(Userinfo user) {
+        log.info(user.getAccountRoleByRoleId().toString());
+        String roleName = user.getAccountRoleByRoleId().getRoleName();
+        if (roleName.isEmpty()) {
+            log.info("獲取的身份組為空");
+            return null;
+        }
+        log.info("找到所屬身份，身份組為：{}", roleName);
+        return roleName;
+    }
 
     public void clearUserAuthorityInfo(String username) {
         redisUtil.del("GrantedAuthority:" + username);
