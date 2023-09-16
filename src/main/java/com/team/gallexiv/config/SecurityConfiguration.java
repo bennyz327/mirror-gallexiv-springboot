@@ -134,6 +134,7 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(CORS_ALLOWED_ORIGINS);
         configuration.setAllowedMethods(CORS_ALLOWED_METHODS);
         configuration.setAllowedHeaders(CORS_ALLOWED_HEADERS);
+        configuration.setExposedHeaders(CORS_EXPOSED_HEADERS);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -15,16 +15,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
+import static com.team.gallexiv.common.lang.Const.JWT_HEADER;
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 import static io.jsonwebtoken.security.Keys.secretKeyFor;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "gallexiv.jwt")
+//@ConfigurationProperties(prefix = "gallexiv.jwt")
 public class JwtUtils {
 
 	private long expire = JWT_EXPIRE_SECONDS;
-	private String header;
+	private String header = JWT_HEADER;
 //	@Value("${gallexiv.jwt.secret}")
 //	private String secretKey;
 	private String secretKey = "d!5Y9P&$%7A@2vL6fEgHsRqUwZyXm8nJ4";
