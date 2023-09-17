@@ -74,7 +74,9 @@ public class SecurityConfiguration {
                                 // 請求安全設定 統一用下面的寫法
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers(POST, LOGIN_URI).permitAll()
-                                                .requestMatchers(GET, "/captcha", "/test/**", "posts/**").permitAll()
+                                                .requestMatchers(GET, "/captcha", "/test/**", "posts/**",
+                                                                "comments/findByPostId")
+                                                .permitAll()
                                                 .requestMatchers(POST, "/**").permitAll()
                                                 .requestMatchers(OPTIONS, "/**").permitAll()
                                                 .requestMatchers(ADMIN_API_URL).hasRole("admin")

@@ -58,14 +58,11 @@ public class CommentsController {
 
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")
-    // public VueData addComment(@RequestBody CommentDto commentDto, HttpSession
-    // httpSession) {
-    // httpSession.getAttribute();
     public VueData addComment(@RequestBody CommentDto commentDto) {
-        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Integer userId = userS.getUserByAccount(accoutName).getUserId();
-        System.out.println("userId:" + userId);
-        return commentS.insertComment(userId, commentDto.getPostId(), commentDto.getCommentText(),
+        // String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Integer userId = userS.getUserByAccount(accoutName).getUserId();
+        // System.out.println("userId:" + userId);
+        return commentS.insertComment(commentDto.getPostId(), commentDto.getCommentText(),
                 commentDto.getParentCommentId());
     }
 
