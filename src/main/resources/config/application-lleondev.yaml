@@ -12,7 +12,7 @@ spring:
       host: 127.0.0.1
       port: 6379
       database: 1
-      password: benben327327
+      password:
 server:
   port: 8080
   servlet:

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentDao extends JpaRepository<Comment, Integer> {
 
-// 由PostId找全部comments where status = 13 並依照時間排列
-    @Query("SELECT c FROM Comment c WHERE c.postByPostId.postId = :postId AND c.commentStatusByStatusId.statusId = 13 AND ORDER BY c.commentTime DESC")
+    // 由PostId找全部comments where status = 13 並依照時間排列
+    @Query("SELECT c FROM Comment c WHERE c.postByPostId.postId = :postId AND c.commentStatusByStatusId.statusId = 13 ORDER BY c.commentTime DESC")
     List<Comment> findAllCommentIByPostIdAndStatus(@Param("postId") Integer postId);
 
     // 由PostId找 父流言 where status = 13 並依照時間排列
@@ -21,7 +21,5 @@ public interface CommentDao extends JpaRepository<Comment, Integer> {
     // 找到子留言 where status = 13
     @Query("SELECT c FROM Comment c WHERE c.commentStatusByStatusId.statusId = 13 AND c.commentByParentCommentId.commentId IS NULL ORDER BY c.commentTime DESC")
     List<Comment> findSubComment(@Param("parentCommentId") Integer parentCommentId);
-
-
 
 }

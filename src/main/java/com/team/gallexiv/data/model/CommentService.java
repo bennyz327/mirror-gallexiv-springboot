@@ -1,6 +1,8 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,13 +49,18 @@ public class CommentService {
     }
 
     // 刪除 comment (更改 status = 14)(admin 和一般 user 通用)
-    @Transactional
     public VueData deleteCommentById(Integer commentId) {
         try {
+            String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Userinfo> thisUser = userinfoD.findByAccount(accoutName);
+            Integer thisUserId = thisUser.get().getUserId();
+
             Optional<Comment> thisComment = commentD.findById(commentId);
+            Integer thisCommentUserId = thisComment.get().getUserinfoByUserId().getUserId();
+
             Integer thisCommentStatusId = 14;
             Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
-            if (thisComment != null) {
+            if (thisComment != null && (thisUserId == thisCommentUserId)) {
                 Comment deleteComment = thisComment.get();
                 deleteComment.setCommentStatusByStatusId(thisCommentStatus.get());
                 commentD.save(deleteComment);
@@ -67,12 +74,13 @@ public class CommentService {
     }
 
     // 新增 comment (admin 和一般 user 通用)
-    @Transactional
-    public VueData insertComment(Integer userId, Integer postId, String commentText, Integer parentCommentId) {
+    public VueData insertComment(Integer postId, String commentText, Integer parentCommentId) {
         try {
+            String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Comment comment = new Comment();
             Optional<Post> thisPost = postD.findById(postId);
-            Optional<Userinfo> thisUser = userinfoD.findByUserId(userId);
+            Optional<Userinfo> thisUser = userinfoD.findByAccount(accoutName);
+            System.out.println(thisUser);
             Integer thisCommentStatusId = 13;
             Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
 
@@ -96,11 +104,17 @@ public class CommentService {
     }
 
     // 更新 comment
-    @Transactional
     public VueData updateComment(Integer commentId, String commentText) {
         try {
+            String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Userinfo> thisUser = userinfoD.findByAccount(accoutName);
+            Integer thisUserId = thisUser.get().getUserId();
+
             Optional<Comment> thisCommentId = commentD.findById(commentId);
-            if (thisCommentId != null) {
+            Optional<Comment> thisComment = commentD.findById(commentId);
+            Integer thisCommentUserId = thisComment.get().getUserinfoByUserId().getUserId();
+
+            if (thisCommentId != null && (thisUserId == thisCommentUserId)) {
                 Comment updateComment = thisCommentId.get();
                 updateComment.setCommentText(commentText);
                 commentD.save(updateComment);
