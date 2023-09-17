@@ -43,8 +43,10 @@ public class CommentsController {
     }
 
     // 更新 comment
+    @Transactional
     @PutMapping(path = "comments/update")
-    public VueData updateCommentForAdmin(@RequestParam Integer commentId, String commentText) {
+    public VueData updateComment(@RequestParam Integer commentId, @RequestParam String commentText) {
+        System.out.println("commentId:" + commentId + "---------------" + "commentText:" + commentText);
         return commentS.updateComment(commentId, commentText);
     }
 
@@ -59,7 +61,8 @@ public class CommentsController {
     // 新增 comment
     @PostMapping(path = "/comments/insert", produces = "application/json;charset=UTF-8")
     public VueData addComment(@RequestBody CommentDto commentDto) {
-        // String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // String accoutName = (String)
+        // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // Integer userId = userS.getUserByAccount(accoutName).getUserId();
         // System.out.println("userId:" + userId);
         return commentS.insertComment(commentDto.getPostId(), commentDto.getCommentText(),
