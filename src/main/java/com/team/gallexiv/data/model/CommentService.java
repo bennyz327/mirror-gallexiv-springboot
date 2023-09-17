@@ -56,6 +56,7 @@ public class CommentService {
             Integer thisUserId = thisUser.get().getUserId();
 
             Optional<Comment> thisComment = commentD.findById(commentId);
+            System.out.println("thisComment:" + thisComment);
             Integer thisCommentUserId = thisComment.get().getUserinfoByUserId().getUserId();
 
             Integer thisCommentStatusId = 14;
@@ -110,12 +111,11 @@ public class CommentService {
             Optional<Userinfo> thisUser = userinfoD.findByAccount(accoutName);
             Integer thisUserId = thisUser.get().getUserId();
 
-            Optional<Comment> thisCommentId = commentD.findById(commentId);
             Optional<Comment> thisComment = commentD.findById(commentId);
             Integer thisCommentUserId = thisComment.get().getUserinfoByUserId().getUserId();
 
-            if (thisCommentId != null && (thisUserId == thisCommentUserId)) {
-                Comment updateComment = thisCommentId.get();
+            if (thisComment != null && (thisUserId == thisCommentUserId)) {
+                Comment updateComment = thisComment.get();
                 updateComment.setCommentText(commentText);
                 commentD.save(updateComment);
             }
