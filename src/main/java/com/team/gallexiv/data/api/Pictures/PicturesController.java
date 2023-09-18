@@ -58,14 +58,15 @@ public class PicturesController {
     )
     public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
 
-        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
-        int userId =  thisUser.get().getUserId();
+//        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+//        int userId =  thisUser.get().getUserId();
+        int userId = 1;
 
         // 指定本地文件路径
 
         String imagePath = IMG_ROOTPATH;
-        imagePath = imagePath+"\\"+userId+"\\"+pid+".jpg";
+        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
 
         log.info(imagePath);
 
