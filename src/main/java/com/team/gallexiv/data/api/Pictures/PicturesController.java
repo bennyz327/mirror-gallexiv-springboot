@@ -31,12 +31,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
-import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH_LINUX;
+import static com.team.gallexiv.common.lang.Const.*;
 
 @CrossOrigin
 @Slf4j
@@ -87,12 +83,18 @@ public class PicturesController {
         int userId = 1;
         String imagePath;
 
+        log.info(System.getProperty("os.name").toLowerCase());
+
         if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
             //windows版
             imagePath = IMG_ROOTPATH;
             imagePath = imagePath + "\\user" + userId + "\\" + pid + ".jpg";
+
+        }else if ( System.getProperty("os.name").toLowerCase().startsWith("mac")){
+            imagePath = IMG_ROOTPATH_MAC;
+            imagePath =imagePath + "/post/" + userId + "/" + pid + ".jpg";
         } else {
-            //linux版
+            //linux版  /Users/max/Desktop/ActionGroupProject/gallexiv/upload/post
             imagePath = IMG_ROOTPATH_LINUX;
             imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
         }

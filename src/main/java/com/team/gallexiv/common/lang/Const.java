@@ -30,6 +30,7 @@ public class Const {
     public final static Integer JWT_EXPIRE_SECONDS = 1800;
     public final static String IMG_ROOTPATH = "D:\\upload";
     public final static String IMG_ROOTPATH_LINUX = "/home/benny/gallexiv/upload";
+    public final static String IMG_ROOTPATH_MAC = "/Users/max/Desktop/ActionGroupProject/gallexiv/upload";
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
 
