@@ -87,16 +87,18 @@ public class PicturesController {
 //        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
 //        int userId =  thisUser.get().getUserId();
         int userId = 1;
+        String imagePath;
 
-        // 指定本地文件路径
-        //windows版
-//        String imagePath = IMG_ROOTPATH;
-//        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
-        //linux版
-        String imagePath = IMG_ROOTPATH_LINUX;
-        imagePath = imagePath+"/post/"+userId+"/"+pid+".jpg";
+        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            //windows版
+            imagePath = IMG_ROOTPATH;
+            imagePath = imagePath + "\\user" + userId + "\\" + pid + ".jpg";
+        } else {
+            //linux版
+            imagePath = IMG_ROOTPATH_LINUX;
+            imagePath = imagePath + "/user/" + userId + "/" + pid + ".jpg";
+        }
 
-        log.info(imagePath);
 
         try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
             // 读取文件内容并返回字节数组
@@ -105,7 +107,7 @@ public class PicturesController {
             return imageBytes;
         } catch (IOException e) {
             //
-            log.error("例外狀況",e);
+            log.error("例外狀況", e);
 //            e.printStackTrace();
             throw e;
         }
