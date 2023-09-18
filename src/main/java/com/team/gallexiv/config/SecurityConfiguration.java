@@ -9,6 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,6 +36,7 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @ConfigurationProperties(prefix = "gallexiv.security")
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     //陣列導入用
@@ -134,6 +137,7 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(CORS_ALLOWED_ORIGINS);
         configuration.setAllowedMethods(CORS_ALLOWED_METHODS);
         configuration.setAllowedHeaders(CORS_ALLOWED_HEADERS);
+        configuration.setExposedHeaders(CORS_EXPOSED_HEADERS);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

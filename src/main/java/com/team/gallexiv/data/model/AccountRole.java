@@ -37,5 +37,15 @@ public class AccountRole {
     @JsonIncludeProperties({"statusId","statusType","statusCategory","statusName"})
     private Status roleStatusByStatusId;
 
+    @Override
+    public String toString() {
+        return "身份組資訊{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", rolePermissionsByRoleId=" + rolePermissionsByRoleId +
+                ", userInfosByRoleId=" + userInfosByRoleId +
+                ", roleStatusByStatusId=" + roleStatusByStatusId +
+                '}';
+    }
 
 }

@@ -6,6 +6,7 @@ import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.model.UserService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,5 +121,11 @@ public class VerifyTest extends BaseController {
     public VueData redisDelete(@RequestParam String key) {
         redisUtil.del(key);
         return VueData.ok("已發送刪除指令");
+    }
+
+    @GetMapping("/role")
+    @PreAuthorize("hasRole('ROLE_admin')")
+    public VueData testRole() {
+        return VueData.ok("可存取");
     }
 }

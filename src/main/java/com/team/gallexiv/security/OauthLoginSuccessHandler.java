@@ -42,13 +42,12 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("登入成功");
 
         response.setContentType("application/json;charset=UTF-8");
-        ServletOutputStream outputStream = response.getOutputStream();
 
         // 生成jwt
         // 密鑰透過環境變數取得
         // 將jwt的過期時間順便記錄到redis
         String jwt = jwtUtils.generateToken(authentication.getName());
-        response.setHeader(jwtUtils.getHeader(), jwt);
+        response.addHeader(jwtUtils.getHeader(), jwt);
 
 
         log.info("看看憑證" + authentication);
@@ -77,7 +76,7 @@ public class OauthLoginSuccessHandler implements AuthenticationSuccessHandler {
         //透過ID將驗證資訊查出來並寫入redis
         userS.getUserAuthorityInfo(userId);
 
-
+//        ServletOutputStream outputStream = response.getOutputStream();
 //        outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
 //        outputStream.flush();
 //        outputStream.close();

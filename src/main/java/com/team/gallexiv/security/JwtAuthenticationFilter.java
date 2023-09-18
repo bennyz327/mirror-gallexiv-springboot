@@ -84,17 +84,19 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
             //從受信任的使用者名稱去資料庫獲取使用者權限資料
             Userinfo sysUser = userService.getUserByAccount(username);
-            //將使用者資料封裝成 Authentication 的實現類 其中有將使用者權限資料放到redis的動作
-            UsernamePasswordAuthenticationToken token
-                    = new UsernamePasswordAuthenticationToken(username, null, securityUserDetailService.getUserAuthority(sysUser.getUserId()));
+            //將使用者資料封裝成 Authentication 的實現類 其中包含將使用者權限資料緩存到redis
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, null, securityUserDetailService.getUserAuthority(sysUser.getUserId()));
 
             //將 Authentication 設定到 SecurityContext
+            log.info("取代預設放入 SecurityContext 中的 Authentication");
             SecurityContextHolder.getContext().setAuthentication(token);
 
             //log印出資料已驗證使用者清單，確認是否成功
             log.info("以下使用者已存入SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            log.info("本帳號角色+權限: {}", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 
             whenTokenValid(request,response,chain);
+
         } catch (JwtException e) {
             log.info("token異常--->{}", e.getMessage());
             //若token異常，則需要跳轉到驗證失敗處理器
@@ -111,7 +113,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             loginSuccessHandler.onAuthenticationSuccess(request, response, SecurityContextHolder.getContext().getAuthentication());
         } else {
             //若非驗證端點則呼叫doFilter繼續檢查，理論上會進入權限檢查
-            log.info("登入成功，即將放行");
+            log.info("驗證成功，即將放行");
             chain.doFilter(request, response);
         }
     }
