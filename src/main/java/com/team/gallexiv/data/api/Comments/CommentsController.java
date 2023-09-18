@@ -3,10 +3,14 @@ package com.team.gallexiv.data.api.Comments;
 import com.team.gallexiv.data.model.CommentService;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.data.dto.CommentDto;
+import com.team.gallexiv.data.dto.SubCommentDto;
 import com.team.gallexiv.data.model.Comment;
 import com.team.gallexiv.data.model.UserService;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +60,18 @@ public class CommentsController {
     @GetMapping(path = "comments/findByPostId", produces = "application/json;charset=UTF-8")
     public VueData getCommentsByPostId(@RequestParam Integer postId) {
         return commentS.getCommentsByPostId(postId);
+    }
+
+    // 由postId找subComments
+    @GetMapping(path = "comments/findSubByPostId", produces = "application/json;charset=UTF-8")
+    public VueData getSubCommentsByPostId(@RequestParam Integer postId) {
+        return commentS.getSubComment(postId);
+    }
+
+    @GetMapping(path = "comments/findSubByPostIdDto", produces = "application/json;charset=UTF-8")
+    public VueData getSubComments(@RequestParam int postId) {
+        return commentS.getSubCommentDto(postId);
+
     }
 
     // 新增 comment
