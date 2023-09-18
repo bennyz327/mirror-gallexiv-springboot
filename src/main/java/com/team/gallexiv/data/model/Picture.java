@@ -39,4 +39,10 @@ public class Picture {
 
     public Picture() {
     }
+
+    public Picture(String imgPath, Status pictureStatusByStatusId, Post postByPostId) {
+        this.imgPath = imgPath;
+        this.pictureStatusByStatusId = pictureStatusByStatusId;
+        this.postByPostId = postByPostId;
+    }
 }

@@ -1,6 +1,7 @@
 package com.team.gallexiv.data.model;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,9 +23,14 @@ public class PictureService {
     @Value("${gallexiv.upload.rootpath}")
     private String rootPath;
 
+    @Autowired
+    private PictureDao picD;
+
+    @Autowired
+    private PostDao postD;
 
     //Windows 系統適用路徑
-    public void uploadPictureByUserId(Integer userId, MultipartFile[] files) {
+    public void uploadPictureByUserId(Integer userId, MultipartFile[] files, String newPostIdStr) {
         //讀取外部變數rootpath+post作為寫入路徑前墜
         String fileFolder = rootPath + "/post";
 
@@ -54,11 +60,24 @@ public class PictureService {
                 FileOutputStream fos = new FileOutputStream(filePath);
                 fos.write(file.getBytes());
                 fos.close();
+                log.info("圖片寫入成功");
+
+                //每張圖片皆增加資料庫資料
+                // TODO 應該改為存相對路徑
+                matchPicToPost(Integer.parseInt(newPostIdStr),filePath);
             }
+            log.info("全部檔案寫入完成");
         } catch (IOException e) {
             log.error("無法寫入檔案: {}", e.getMessage());
         }
     }
 
+    public void matchPicToPost(Integer postId, String filePath) {
+        Status newStatus = new Status(11);
+        Post matchPost = postD.findByPostId(postId);
+        log.info("要放入圖片實體的POST: {}",matchPost);
+        Picture newPic = new Picture(filePath,newStatus,matchPost);
+        picD.save(newPic);
+    }
 
 }

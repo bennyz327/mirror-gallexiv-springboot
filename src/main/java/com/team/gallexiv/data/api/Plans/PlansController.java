@@ -62,11 +62,11 @@ public class PlansController {
     }
     // -----------------------------
 
-    @DeleteMapping(path = "/plans/{planId}/delete")
+    @Transactional
+    @PutMapping(path = "/plans/{planId}/delete")
     @Operation(description = "刪除plan(GET BY ID)")
     public VueData deletePlan(@PathVariable Integer planId) {
         return planS.deletePlanById(planId);
-
     }
 
     @Transactional // 狀態更新會只有statusId
@@ -79,7 +79,7 @@ public class PlansController {
 
     }
 
-    @GetMapping("plans/test")
+    @GetMapping("plans/personalPlan")
     public VueData getAllPlanByUserId() {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return planS.getPlanByUserId(accountName);

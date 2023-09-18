@@ -26,6 +26,11 @@ public class UsersController {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userS.getUserById(userId);
     }
+    @GetMapping(path = "/userInfos/profile", produces = "application/json")
+    @Operation(description = "取得單筆user (GET BY ID)")
+    public VueData getUserProfile() {
+        return userS.getUserById();
+    }
 
     @GetMapping(path = "/userInfos", produces = "application/json;charset=UTF-8")
     public VueData findAllUser() {

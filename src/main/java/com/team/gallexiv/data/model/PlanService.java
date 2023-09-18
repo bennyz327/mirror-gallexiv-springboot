@@ -119,7 +119,7 @@ public class PlanService {
     public VueData deletePlanById(Integer planId) {
         Optional<Plan> planOptional = planD.findById(planId);
         if (planOptional.isPresent()) {
-            planD.deleteById(planId);
+            planOptional.get().getPlanStatusByStatusId().setStatusId(18);
             return VueData.ok();
         }
         return VueData.error("刪除失敗");

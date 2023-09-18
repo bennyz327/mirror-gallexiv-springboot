@@ -44,7 +44,7 @@ public class Post {
     // M2O取得Userinfo物件
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    @JsonIncludeProperties({ "userId", "userName", "userStatusByStatusId" })
+    @JsonIncludeProperties({ "userId", "userName", "userStatusByStatusId","avatar" })
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
