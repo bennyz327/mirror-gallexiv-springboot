@@ -1,6 +1,7 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.dto.SubCommentDto;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -136,10 +138,47 @@ public class CommentService {
     }
 
     // 找到子留言
-    public VueData getSubComment(Integer parentCommentId) {
-        List<Comment> subComments = commentD.findSubComment(parentCommentId);
+    public VueData getSubComment(Integer postId) {
+        List<Comment> subComments = commentD.findSubComment(postId);
         if (!subComments.isEmpty()) {
             return VueData.ok(subComments);
+        }
+        return VueData.error("查詢失敗");
+    }
+
+    public VueData getSubCommentDto(Integer postId) {
+
+        Integer thisCommentStatusId = 13;
+        Optional<Status> thisCommentStatus = statusD.findById(thisCommentStatusId);
+
+        List<Comment> subComments = commentD.findSubComment(postId);
+
+        List<SubCommentDto> subCommentDtos = subComments.stream()
+                .map(subComment -> {
+                    SubCommentDto dto = new SubCommentDto();
+                    dto.setCommentId(subComment.getCommentId());
+                    dto.setPostId(postId);
+                    dto.setCommentText(subComment.getCommentText());
+                    dto.setCommentTime(subComment.getCommentTime());
+                    dto.setComment_status(thisCommentStatusId);
+
+                    // 设置 parentCommentId 为关联的 comment1 的 commentId
+                    if (subComment.getCommentByParentCommentId() != null) {
+                        dto.setParentCommentId(subComment.getCommentByParentCommentId().getCommentId());
+                    }
+                    if (subComment.getUserinfoByUserId() != null) {
+                        dto.setUserId(subComment.getUserinfoByUserId().getUserId());
+                    }
+                    if (subComment.getUserinfoByUserId() != null) {
+                        dto.setUserName(subComment.getUserinfoByUserId().getUserName());
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        if (!subCommentDtos.isEmpty()) {
+            return VueData.ok(subCommentDtos);
         }
         return VueData.error("查詢失敗");
     }

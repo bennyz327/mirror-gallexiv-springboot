@@ -75,7 +75,7 @@ public class SecurityConfiguration {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers(POST, LOGIN_URI).permitAll()
                                                 .requestMatchers(GET, "/captcha", "/test/**", "posts/**",
-                                                                "comments/findByPostId")
+                                                                "comments/findByPostId", "comments/findSubByPostId", "comments/findSubByPostIdDto")
                                                 .permitAll()
                                                 .requestMatchers(POST, "/**").permitAll()
                                                 .requestMatchers(OPTIONS, "/**").permitAll()

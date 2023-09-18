@@ -19,7 +19,7 @@ public interface CommentDao extends JpaRepository<Comment, Integer> {
     List<Comment> findCommentIByPostIdAndStatus(@Param("postId") Integer postId);
 
     // 找到子留言 where status = 13
-    @Query("SELECT c FROM Comment c WHERE c.commentStatusByStatusId.statusId = 13 AND c.commentByParentCommentId.commentId IS NULL ORDER BY c.commentTime DESC")
-    List<Comment> findSubComment(@Param("parentCommentId") Integer parentCommentId);
+    @Query("SELECT c FROM Comment c WHERE c.postByPostId.postId = :postId AND c.commentStatusByStatusId.statusId = 13 AND c.commentByParentCommentId IS NOT NULL ORDER BY c.commentTime DESC")
+    List<Comment> findSubComment(@Param("postId") Integer postId);
 
 }
