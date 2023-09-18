@@ -72,6 +72,9 @@ public class PostService {
                 System.out.println(key + " : " + props.get(key));
 
                 String[] tags = props.get("tags").split(",");
+
+                log.info("tags: " + Arrays.toString(tags));
+
                 Collection<String> inputTags = Arrays.asList(tags);
                 Collection<Tag> newTags = new ArrayList<>();
 
@@ -86,16 +89,22 @@ public class PostService {
                     }
                 }
 
-                System.out.println(newTags.toString());
+                System.out.println(newTags);
 
                 //組裝Post Entity
                 Post newPost = new Post(optionalUserinfo.get(), props.get("title"), props.get("description"), newTags);
-                //取得Plan Entity 塞入
-                // TODO planId null 判斷
-                if (planD.findById(Integer.parseInt(props.get("planId"))).isPresent()) {
-                    log.info("找到Plan Entity");
-                    newPost.setPlanByPlanId(planD.findById(Integer.parseInt(props.get("planId"))).get());
+
+                //若 Plan選擇的不是無限制 則取得Plan Entity 塞入
+                String planId = props.get("planId");
+                log.info("planId: " + planId);
+                if (planId != null && !planId.isEmpty() && !planId.equals("null")) {
+                    log.info("planId: " + props.get("planId"));
+                    if (planD.findById(Integer.parseInt(props.get("planId"))).isPresent()) {
+                        log.info("找到Plan Entity");
+                        newPost.setPlanByPlanId(planD.findById(Integer.parseInt(props.get("planId"))).get());
+                    }
                 }
+
                 newPost.setPostPublic(Integer.parseInt(props.get("isPublic")));
                 newPost.setPostAgeLimit(Integer.parseInt(props.get("nsfw")));
                 newPost.setPostStatusByStatusId(new Status(7));

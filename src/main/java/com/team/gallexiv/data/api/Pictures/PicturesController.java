@@ -80,35 +80,34 @@ public class PicturesController {
 //        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
 //        int userId =  thisUser.get().getUserId();
+
+        //TODO 判斷請求者是否有權限
         int userId = 1;
         String imagePath;
 
         log.info(System.getProperty("os.name").toLowerCase());
+//        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+//            imagePath = pictureS.getRootPath();
+//
+//        }else if ( System.getProperty("os.name").toLowerCase().startsWith("mac")){
+//            imagePath = pictureS.getRootPath();
+//            imagePath =imagePath + "/post/" + userId + "/" + pid + ".jpg";
+//        } else {
+//            //linux版  /Users/max/Desktop/ActionGroupProject/gallexiv/upload/post
+//            imagePath = pictureS.getRootPath();
+//            imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
+//        }
 
-        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-            //windows版
-            imagePath = IMG_ROOTPATH;
-            imagePath = imagePath + "\\user" + userId + "\\" + pid + ".jpg";
-
-        }else if ( System.getProperty("os.name").toLowerCase().startsWith("mac")){
-            imagePath = IMG_ROOTPATH_MAC;
-            imagePath =imagePath + "/post/" + userId + "/" + pid + ".jpg";
-        } else {
-            //linux版  /Users/max/Desktop/ActionGroupProject/gallexiv/upload/post
-            imagePath = IMG_ROOTPATH_LINUX;
-            imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
-        }
+        imagePath = pictureS.getRootPath() + pictureS.getDynamicPathByPicId(pid);
+        log.info("圖片路徑: {}", imagePath);
 
 
-        try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
-            // 读取文件内容并返回字节数组
+        try (FileInputStream fileInputStream = new FileInputStream(imagePath)) {
             byte[] imageBytes = new byte[fileInputStream.available()];
             fileInputStream.read(imageBytes);
             return imageBytes;
         } catch (IOException e) {
-            //
             log.error("例外狀況", e);
-//            e.printStackTrace();
             throw e;
         }
     }

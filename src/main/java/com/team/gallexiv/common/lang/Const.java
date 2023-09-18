@@ -28,14 +28,15 @@ public class Const {
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";
     public final static String JWT_HEADER = "Authorization";
     public final static Integer JWT_EXPIRE_SECONDS = 1800;
-    public final static String IMG_ROOTPATH = "D:\\upload";
-    public final static String IMG_ROOTPATH_LINUX = "/home/benny/gallexiv/upload";
-    public final static String IMG_ROOTPATH_MAC = "/Users/max/Desktop/ActionGroupProject/gallexiv/upload";
+//    public final static String IMG_ROOTPATH = "C:\\Program Files";
+//    public final static String IMG_ROOTPATH_LINUX = "/home/benny/gallexiv";
+//    public final static String IMG_ROOTPATH_MAC = "/Users/max/Library/ActionGroupProject/gallexiv/upload";
+    public final static String DEFAULT_ROOTPATH_LINUX = "/home/gallexiv";
+    public final static String DEFAULT_ROOTPATH_MAC = "/Library/gallexiv";
+    public final static String DEFAULT_ROOTPATH_WIN = "C://gallexiv";
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
 
 
-    public final static Integer STATUS_ON = 0;
-    public final static Integer STATUS_OFF = 1;
     public static final String DEFULT_AVATAR = "https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg";
 }

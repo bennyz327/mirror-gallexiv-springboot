@@ -41,7 +41,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     public VueData handler(IllegalArgumentException e) {
         log.error("Assert異常：----------------{}", e.getMessage());
-        log.error("{}",e.getCause().getMessage());
         return VueData.error(e.getMessage());
     }
 

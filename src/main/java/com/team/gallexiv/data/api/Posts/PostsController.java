@@ -18,12 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.Collection;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -69,7 +65,9 @@ public class PostsController {
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
     public VueData findAllPost() {
-        return postS.getAllPost();
+//        return postS.getAllPost();
+        //取得自己的貼文
+        return postS.getPostByUserId(userS.getUserByAccount((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
     }
 
     @CrossOrigin(origins = "http://172.18.135.63:3100")
@@ -116,8 +114,14 @@ public class PostsController {
             @RequestPart("other") Map<String, String> props) throws JsonProcessingException {
 
         //辨識請求來源
-        String account = "admin";
-        int userId = 1;
+        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("目前登入使用者: {}", account);
+        Userinfo optionalUserinfo = userS.getUserByAccount(account);
+        if (optionalUserinfo == null) {
+            return VueData.error("token無效，請先登入");
+        }
+        int userId = optionalUserinfo.getUserId();
+        log.info("ID: {}", userId);
 
         log.info("Post 資料 準備新增");
         //資料庫塞POST資料
