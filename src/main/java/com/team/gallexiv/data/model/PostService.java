@@ -202,4 +202,23 @@ public class PostService {
         return postD.findByTitleLike(postTitle);
     }
 
+    public VueData findPostWithPlan(){
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
+        if (optionalUserinfo.isPresent()){
+            int userId = optionalUserinfo.get().getUserId();
+            return VueData.ok(postD.postWithPlan(userId));
+        }
+        return VueData.error("查無此使用者");
+    }
+    public VueData findPostNotWithPlan(){
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
+        if (optionalUserinfo.isPresent()){
+            int userId = optionalUserinfo.get().getUserId();
+            return VueData.ok(postD.postWithNoPlan(userId));
+        }
+        return VueData.error("查無此使用者");
+    }
+
 }

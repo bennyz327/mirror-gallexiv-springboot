@@ -61,15 +61,6 @@ public class PostsController {
         return postS.getPostByIdUseParam(postId);
     }
 
-    @CrossOrigin
-    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
-    @Operation(description = "取得全部筆貼文")
-    public VueData findAllPost() {
-//        return postS.getAllPost();
-        //取得自己的貼文
-        return postS.getPostByUserId(userS.getUserByAccount((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId());
-    }
-
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
@@ -135,10 +126,31 @@ public class PostsController {
         allProps.forEach(log::info);
         log.info("準備寫入檔案");
         //給內部 使用者ID、檔案、新圖片ID字串
-        log.info("圖片ID字串 {}",newPostIdStr);
+        log.info("圖片ID字串 {}", newPostIdStr);
         pictureS.uploadPictureByUserId(userId, files, newPostIdStr);
 
         return VueData.ok("上傳成功");
     }
+
+    @CrossOrigin
+    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得全部筆貼文")
+    public VueData findAllPost(@RequestParam int p) {
+        if (p == 0) {
+            return postS.findPostWithPlan();
+        }
+        if (p == 1) {
+            return postS.findPostNotWithPlan();
+        }
+        if (p == 2) {
+            return postS.getAllPost();
+        }
+        return null;
+    }
+
+//    @GetMapping("/posts")
+//    public VueData findPostWithPlan(){
+//        return postS.findPostWithPlan();
+//    }
 
 }
