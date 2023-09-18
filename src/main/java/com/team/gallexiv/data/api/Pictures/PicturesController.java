@@ -44,14 +44,12 @@ import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH_LINUX;
 @RequestMapping("/p")
 @Tag(name = "圖片控制存取")
 public class PicturesController {
-    @Value("${gallexiv.upload.rootpath}")
-    private UserDao userD;
+
     private String rootPath;
     final UserService userS;
     final PictureService pictureS;
 
-    public PicturesController(UserDao userD, UserService userS, PictureService pictureS){
-        this.userD = userD;
+    public PicturesController(UserService userS, PictureService pictureS) {
         this.userS = userS;
         this.pictureS = pictureS;
     }
@@ -112,6 +110,7 @@ public class PicturesController {
             throw e;
         }
     }
+
     @GetMapping(value = "/test/p")
     public ResponseEntity<List<String>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
         List<String> pictures = pictureS.getImgPathByPostId(postId);
