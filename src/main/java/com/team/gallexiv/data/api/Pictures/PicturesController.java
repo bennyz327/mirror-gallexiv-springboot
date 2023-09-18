@@ -1,13 +1,12 @@
 package com.team.gallexiv.data.api.Pictures;
 
 import cn.hutool.core.io.IoUtil;
-import com.team.gallexiv.data.model.Picture;
-import com.team.gallexiv.data.model.PictureService;
-import com.team.gallexiv.data.model.UserService;
+import com.team.gallexiv.data.model.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
 
@@ -25,12 +25,19 @@ import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
 @Tag(name = "圖片控制存取")
 public class PicturesController {
 
+    private UserDao userD;
+
+    public PicturesController(UserDao userD){
+        this.userD = userD;
+    }
+
     @GetMapping(
             value = "/test/getImage",
             produces = MediaType.IMAGE_JPEG_VALUE
     )
     public @ResponseBody byte[] getImageWithMediaTypeTest() throws IOException {
         // 指定本地文件路径
+
         String imagePath = "D:\\upload\\user1\\1.jpg";
 
         try (FileInputStream fileInputStream = new FileInputStream(new File(imagePath))) {
@@ -51,13 +58,14 @@ public class PicturesController {
     )
     public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
 
-        Integer userId = 1;
-
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        int userId =  thisUser.get().getUserId();
 
         // 指定本地文件路径
 
         String imagePath = IMG_ROOTPATH;
-        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
+        imagePath = imagePath+"\\"+userId+"\\"+pid+".jpg";
 
         log.info(imagePath);
 

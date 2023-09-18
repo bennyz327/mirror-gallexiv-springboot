@@ -27,7 +27,7 @@ public class Const {
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";
     public final static String JWT_HEADER = "Authorization";
     public final static Integer JWT_EXPIRE_SECONDS = 1800;
-    public final static String IMG_ROOTPATH = "D:\\upload";
+    public final static String IMG_ROOTPATH = "D:\\gallexiv\\upload\\post";
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
 
