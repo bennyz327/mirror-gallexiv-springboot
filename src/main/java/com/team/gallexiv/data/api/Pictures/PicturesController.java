@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH;
+import static com.team.gallexiv.common.lang.Const.IMG_ROOTPATH_LINUX;
 
 @CrossOrigin
 @Slf4j
@@ -64,9 +65,12 @@ public class PicturesController {
         int userId = 1;
 
         // 指定本地文件路径
-
-        String imagePath = IMG_ROOTPATH;
-        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
+        //windows版
+//        String imagePath = IMG_ROOTPATH;
+//        imagePath = imagePath+"\\user"+userId+"\\"+pid+".jpg";
+        //linux版
+        String imagePath = IMG_ROOTPATH_LINUX;
+        imagePath = imagePath+"/post/"+userId+"/"+pid+".jpg";
 
         log.info(imagePath);
 
