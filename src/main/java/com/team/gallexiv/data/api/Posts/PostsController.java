@@ -58,6 +58,14 @@ public class PostsController {
     }
 
     @CrossOrigin
+    @GetMapping(path = "/posts/search", produces = "application/json")
+    @Operation(description = "取得貼文 (GET BY Name)")
+    public VueData showPostsOb(@RequestParam String postTitle) {
+        return VueData.ok(postS.findPostByTitleLike(postTitle));
+    }
+
+
+    @CrossOrigin
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
     public VueData findAllPost() {
