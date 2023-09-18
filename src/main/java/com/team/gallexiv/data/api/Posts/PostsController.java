@@ -65,12 +65,7 @@ public class PostsController {
         return postS.getPostByIdUseParam(postId);
     }
 
-    @CrossOrigin
-    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
-    @Operation(description = "取得全部筆貼文")
-    public VueData findAllPost() {
-        return postS.getAllPost();
-    }
+
 
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
@@ -136,5 +131,26 @@ public class PostsController {
 
         return VueData.ok("上傳成功");
     }
+
+    @CrossOrigin
+    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得全部筆貼文")
+    public VueData findAllPost(@RequestParam int p) {
+        if (p == 0){
+            return postS.findPostWithPlan();
+        }
+        if (p == 1){
+            return postS.findPostNotWithPlan();
+        }
+        if (p == 2){
+            return postS.getAllPost();
+        }
+        return null;
+    }
+
+//    @GetMapping("/posts")
+//    public VueData findPostWithPlan(){
+//        return postS.findPostWithPlan();
+//    }
 
 }

@@ -113,7 +113,7 @@ public class PicturesController {
         }
     }
 
-    @GetMapping(value = "/test/p")
+    @GetMapping(value = "/test/pic")
     public ResponseEntity<List<String>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
         List<String> pictures = pictureS.getImgPathByPostId(postId);
         List<String> imageUrls = new ArrayList<>();
