@@ -5,13 +5,16 @@ import com.team.gallexiv.data.model.Userinfo;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
+import java.util.Map;
 
+@Slf4j
 @RestController
-@CrossOrigin()
 public class UsersController {
 
     final UserService userS;
@@ -26,6 +29,7 @@ public class UsersController {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userS.getUserById(userId);
     }
+
     @GetMapping(path = "/userInfos/profile", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
     public VueData getUserProfile() {
@@ -56,6 +60,36 @@ public class UsersController {
         System.out.println(user);
         return userS.updateUserById(user);
 
+    }
+
+    @PreAuthorize("not isAuthenticated()")
+    @PostMapping(value = "/register", consumes = "application/json")
+    public VueData registerUser(@RequestBody Map<String, String> registerInfo) {
+
+        log.info("請求的註冊資料");
+        System.out.println(registerInfo.get("account"));
+        System.out.println(registerInfo.get("password"));
+        System.out.println(registerInfo.get("email"));
+        System.out.println(registerInfo.get("token"));
+        System.out.println(registerInfo.get("verification"));
+
+
+        String token = registerInfo.get("token");
+        String code = registerInfo.get("verification");
+
+        if (userS.ifCaptchaNotNull(token, code)) {
+            if (userS.ifCaptchaMatch(token, code)) {
+                log.info("註冊驗證碼正確");
+                if (userS.createRegisterUser(registerInfo)) {
+                    log.info("註冊成功");
+                    return VueData.ok("註冊成功");
+                }
+                log.info("電子郵件或帳號已被註冊");
+                return VueData.error("電子郵件或帳號已被註冊");
+            }
+        }
+        log.info("註冊驗證碼錯誤");
+        return VueData.error("驗證失敗");
     }
 
 }

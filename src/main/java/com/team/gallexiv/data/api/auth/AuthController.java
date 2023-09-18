@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -26,11 +27,11 @@ public class AuthController extends BaseController {
     public VueData captcha() throws IOException {
 
         // TODO 生產環境清理
-         String key = "aaaaa";
-         String code = "11111";
+//         String key = "aaaaa";
+//         String code = "11111";
         //TODO 生產環境要用 要檢查用戶端，若重複要刪除舊的驗證碼紀錄
-//        String key = UUID.randomUUID().toString();
-//        String code = producer.createText();
+        String key = UUID.randomUUID().toString();
+        String code = producer.createText();
 
         BufferedImage image = producer.createImage(code);
 

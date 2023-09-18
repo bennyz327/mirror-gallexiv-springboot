@@ -3,9 +3,11 @@ package com.team.gallexiv.data.model;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.system.UserInfo;
+import com.team.gallexiv.common.exception.CaptchaException;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.dto.PreRegisterUserinfo;
+import io.netty.util.internal.StringUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.team.gallexiv.common.lang.Const.CAPTCHA_REDIS_KEY;
 import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
 
 @Slf4j
@@ -343,6 +347,44 @@ public class UserService {
             return optionalUserinfo.orElse(null);
         }
         return null;
+    }
+
+    public boolean createRegisterUser(Map<String, String> user){
+        //檢查ACCOUNT是否重複
+        String userName = user.get("account");
+        if (userD.findByAccount(userName).isPresent()) {
+            log.info("帳號重複");
+            return false;
+        }
+
+        //檢查EMAIL是否重複
+        String userEmail = user.get("email");
+        if (userD.findByUserEmail(userEmail).isPresent()) {
+            log.info("EMAIL重複");
+            return false;
+        }
+
+        log.info("創建註冊使用者");
+        Userinfo new_user = new Userinfo();
+        new_user.setUserName(user.get("account"));
+        new_user.setAccount(user.get("account"));
+        new_user.setPWord(bCryptPE.encode(user.get("password")));
+        new_user.setUserEmail(user.get("email"));
+        new_user.setAccountRoleByRoleId(accountRoleD.findById(2).get());
+        new_user.setUserStatusByStatusId(statusD.findById(5).get());
+        new_user.setModified_by(1);
+        log.info("保存註冊使用者資料");
+        userD.save(new_user);
+
+        return true;
+    }
+
+    public boolean ifCaptchaNotNull(String token, String code) {
+        return !StringUtil.isNullOrEmpty(code) && !StringUtil.isNullOrEmpty(token);
+    }
+
+    public boolean ifCaptchaMatch(String token, String code) {
+        return code.equals(redisUtil.hget(CAPTCHA_REDIS_KEY, token));
     }
 
 }

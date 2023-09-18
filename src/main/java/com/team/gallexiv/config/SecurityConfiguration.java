@@ -87,7 +87,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/test/**", "/tags", "/posts/**","/p/**","/userInfos","comments/findByPostId", "comments/findSubByPostId", "comments/findSubByPostIdDto").permitAll()
-                        .requestMatchers(POST, "/p/**","/posts/**").permitAll()
+                        .requestMatchers(POST, "/p/**","/posts/**","/register").permitAll()
                         .requestMatchers(PUT,"/posts/**","/plans/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")
