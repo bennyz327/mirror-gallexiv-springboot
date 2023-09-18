@@ -146,6 +146,7 @@ public class CommentService {
         return VueData.error("查詢失敗");
     }
 
+    //用Dto找子留言
     public VueData getSubCommentDto(Integer postId) {
 
         Integer thisCommentStatusId = 13;

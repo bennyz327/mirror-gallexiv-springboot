@@ -68,6 +68,7 @@ public class CommentsController {
         return commentS.getSubComment(postId);
     }
 
+    // 由Dto找subComments
     @GetMapping(path = "comments/findSubByPostIdDto", produces = "application/json;charset=UTF-8")
     public VueData getSubComments(@RequestParam int postId) {
         return commentS.getSubCommentDto(postId);
