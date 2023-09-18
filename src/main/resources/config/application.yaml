@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: gallexiv
+  profiles:
+    active: base,lleondev
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -39,7 +41,8 @@ spring:
           max-idle: 8
           max-wait: 1
           min-idle: 0
-      host: 172.18.135.72
+      #      host: 127.0.0.1
+      host: 192.168.0.205
       port: 6379
       database: 1
       password: benben327327
