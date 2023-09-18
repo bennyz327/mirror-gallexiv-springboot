@@ -96,7 +96,7 @@ public class PicturesController {
         } else {
             //linux版
             imagePath = IMG_ROOTPATH_LINUX;
-            imagePath = imagePath + "/user/" + userId + "/" + pid + ".jpg";
+            imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
         }
 
 
