@@ -51,7 +51,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false)
-    @JsonIncludeProperties({ "userId", "userName","avatar" })
+    @JsonIncludeProperties({ "userId", "userName", "avatar" })
     private Userinfo userinfoByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)

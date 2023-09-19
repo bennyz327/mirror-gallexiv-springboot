@@ -61,10 +61,19 @@ public class PostsController {
         return postS.getPostByIdUseParam(postId);
     }
 
+    @CrossOrigin
+    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得全部筆貼文")
+    public VueData findAllPost() {
+        // return postS.getAllPost();
+        // 取得自己的貼文
+        return postS.getAllPost();
+    }
+
     @CrossOrigin(origins = "http://172.18.135.63:3100")
     @PostMapping(path = "/posts/person", produces = "application/json;charset=UTF-8")
     public VueData findAllPersonPost() {
-        //從JWT解析請求者
+        // 從JWT解析請求者
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("目前登入使用者" + accoutName);
         return postS.getPostByUserId(userS.getUserByAccount(accoutName).getUserId());
@@ -76,14 +85,14 @@ public class PostsController {
         return postS.deletePostById(postId);
     }
 
-    //    @Transactional // 少了tag跟picture
-//    @PutMapping("/posts/update")
-//    @Operation(description = "更新貼文")
-//    public VueData updatePost(@RequestBody Post post) {
-//        log.info("進PUT");
-//        log.info(post.toString());
-//        return postS.updatePostById(post);
-//    }
+    // @Transactional // 少了tag跟picture
+    // @PutMapping("/posts/update")
+    // @Operation(description = "更新貼文")
+    // public VueData updatePost(@RequestBody Post post) {
+    // log.info("進PUT");
+    // log.info(post.toString());
+    // return postS.updatePostById(post);
+    // }
     @Transactional // 少了tag跟picture
     @PutMapping("/posts/update")
     @Operation(description = "更新貼文")
@@ -104,7 +113,7 @@ public class PostsController {
             @RequestPart("files") MultipartFile[] files,
             @RequestPart("other") Map<String, String> props) throws JsonProcessingException {
 
-        //辨識請求來源
+        // 辨識請求來源
         String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("目前登入使用者: {}", account);
         Userinfo optionalUserinfo = userS.getUserByAccount(account);
@@ -115,11 +124,11 @@ public class PostsController {
         log.info("ID: {}", userId);
 
         log.info("Post 資料 準備新增");
-        //資料庫塞POST資料
+        // 資料庫塞POST資料
         String newPostIdStr = postS.insertPost(props);
         log.info("Post 資料 新增完成");
 
-        //儲存到檔案系統，資料庫塞圖片資料
+        // 儲存到檔案系統，資料庫塞圖片資料
         log.info("上傳檔案數量: {}", files.length);
         log.info("所有檔案資訊: ");
         Collection<String> allProps = props.values();
