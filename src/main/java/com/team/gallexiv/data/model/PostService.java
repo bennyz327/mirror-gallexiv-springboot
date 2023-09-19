@@ -25,13 +25,16 @@ public class PostService {
     final PlanDao planD;
     final TagDao tagD;
     final PictureDao pictureD;
+    final StatusDao statusD;
 
-    public PostService(PostDao postD, UserDao userD, TagDao tagD, PictureDao pictureD, PlanDao planD) {
+    public PostService(PostDao postD, UserDao userD, TagDao tagD, PictureDao pictureD, PlanDao planD,
+            StatusDao statusD) {
         this.postD = postD;
         this.userD = userD;
         this.tagD = tagD;
         this.pictureD = pictureD;
         this.planD = planD;
+        this.statusD = statusD;
     }
 
     // 取得單筆貼文
@@ -54,7 +57,7 @@ public class PostService {
 
     // 取得全部貼文
     public VueData getAllPost() {
-        List<Post> result = postD.findAll();
+        List<Post> result = postD.findAllPostByStatus();
         if (result.isEmpty()) {
             return VueData.error("查詢失敗");
         }
@@ -91,10 +94,10 @@ public class PostService {
 
                 System.out.println(newTags);
 
-                //組裝Post Entity
+                // 組裝Post Entity
                 Post newPost = new Post(optionalUserinfo.get(), props.get("title"), props.get("description"), newTags);
 
-                //若 Plan選擇的不是無限制 則取得Plan Entity 塞入
+                // 若 Plan選擇的不是無限制 則取得Plan Entity 塞入
                 String planId = props.get("planId");
                 log.info("planId: " + planId);
                 if (planId != null && !planId.isEmpty() && !planId.equals("null")) {
@@ -119,14 +122,28 @@ public class PostService {
 
     // 刪除貼文
     public VueData deletePostById(Integer postId) {
-        Optional<Post> postOptional = postD.findById(postId);
-        if (postOptional.isPresent()) {
-            postD.deleteById(postId);
-            return VueData.ok("刪除成功");
-        }
-        return VueData.error("刪除失敗");
-    }
+        try {
+            String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Userinfo> thisUser = userD.findByAccount(accoutName);
+            Integer thisUserId = thisUser.get().getUserId();
 
+            Optional<Post> postOptional = postD.findById(postId);
+            Integer thisPostUserId = postOptional.get().getUserinfoByUserId().getUserId();
+
+            Integer thisPostStatusId = 8;
+            Optional<Status> thisPlanStatus = statusD.findById(thisPostStatusId);
+
+            if (postOptional.isPresent() && (thisUserId == thisPostUserId)) {
+                Post deletePost = postOptional.get();
+                deletePost.setPostStatusByStatusId(thisPlanStatus.get());
+                postD.save(deletePost);
+            }
+            return VueData.ok("刪除成功");
+
+        } catch (Exception e) {
+            return VueData.error("刪除失敗");
+        }
+    }
 
     // 更新貼文
     public VueData updatePostById(Post post) {

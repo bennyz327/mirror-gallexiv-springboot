@@ -16,4 +16,7 @@ public interface PostDao extends JpaRepository<Post, Integer> {
     List<Post> findByUserinfoByUserId(Userinfo userinfo);
 
     Post findByPostId(Integer postId);
+
+    @Query("SELECT p FROM Post p WHERE p.postStatusByStatusId.statusId = 7 ORDER BY postTime DESC")
+    List<Post> findAllPostByStatus();
 }

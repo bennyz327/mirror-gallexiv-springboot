@@ -50,10 +50,7 @@ public class PicturesController {
         this.pictureS = pictureS;
     }
 
-    @GetMapping(
-            value = "/test/getImage",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping(value = "/test/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaTypeTest() throws IOException {
         // 指定本地文件路径
 
@@ -71,36 +68,33 @@ public class PicturesController {
         }
     }
 
-    @GetMapping(
-            value = "/test/{pid}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping(value = "/test/{pid}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
 
-//        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
-//        int userId =  thisUser.get().getUserId();
+        // String accountName = (String)
+        // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        // int userId = thisUser.get().getUserId();
 
-        //TODO 判斷請求者是否有權限
+        // TODO 判斷請求者是否有權限
         int userId = 1;
         String imagePath;
 
         log.info(System.getProperty("os.name").toLowerCase());
-//        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-//            imagePath = pictureS.getRootPath();
-//
-//        }else if ( System.getProperty("os.name").toLowerCase().startsWith("mac")){
-//            imagePath = pictureS.getRootPath();
-//            imagePath =imagePath + "/post/" + userId + "/" + pid + ".jpg";
-//        } else {
-//            //linux版  /Users/max/Desktop/ActionGroupProject/gallexiv/upload/post
-//            imagePath = pictureS.getRootPath();
-//            imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
-//        }
+        // if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+        // imagePath = pictureS.getRootPath();
+        //
+        // }else if ( System.getProperty("os.name").toLowerCase().startsWith("mac")){
+        // imagePath = pictureS.getRootPath();
+        // imagePath =imagePath + "/post/" + userId + "/" + pid + ".jpg";
+        // } else {
+        // //linux版 /Users/max/Desktop/ActionGroupProject/gallexiv/upload/post
+        // imagePath = pictureS.getRootPath();
+        // imagePath = imagePath + "/post/" + userId + "/" + pid + ".jpg";
+        // }
 
         imagePath = pictureS.getRootPath() + pictureS.getDynamicPathByPicId(pid);
         log.info("圖片路徑: {}", imagePath);
-
 
         try (FileInputStream fileInputStream = new FileInputStream(imagePath)) {
             byte[] imageBytes = new byte[fileInputStream.available()];
@@ -112,7 +106,7 @@ public class PicturesController {
         }
     }
 
-    @GetMapping(value = "/test/p")
+    @GetMapping(value = "/test/pic")
     public ResponseEntity<List<String>> getImagesWithMediaType(@RequestParam Integer postId) throws IOException {
         List<String> pictures = pictureS.getImgPathByPostId(postId);
         List<String> imageUrls = new ArrayList<>();
