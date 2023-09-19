@@ -148,9 +148,9 @@ public class PostsController {
         return null;
     }
 
-//    @GetMapping("/posts")
-//    public VueData findPostWithPlan(){
-//        return postS.findPostWithPlan();
-//    }
+    @GetMapping("/posts/search")
+    public VueData SearchPostWithTagName(@RequestParam String tagName){
+        return postS.findPostByTagName(tagName);
+    }
 
 }
