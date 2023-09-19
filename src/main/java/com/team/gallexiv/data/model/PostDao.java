@@ -23,4 +23,7 @@ public interface PostDao extends JpaRepository<Post, Integer> {
 
     @Query("select u from Post u where u.userinfoByUserId.userId = ?1 and u.planByPlanId.planId is null ")
     List<Post> postWithNoPlan(int userId);
+
+    @Query("SELECT p FROM Post p JOIN p.tagsByPostId t WHERE t.tagName = ?1")
+    List<Post> postWithTagName(String tagName);
 }

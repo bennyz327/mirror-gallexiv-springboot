@@ -221,4 +221,11 @@ public class PostService {
         return VueData.error("查無此使用者");
     }
 
+    public VueData findPostByTagName(String tagName){
+        if (tagName != null){
+            return VueData.ok(postD.postWithTagName(tagName));
+        }
+        return VueData.error("沒有此TagName");
+    }
+
 }

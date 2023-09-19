@@ -11,6 +11,16 @@ public class SubCommentDto {
     private String commentText;
     private String userName;
 
+    private String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public String getUserName() {
         return userName;
     }
