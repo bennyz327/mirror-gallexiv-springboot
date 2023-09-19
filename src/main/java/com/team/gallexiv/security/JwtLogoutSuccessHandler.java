@@ -32,7 +32,7 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     @Autowired
     GallexivUserDetailsService gallexivUserDetailsService;
 
-    //TODO 測試權限限制是否生效
+    //TODO 權限拒絕有生效，要測試權限允許是否正常
     @Autowired
     JwtUtils jwtUtils;
     @Override

@@ -1,11 +1,13 @@
 package com.team.gallexiv.data.api.users;
 
+import com.team.gallexiv.data.model.LinkMappingService;
 import com.team.gallexiv.data.model.UserService;
 import com.team.gallexiv.data.model.Userinfo;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class UsersController {
     public UsersController(UserService UserS) {
         this.userS = UserS;
     }
+
+    @Autowired
+    private LinkMappingService linkS;
 
     @GetMapping(path = "/userInfos/{userId}", produces = "application/json")
     @Operation(description = "取得單筆user (GET BY ID)")
@@ -60,6 +65,17 @@ public class UsersController {
         System.out.println(user);
         return userS.updateUserById(user);
 
+    }
+
+    @PutMapping(value = "/userInfos/updateLinks", consumes = "application/json")
+    public VueData updateUserLinks(@RequestBody Map<String, String> links) {
+        log.info("更新使用者連結");
+        links.forEach((k, v) -> System.out.println(k + ":" + v));
+        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (linkS.updateUserLinks(account, links)) {
+            return VueData.ok("更新成功");
+        }
+        return VueData.error("更新失敗");
     }
 
     @PreAuthorize("not isAuthenticated()")

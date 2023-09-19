@@ -107,6 +107,10 @@ public class Userinfo {
     @JsonIncludeProperties({"likeId"})
     private Collection<LikeFollow> likeFollowByPostId;
 
+    @OneToMany(mappedBy = "userinfoByUserId")
+    @JsonIncludeProperties({"linkSite","linkSource"})
+    private Collection<LinkMapping> linkMappingsByUserId;
+
     public Userinfo() {
     }
 
