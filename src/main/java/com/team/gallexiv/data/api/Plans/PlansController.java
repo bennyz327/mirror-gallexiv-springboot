@@ -18,7 +18,6 @@ public class PlansController {
     final PlanService planS;
     final UserService userS;
 
-
     public PlansController(PlanService planS, UserService userS) {
         this.planS = planS;
         this.userS = userS;
@@ -40,7 +39,7 @@ public class PlansController {
 
     @PostMapping(path = "/plans/insert", produces = "application/json;charset=UTF-8")
     @Operation(description = "新增plan")
-    public VueData addPlan(@RequestBody Plan plan){
+    public VueData addPlan(@RequestBody Plan plan) {
 
         System.out.println("收到" + plan);
         return planS.insertPlan(plan);
@@ -63,7 +62,7 @@ public class PlansController {
     // -----------------------------
 
     @Transactional
-    @PutMapping(path = "/plans/{planId}/delete")
+    @DeleteMapping(path = "/plans/{planId}/delete")
     @Operation(description = "刪除plan(GET BY ID)")
     public VueData deletePlan(@PathVariable Integer planId) {
         return planS.deletePlanById(planId);
@@ -79,6 +78,7 @@ public class PlansController {
 
     }
 
+    // 在 user 設定頁面取得 plan
     @GetMapping("plans/personalPlan")
     public VueData getAllPlanByUserId() {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
