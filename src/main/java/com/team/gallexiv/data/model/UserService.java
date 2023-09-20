@@ -181,7 +181,7 @@ public class UserService {
         if (optionalUserinfo.isPresent()) {
             System.out.println("找到存在的使用者");
             Userinfo result = optionalUserinfo.get();
-            System.out.println(result);
+//            System.out.println(result);
             result.setUserName(user.getUserName() != null ? user.getUserName() : result.getUserName());
             result.setAccount(user.getAccount() != null ? user.getAccount() : result.getAccount());
             result.setPWord(user.getPWord() != null ? user.getPWord() : result.getPWord()); // ---暫時無法更改

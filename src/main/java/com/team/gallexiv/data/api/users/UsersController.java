@@ -62,7 +62,7 @@ public class UsersController {
     @Transactional
     @PutMapping(value = "/userInfos/update", consumes = "application/json")
     public VueData updateUser(@RequestBody Userinfo user) {
-        System.out.println(user);
+//        System.out.println(user);
         return userS.updateUserById(user);
 
     }
