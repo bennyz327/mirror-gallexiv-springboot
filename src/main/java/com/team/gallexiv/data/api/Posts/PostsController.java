@@ -135,21 +135,37 @@ public class PostsController {
     @CrossOrigin
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
-    public VueData findAllPost(@RequestParam int p) {
-        if (p == 0) {
+    public VueData findAllPost(@RequestParam(required = false, defaultValue = "0") int p,
+                               @RequestParam int s,
+                               @RequestParam(required = false, defaultValue = "0") int userId) {
+        if (s == 0) {
             return postS.findPostWithPlan();
         }
-        if (p == 1) {
+        if (s == 1) {
             return postS.findPostNotWithPlan();
         }
-        if (p == 2) {
+        if (s == 2) {
             return postS.getAllPost();
+        }
+        //別人的免費
+        if (s == 3){
+            if (userId==0){
+                return null;
+            }
+            return postS.findOtherUserPost(userId,s);
+        }
+        //別人的付費
+        if (s == 4){
+            if (userId==0){
+                return null;
+            }
+            return postS.findOtherUserPost(userId,s);
         }
         return null;
     }
 
     @GetMapping("/posts/search")
-    public VueData SearchPostWithTagName(@RequestParam String tagName){
+    public VueData SearchPostWithTagName(@RequestParam String tagName) {
         return postS.findPostByTagName(tagName);
     }
 
