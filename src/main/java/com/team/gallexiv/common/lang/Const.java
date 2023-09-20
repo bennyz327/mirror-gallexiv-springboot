@@ -23,6 +23,7 @@ public class Const {
     public final static String CAPTCHA_REDIS_KEY = "captcha";
     public final static String USERNAME_PARAM = "name";
     public final static String PASSWORD_PARAM = "passwd";
+    public final static String REGISTER_URI = "/register";
     public final static String LOGIN_URI = "/login";
     public final static String LOGOUT_URI = "/logout";
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";

@@ -18,6 +18,3 @@ server:
   servlet:
     # http(s)://(子網域名.)網域名.主域/context-path/(api/end-point)
     context-path:
-gallexiv:
-  upload:
-    rootpath: D:/gallexiv/upload

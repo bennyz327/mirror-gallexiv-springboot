@@ -77,6 +77,10 @@ public class Userinfo {
     @Column(name = "last_modified")
     private Timestamp last_modified;
 
+    @Basic
+    @Column(name = "background_image")
+    private String background_image;
+
     @OneToMany(mappedBy = "userinfoByUserId",fetch = FetchType.LAZY)
     @JsonIncludeProperties({"commentId","commentText","commentStatusByStatusId"})
     private Collection<Comment> commentsByUserId;

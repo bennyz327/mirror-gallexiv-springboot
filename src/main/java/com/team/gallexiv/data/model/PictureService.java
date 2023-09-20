@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+
 import static com.team.gallexiv.common.lang.Const.*;
 
 @Getter
@@ -54,7 +55,7 @@ public class PictureService {
     public void uploadPictureByUserId(Integer userId, MultipartFile[] files, String newPostIdStr) {
 
         //在post資料夾中以userId來建立資料夾
-        String fileFolder = "/post/" + userId;
+        String fileFolder = "/upload/post/" + userId;
 
         //把檔案寫入所屬的userId資料夾中，檔名以當下系統的時間格式字串命名
         try {
@@ -95,6 +96,8 @@ public class PictureService {
     }
 
     public List<String> getImgPathByPostId(Integer postId) {
+
+
         return picD.fintImgPathByPostId(postId);
     }
 
