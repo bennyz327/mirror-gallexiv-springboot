@@ -1,6 +1,11 @@
 package com.team.gallexiv.data.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
+import java.util.logging.SimpleFormatter;
+
+import com.team.gallexiv.data.dto.EcpayDto;
 import org.springframework.stereotype.Service;
 
 import ecpay.payment.integration.AllInOne;
@@ -9,19 +14,25 @@ import ecpay.payment.integration.domain.AioCheckOutALL;
 @Service
 public class EcpayService {
 
-    public String ecpayCheckout() {
+    public String ecpayCheckout(EcpayDto request) {
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String formattedDate = sdf.format(date);
+        System.out.println(formattedDate);
 
         String uuId = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 20);
-
         AllInOne all = new AllInOne("");
-
         AioCheckOutALL obj = new AioCheckOutALL();
         obj.setMerchantTradeNo(uuId);
-        obj.setMerchantTradeDate("2017/01/01 08:05:23");
-        obj.setTotalAmount("50");
-        obj.setTradeDesc("test Description");
-        obj.setItemName("TestItem");
-        obj.setReturnURL("http://211.23.128.214:5000");
+
+        obj.setMerchantTradeDate(formattedDate);
+        System.out.println(formattedDate);
+        obj.setTotalAmount(request.getTotalAmount());
+        obj.setTradeDesc(request.getTradeDesc());
+        obj.setItemName(request.getItemName());
+        obj.setReturnURL(request.getReturnURL());
+        obj.setClientBackURL(request.getClientBackURL());
         obj.setNeedExtraPaidInfo("N");
         String form = all.aioCheckOut(obj, null);
 

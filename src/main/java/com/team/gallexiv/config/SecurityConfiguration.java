@@ -86,8 +86,8 @@ public class SecurityConfiguration {
                 //請求安全設定 統一用下面的寫法
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(POST, LOGIN_URI).permitAll()
-                        .requestMatchers(GET, "/captcha", "/tags", "/posts/**","/p/**","/userInfos/**","comments/**","/subscription/**").permitAll()
-                        .requestMatchers(POST, "/p/**","/posts/**","/register").permitAll()
+                        .requestMatchers(GET, "/captcha", "/tags", "/posts/**","/p/**","/userInfos/**","comments/**","/subscription/**","/ecpayCheckout").permitAll()
+                        .requestMatchers(POST, "/p/**","/posts/**","/register","/ecpayCheckout").permitAll()
                         .requestMatchers(PUT,"/posts/**","/plans/**","/userInfos/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")

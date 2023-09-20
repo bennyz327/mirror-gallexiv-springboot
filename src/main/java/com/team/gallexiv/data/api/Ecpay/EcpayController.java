@@ -1,9 +1,9 @@
 package com.team.gallexiv.data.api.Ecpay;
 
+import com.team.gallexiv.data.dto.EcpayDto;
 import com.team.gallexiv.data.model.EcpayService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.team.gallexiv.data.model.EcpayService;
 
@@ -14,8 +14,8 @@ public class EcpayController {
     EcpayService ecpayService;
 
     @PostMapping("/ecpayCheckout")
-    public String ecpayCheckout() {
-        String aioCheckOutALLForm = ecpayService.ecpayCheckout();
+    public String ecpayCheckout(@RequestBody EcpayDto request) {
+        String aioCheckOutALLForm = ecpayService.ecpayCheckout(request);
 
         return aioCheckOutALLForm;
     }
