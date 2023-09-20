@@ -173,6 +173,9 @@ public class CommentService {
                     if (subComment.getUserinfoByUserId() != null) {
                         dto.setUserName(subComment.getUserinfoByUserId().getUserName());
                     }
+                    if (subComment.getUserinfoByUserId() != null) {
+                        dto.setAvatar(subComment.getUserinfoByUserId().getAvatar());
+                    }
 
                     return dto;
                 })

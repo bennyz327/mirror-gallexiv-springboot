@@ -38,7 +38,7 @@ public class PlanService {
         return VueData.error("查詢失敗");
     }
 
-    //在 user 設定頁面取得 plan
+    // 在 user 設定頁面取得 plan
     public VueData getPlanByUserId(String account) {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
@@ -99,17 +99,25 @@ public class PlanService {
         // 取得userId
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        int thisUserId = thisUser.get().getUserId();
 
+        // 取得 status
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
 
-        if (status.isPresent() && thisUser.isPresent()) {
+        // 取得 plan 數量
+        List<Plan> planList = planD.findPlanByUserIdAndStatus(thisUserId);
+        int planListSize = planList.size();
+
+        if (status.isPresent() && thisUser.isPresent() && planListSize < 3) {
             System.out.println("有進去");
             // 須加上把圖檔轉成base64，並稍微改一下getStatus邏輯
             plan.setPlanStatusByStatusId(status.get());
             plan.setOwnerIdByUserId(thisUser.get());
             return VueData.ok(planD.save(plan));
+        } else if (planListSize >= 3) {
+            return VueData.error("方案數量已達上限");
         }
 
         return VueData.error("新增失敗");
