@@ -12,7 +12,7 @@ public class SubCommentDto {
     private String userName;
     private String avatar;
 
-    private String avatar;
+
 
     public String getAvatar() {
         return avatar;
@@ -43,6 +43,7 @@ public class SubCommentDto {
 
     private Integer parentCommentId;
     private Integer comment_status;
+
 
     public Integer getCommentId() {
         return commentId;
