@@ -18,6 +18,9 @@ public interface PostDao extends JpaRepository<Post, Integer> {
 
     Post findByPostId(Integer postId);
 
+    @Query("SELECT p FROM Post p WHERE p.postStatusByStatusId.statusId = 7 ORDER BY postTime DESC")
+    List<Post> findAllPostByStatus();
+
     @Query("select u from Post u where u.userinfoByUserId.userId = ?1 and u.planByPlanId.planId is not null ")
     List<Post> postWithPlan(int userId);
 

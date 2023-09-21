@@ -38,11 +38,13 @@ public class PlanService {
         return VueData.error("查詢失敗");
     }
 
+    // 在 user 設定頁面取得 plan
     public VueData getPlanByUserId(String account) {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
-        if (thisUser.isPresent()){
-            return VueData.ok(planD.findByOwnerIdByUserId(thisUser.get()));
+        Integer thisUserId = thisUser.get().getUserId();
+        if (thisUser.isPresent()) {
+            return VueData.ok(planD.findPlanByUserIdAndStatus(thisUserId));
         }
         return VueData.error("查詢失敗");
     }
@@ -69,60 +71,83 @@ public class PlanService {
     }
     // -----------------------------
 
-//    public List<Plan> getAllPlanByUserId (Integer userId){
-//        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        planD.getAllPlanByUserId(userId);
-//        Optional<Userinfo> thisUser = userinfoD.findByAccount(accountName);
-//        if(thisUser.isPresent()){
-//
-//            List<Plan> result = planD.getAllPlanByUserId(5);
-//            return result;
-//        }
-//        return null;
-//    }
+    // public List<Plan> getAllPlanByUserId (Integer userId){
+    // String accountName = (String)
+    // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    // planD.getAllPlanByUserId(userId);
+    // Optional<Userinfo> thisUser = userinfoD.findByAccount(accountName);
+    // if(thisUser.isPresent()){
+    //
+    // List<Plan> result = planD.getAllPlanByUserId(5);
+    // return result;
+    // }
+    // return null;
+    // }
 
-    public List<Plan> getAllPlanByUserId (Integer userId){
+    public List<Plan> getAllPlanByUserId(Integer userId) {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accountName);
-        List<Plan> planList =new ArrayList<>();
+        List<Plan> planList = new ArrayList<>();
 
         planList.add(planD.findById(userId).get());
 
         return planList;
     }
 
-
     // 新增plan
     public VueData insertPlan(Plan plan) {
-        //取得userId
+        // 取得userId
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        int thisUserId = thisUser.get().getUserId();
 
+        // 取得 status
         int thisPlanStatusId = plan.getPlanStatusByStatusId().getStatusId();
         System.out.println("statusID: " + thisPlanStatusId);
         Optional<Status> status = statusD.findById(thisPlanStatusId);
 
-        if (status.isPresent() && thisUser.isPresent()) {
+        // 取得 plan 數量
+        List<Plan> planList = planD.findPlanByUserIdAndStatus(thisUserId);
+        int planListSize = planList.size();
+
+        if (status.isPresent() && thisUser.isPresent() && planListSize < 3) {
             System.out.println("有進去");
-            //須加上把圖檔轉成base64，並稍微改一下getStatus邏輯
+            // 須加上把圖檔轉成base64，並稍微改一下getStatus邏輯
             plan.setPlanStatusByStatusId(status.get());
             plan.setOwnerIdByUserId(thisUser.get());
             return VueData.ok(planD.save(plan));
+        } else if (planListSize >= 3) {
+            return VueData.error("方案數量已達上限");
         }
 
         return VueData.error("新增失敗");
     }
 
-
-
     // 刪除plan
     public VueData deletePlanById(Integer planId) {
-        Optional<Plan> planOptional = planD.findById(planId);
-        if (planOptional.isPresent()) {
-            planOptional.get().getPlanStatusByStatusId().setStatusId(18);
-            return VueData.ok();
+        try {
+            String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Optional<Userinfo> thisUser = userD.findByAccount(accoutName);
+            Integer thisUserId = thisUser.get().getUserId();
+
+            Optional<Plan> planOptional = planD.findById(planId);
+            Integer thisPlanUserId = planOptional.get().getOwnerIdByUserId().getUserId();
+
+            Integer thisPlanStatusId = 18;
+            Optional<Status> thisPlanStatus = statusD.findById(thisPlanStatusId);
+
+            if (planOptional.isPresent() && thisUserId == thisPlanUserId) {
+                Plan deletePlan = planOptional.get();
+                deletePlan.setPlanStatusByStatusId(thisPlanStatus.get());
+                planD.save(deletePlan);
+
+            }
+            return VueData.ok("刪除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VueData.error("刪除失敗");
         }
-        return VueData.error("刪除失敗");
+
     }
 
     // 更新plan
@@ -138,7 +163,7 @@ public class PlanService {
             result.setPlanPrice(plan.getPlanPrice());
             result.setPlanStatusByStatusId(new Status(plan.getPlanStatusByStatusId().getStatusId()));
             result.setPlanDescription(plan.getPlanDescription());
-            //增加轉成base64的功能
+            // 增加轉成base64的功能
             result.setPlanPicture(plan.getPlanPicture());
             return VueData.ok(result);
         }

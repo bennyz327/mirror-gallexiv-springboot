@@ -34,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 
 import static com.team.gallexiv.common.lang.Const.*;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("/p")
@@ -52,10 +53,7 @@ public class PicturesController {
         this.userD = userD;
     }
 
-    @GetMapping(
-            value = "/test/getImage",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping(value = "/test/getImage", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaTypeTest() throws IOException {
         // 指定本地文件路径
 
@@ -73,10 +71,7 @@ public class PicturesController {
         }
     }
 
-    @GetMapping(
-            value = "/test/{pid}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
+    @GetMapping(value = "/test/{pid}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaType(@PathVariable Integer pid) throws IOException {
 
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

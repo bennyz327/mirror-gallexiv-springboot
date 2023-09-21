@@ -11,11 +11,15 @@ import java.util.List;
 @Repository
 public interface PlanDao extends JpaRepository<Plan, Integer> {
 
-//    @Query("from Plan where userId = :UserId")
-//    List<Plan> getAllPlanByUserId(@Param("userId") Integer UserId);
+    // @Query("from Plan where userId = :UserId")
+    // List<Plan> getAllPlanByUserId(@Param("userId") Integer UserId);
+
     public List<Plan> findByOwnerIdByUserId(Userinfo userinfo);
 
     public Plan findByPlanStatusByStatusId(Status status);
 
+    // 在 user 設定頁面取得 plan (透過 userId & status = 17)
+    @Query("SELECT p FROM Plan p WHERE p.ownerIdByUserId.userId = :userId AND p.planStatusByStatusId.statusId = 17")
+    public List<Plan> findPlanByUserIdAndStatus(@Param("userId") Integer userId);
 
 }
