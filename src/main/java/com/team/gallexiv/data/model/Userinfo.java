@@ -138,7 +138,7 @@ public class Userinfo {
                 ", email_verified=" + email_verified +
                 ", birthday=" + birthday +
                 ", gender='" + gender + '\'' +
-                ", avatar='" + avatar + '\'' +
+//                ", avatar='" + avatar + '\'' +
                 ", intro='" + intro + '\'' +
                 ", createTime=" + createTime +
                 ", first_name='" + first_name + '\'' +
