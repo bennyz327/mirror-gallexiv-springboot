@@ -1,15 +1,15 @@
 package com.team.gallexiv.data.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class EcpayDto {
-    String tradeDate;
-    String totalAmount;
-    String tradeDesc;
-    String itemName;
-    String returnURL;
-    String clientBackURL;
-
-
+    private String tradeDate;
+    private String totalAmount;
+    private String tradeDesc;
+    private String itemName;
+    private String returnURL;
+    private String clientBackURL;
 }
