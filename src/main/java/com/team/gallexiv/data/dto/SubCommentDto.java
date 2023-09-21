@@ -12,6 +12,8 @@ public class SubCommentDto {
     private String userName;
     private String avatar;
 
+
+
     public String getAvatar() {
         return avatar;
     }
@@ -23,6 +25,15 @@ public class SubCommentDto {
     public String getUserName() {
         return userName;
     }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
