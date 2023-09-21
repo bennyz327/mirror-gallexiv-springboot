@@ -21,6 +21,7 @@ public class Const {
     public final static List<String> CORS_EXPOSED_HEADERS = List.of("Authorization");
     public final static String DEFAULT_SUCCESS_MSG = "Yabai★Desune☆";
     public final static String CAPTCHA_REDIS_KEY = "captcha";
+    public final static String MAIL_VERIFFY_CODE_REDIS_KEY = "mailCode";
     public final static String USERNAME_PARAM = "name";
     public final static String PASSWORD_PARAM = "passwd";
     public final static String REGISTER_URI = "/register";

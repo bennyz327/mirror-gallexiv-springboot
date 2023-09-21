@@ -1,4 +1,4 @@
-package com.team.gallexiv.data.model;
+package com.team.gallexiv.data.api.Ecpay;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
