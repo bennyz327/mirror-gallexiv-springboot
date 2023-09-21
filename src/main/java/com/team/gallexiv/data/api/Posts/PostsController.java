@@ -62,9 +62,9 @@ public class PostsController {
     }
 
     @CrossOrigin
-    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
+    @GetMapping(path = "/posts/user", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
-    public VueData findAllPost() {
+    public VueData findUserAllPost() {
         // return postS.getAllPost();
         // 取得自己的貼文
         return postS.getAllPost();
@@ -134,7 +134,7 @@ public class PostsController {
         Collection<String> allProps = props.values();
         allProps.forEach(log::info);
         log.info("準備寫入檔案");
-        //給內部 使用者ID、檔案、新圖片ID字串
+        // 給內部 使用者ID、檔案、新圖片ID字串
         log.info("圖片ID字串 {}", newPostIdStr);
         pictureS.uploadPictureByUserId(userId, files, newPostIdStr);
 
@@ -145,8 +145,8 @@ public class PostsController {
     @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得全部筆貼文")
     public VueData findAllPost(@RequestParam(required = false, defaultValue = "0") int p,
-                               @RequestParam int s,
-                               @RequestParam(required = false, defaultValue = "0") int userId) {
+            @RequestParam int s,
+            @RequestParam(required = false, defaultValue = "0") int userId) {
         if (s == 0) {
             return postS.findPostWithPlan();
         }
@@ -156,19 +156,19 @@ public class PostsController {
         if (s == 2) {
             return postS.getAllPost();
         }
-        //別人的免費
-        if (s == 3){
-            if (userId==0){
+        // 別人的免費
+        if (s == 3) {
+            if (userId == 0) {
                 return null;
             }
-            return postS.findOtherUserPost(userId,s);
+            return postS.findOtherUserPost(userId, s);
         }
-        //別人的付費
-        if (s == 4){
-            if (userId==0){
+        // 別人的付費
+        if (s == 4) {
+            if (userId == 0) {
                 return null;
             }
-            return postS.findOtherUserPost(userId,s);
+            return postS.findOtherUserPost(userId, s);
         }
         return null;
     }
