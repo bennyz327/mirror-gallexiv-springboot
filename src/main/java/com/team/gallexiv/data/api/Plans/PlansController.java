@@ -81,8 +81,7 @@ public class PlansController {
     // 在 user 設定頁面取得 plan
     @GetMapping("plans/personalPlan")
     public VueData getAllPlanByUserId() {
-        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return planS.getPlanByUserId(accountName);
+        return planS.getPlanByUserId();
     }
 
 }

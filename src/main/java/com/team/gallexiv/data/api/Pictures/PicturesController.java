@@ -2,8 +2,7 @@ package com.team.gallexiv.data.api.Pictures;
 
 import cn.hutool.core.io.IoUtil;
 import com.team.gallexiv.data.model.*;
-import com.team.gallexiv.data.model.PictureService;
-import com.team.gallexiv.data.model.UserService;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,12 +75,12 @@ public class PicturesController {
 
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-//        if ((!Objects.equals(accountName, "anonymousUser"))) {
-//            Optional<Userinfo> thisUser = userD.findByAccount(accountName);
-//            //TODO 檢查圖片訪問限制
-//            log.info("檢查圖片訪問限制");
-//            int userId = thisUser.get().getUserId();
-//        }
+        // if ((!Objects.equals(accountName, "anonymousUser"))) {
+        // Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        // //TODO 檢查圖片訪問限制
+        // log.info("檢查圖片訪問限制");
+        // int userId = thisUser.get().getUserId();
+        // }
 
         String imagePath;
 
@@ -110,7 +109,7 @@ public class PicturesController {
         List<String> imageUrls = new ArrayList<>();
 
         for (String picture : pictures) {
-            String imgpath = DEFAULT_ROOTPATH_WIN+picture;
+            String imgpath = DEFAULT_ROOTPATH_MAC + picture;
             try (FileInputStream fileInputStream = new FileInputStream(new File(imgpath))) {
                 byte[] imageBytes = new byte[fileInputStream.available()];
                 fileInputStream.read(imageBytes);

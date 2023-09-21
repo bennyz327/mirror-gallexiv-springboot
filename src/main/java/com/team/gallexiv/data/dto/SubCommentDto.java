@@ -17,7 +17,7 @@ public class SubCommentDto {
     private String userName;
     private String avatar;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss:SSS")
     private Timestamp commentTime;
 
     private Integer parentCommentId;
