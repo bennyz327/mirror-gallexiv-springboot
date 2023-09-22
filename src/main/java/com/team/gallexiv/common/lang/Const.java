@@ -30,10 +30,7 @@ public class Const {
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";
     public final static String JWT_HEADER = "Authorization";
     public final static Integer JWT_EXPIRE_SECONDS = 1800;
-//    public final static String IMG_ROOTPATH = "C:\\Program Files";
-//    public final static String IMG_ROOTPATH_LINUX = "/home/benny/gallexiv";
-//    public final static String IMG_ROOTPATH_MAC = "/Users/max/Library/ActionGroupProject/gallexiv/upload";
-    public final static String DEFAULT_ROOTPATH_LINUX = "/home/gallexiv";
+    public final static String DEFAULT_ROOTPATH_LINUX = "/home/benny/gallexiv";
     public final static String DEFAULT_ROOTPATH_MAC = "/Library/gallexiv";
     public final static String DEFAULT_ROOTPATH_WIN = "C://gallexiv";
     public final static String CODE_PARAM = "code";

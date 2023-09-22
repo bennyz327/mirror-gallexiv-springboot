@@ -110,7 +110,7 @@ public class PicturesController {
         List<String> imageUrls = new ArrayList<>();
 
         for (String picture : pictures) {
-            String imgpath = DEFAULT_ROOTPATH_WIN+picture;
+            String imgpath = rootPath+picture;
             try (FileInputStream fileInputStream = new FileInputStream(new File(imgpath))) {
                 byte[] imageBytes = new byte[fileInputStream.available()];
                 fileInputStream.read(imageBytes);
