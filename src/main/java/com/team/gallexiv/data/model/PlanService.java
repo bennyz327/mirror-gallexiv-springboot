@@ -49,6 +49,11 @@ public class PlanService {
         return VueData.error("查詢失敗");
     }
 
+    // 在個人頁面取得 plan
+    public VueData getPlanByUserIdNotOwner(Integer userId) {
+        return VueData.ok(planD.findPlanByUserIdAndStatus(userId));
+    }
+
     // --------先略過此處-------------
     public PlanForShow getPlanForShowById(int planId) {
         Optional<PlanForShow> plan = planForShowD.findById(planId);

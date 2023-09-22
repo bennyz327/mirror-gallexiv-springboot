@@ -60,7 +60,7 @@ public class PostsController {
     }
 
     @CrossOrigin
-    @GetMapping(path = "/posts", produces = "application/json;charset=UTF-8")
+    @PostMapping(path = "/posts/userPosts", produces = "application/json;charset=UTF-8")
     @Operation(description = "取得作者全部筆貼文")
     public VueData findUserAllPost() {
         return postS.getUserAllPost();

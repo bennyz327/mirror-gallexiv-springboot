@@ -37,7 +37,7 @@ public class Const {
     // public final static String IMG_ROOTPATH_MAC =
     // "/Users/max/Library/ActionGroupProject/gallexiv/upload";
     public final static String DEFAULT_ROOTPATH_LINUX = "/home/gallexiv";
-    public final static String DEFAULT_ROOTPATH_MAC = "/Users/max/Desktop/ActionGroupProject/gallexiv";
+    public final static String DEFAULT_ROOTPATH_MAC = "/Library/gallexiv";
     public final static String DEFAULT_ROOTPATH_WIN = "C://gallexiv";
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
