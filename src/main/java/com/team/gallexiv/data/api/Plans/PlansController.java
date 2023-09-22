@@ -80,8 +80,8 @@ public class PlansController {
 
     // 在 user 設定頁面取得 plan
     @GetMapping(path = "plans/personalPlan")
-    public VueData getAllPlanByUserId(@RequestParam(required = false, defaultValue = "0") Integer userId,
-            @RequestParam Integer state) {
+    public VueData getAllPlanByUserId(@RequestParam(required = false, defaultValue = "1") Integer userId,
+            @RequestParam(required = false, defaultValue = "2") Integer state) {
         if (state == 2) {
             return planS.getPlanByUserIdNotOwner(userId);
         }
