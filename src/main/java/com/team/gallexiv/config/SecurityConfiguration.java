@@ -87,7 +87,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(POST, LOGIN_URI).permitAll()
                         .requestMatchers(GET, "/captcha", "/tags", "/posts/**","/p/**","/userInfos/**","comments/**","/subscription/**","/ecpayCheckout").permitAll()
-                        .requestMatchers(POST, "/p/**","/posts/**","/register","/ecpayCheckout","/auth/**",LOGIN_URI).permitAll()
+                        .requestMatchers(POST, "/p/**","/posts/**","/register","/ecpayCheckout","/auth/**",LOGIN_URI,"/pay/**").permitAll()
                         .requestMatchers(PUT,"/posts/**","/plans/**","/userInfos/**").permitAll()
                         .requestMatchers(OPTIONS, "/**").permitAll()
                         .requestMatchers(ADMIN_API_URL).hasRole("admin")

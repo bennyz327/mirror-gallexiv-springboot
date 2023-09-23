@@ -1,6 +1,7 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.api.Ecpay.EcpayService;
 import jakarta.servlet.http.Part;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ public class PlanService {
     final PlanForShowDao planForShowD;
     final UserDao userD;
     final StatusDao statusD;
+    final EcpayService ecpayS;
 
-    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userD, StatusDao statusD) {
+    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userD, StatusDao statusD, EcpayService ecpayS) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userD = userD;
         this.statusD = statusD;
+        this.ecpayS = ecpayS;
     }
 
     // 取得單筆plan
@@ -169,6 +172,19 @@ public class PlanService {
         }
         return VueData.error("更新失敗");
 
+    }
+
+    public VueData getPersonalPaidPlan(String user) {
+        Optional<Userinfo> userinfo = userD.findByAccount(user);
+        System.out.println(user);
+        if (userinfo.isPresent()) {
+            int userId = userinfo.get().getUserId();
+            System.out.println(userId);
+            // 查詢訂單狀態並刷新資料庫再回傳
+            List<Plan> pList = userD.findPlanIdByMyUserId(userId);
+            return VueData.ok(ecpayS.queryAndRenewTradeInfo(pList));
+        }
+        return VueData.error("查無資訊");
     }
 
 }

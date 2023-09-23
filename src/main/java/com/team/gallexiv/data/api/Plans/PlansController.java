@@ -85,4 +85,11 @@ public class PlansController {
         return planS.getPlanByUserId(accountName);
     }
 
+    @GetMapping("/plans/myPaidPlan")
+    public VueData getPersonalPaidPlanByUserId() {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(accountName);
+        return planS.getPersonalPaidPlan(accountName);
+    }
+
 }

@@ -102,8 +102,8 @@ public class PostsController {
 
     @GetMapping("/posts/postTitle")
     @Operation(description = "模糊查詢貼文")
-    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle) {
-        return postS.findPostByTitleLike(postTitle);
+    public VueData findPostByName(@RequestParam("postTitle") String postTitle) {
+        return VueData.ok(postS.findPostByTitleLike(postTitle));
     }
 
     // 同時上傳多張圖片和貼文資料

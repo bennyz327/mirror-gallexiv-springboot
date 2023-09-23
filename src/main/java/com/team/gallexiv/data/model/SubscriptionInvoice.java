@@ -35,4 +35,15 @@ public class SubscriptionInvoice {
     @ManyToOne
     @JoinColumn(name = "subscriptionId", referencedColumnName = "subscriptionId", nullable = false)
     private UserSubscription userSubscriptionBySubscriptionId;
+
+    public SubscriptionInvoice() {
+    }
+    public SubscriptionInvoice(String tradeNo, Timestamp tradeDate, BigDecimal totalAmount, Integer tradeStatusCode, String settleMonth, UserSubscription userSubscriptionBySubscriptionId) {
+        this.tradeNo = tradeNo;
+        this.tradeDate = tradeDate;
+        this.totalAmount = totalAmount;
+        this.tradeStatusCode = tradeStatusCode;
+        this.settleMonth = settleMonth;
+        this.userSubscriptionBySubscriptionId = userSubscriptionBySubscriptionId;
+    }
 }

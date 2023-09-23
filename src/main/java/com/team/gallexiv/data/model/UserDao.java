@@ -24,4 +24,6 @@ public interface UserDao extends JpaRepository<Userinfo, Integer> {
 
     Optional<Userinfo> findByUserEmail(String userEmail);
 
+    @Query("SELECT us.planByPlanId FROM Userinfo u JOIN UserSubscription us ON u.userId = us.userinfoByUserId.userId WHERE u.userId = ?1")
+    List<Plan> findPlanIdByMyUserId(Integer id);
 }
