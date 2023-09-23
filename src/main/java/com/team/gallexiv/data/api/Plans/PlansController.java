@@ -79,11 +79,23 @@ public class PlansController {
     }
 
     // 在 user 設定頁面取得 plan
-    @GetMapping("plans/personalPlan")
-    public VueData getAllPlanByUserId() {
-        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return planS.getPlanByUserId(accountName);
+    @GetMapping(path = "plans/personalPlan")
+    public VueData getAllPlanByUserId(@RequestParam(required = false, defaultValue = "1") Integer userId,
+            @RequestParam(required = false, defaultValue = "2") Integer state) {
+        if (state == 2) {
+            return planS.getPlanByUserIdNotOwner(userId);
+        }
+        if (state == 1) {
+            return planS.getPlanByUserId();
+        }
+        return VueData.error("查詢失敗");
     }
+
+    // @CrossOrigin
+    // @PostMapping(path = "plans/notOwner")
+    // public VueData getAllPlanNotOwner(@RequestParam Integer userId) {
+    // return planS.getPlanByUserIdNotOwner(userId);
+    // }
 
     @GetMapping("/plans/myPaidPlan")
     public VueData getPersonalPaidPlanByUserId() {

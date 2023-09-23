@@ -64,6 +64,17 @@ public class PostService {
         return VueData.ok(result);
     }
 
+    // 取得全部貼文 (後台管理頁面用)
+    public VueData getUserAllPost() {
+        String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        Integer thisUserId = thisUser.get().getUserId();
+        if (thisUser.isPresent()) {
+            return VueData.ok(postD.findUserPostsByStatus(thisUserId));
+        }
+        return VueData.error("查詢失敗");
+    }
+
     // 新增貼文
     public String insertPost(Map<String, String> props) throws JsonProcessingException {
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -256,6 +267,5 @@ public class PostService {
 
         return VueData.error("查無此使用者");
     }
-
 
 }

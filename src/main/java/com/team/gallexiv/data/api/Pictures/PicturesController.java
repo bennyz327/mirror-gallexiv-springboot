@@ -76,12 +76,12 @@ public class PicturesController {
 
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-//        if ((!Objects.equals(accountName, "anonymousUser"))) {
-//            Optional<Userinfo> thisUser = userD.findByAccount(accountName);
-//            //TODO 檢查圖片訪問限制
-//            log.info("檢查圖片訪問限制");
-//            int userId = thisUser.get().getUserId();
-//        }
+        // if ((!Objects.equals(accountName, "anonymousUser"))) {
+        // Optional<Userinfo> thisUser = userD.findByAccount(accountName);
+        // //TODO 檢查圖片訪問限制
+        // log.info("檢查圖片訪問限制");
+        // int userId = thisUser.get().getUserId();
+        // }
 
         String imagePath;
 

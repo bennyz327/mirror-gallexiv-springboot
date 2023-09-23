@@ -42,7 +42,7 @@ public class PlanService {
     }
 
     // 在 user 設定頁面取得 plan
-    public VueData getPlanByUserId(String account) {
+    public VueData getPlanByUserId() {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
         Integer thisUserId = thisUser.get().getUserId();
@@ -50,6 +50,11 @@ public class PlanService {
             return VueData.ok(planD.findPlanByUserIdAndStatus(thisUserId));
         }
         return VueData.error("查詢失敗");
+    }
+
+    // 在個人頁面取得 plan
+    public VueData getPlanByUserIdNotOwner(Integer userId) {
+        return VueData.ok(planD.findPlanByUserIdAndStatus(userId));
     }
 
     // --------先略過此處-------------

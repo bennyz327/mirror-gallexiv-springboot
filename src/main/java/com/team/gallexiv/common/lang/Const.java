@@ -36,6 +36,5 @@ public class Const {
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
 
-
     public static final String DEFULT_AVATAR = "https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg";
 }
