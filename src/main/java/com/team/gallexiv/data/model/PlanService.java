@@ -180,9 +180,14 @@ public class PlanService {
         if (userinfo.isPresent()) {
             int userId = userinfo.get().getUserId();
             System.out.println(userId);
-            // 查詢訂單狀態並刷新資料庫再回傳
-            List<Plan> pList = userD.findPlanIdByMyUserId(userId);
-            return VueData.ok(ecpayS.queryAndRenewTradeInfo(pList));
+
+            // 查詢訂單狀態並刷新資料庫後取得方案清單
+            List<Plan> pList = ecpayS.queryAndRenewTradeInfo(userD.findPlanIdByMyUserId(userId),userId);
+
+            //替除掉未付款的方案
+//            pList.removeIf(plan -> plan.getPlanStatusByStatusId().getStatusId() == 16);
+
+            return VueData.ok(pList);
         }
         return VueData.error("查無資訊");
     }

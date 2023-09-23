@@ -52,10 +52,8 @@ public class UserSubscription {
 //        return Objects.hash(subscriptionId, userId, planId, subscriptionStartTime, subscriptionStatus);
 //    }
 
+    @Getter
     @OneToMany(mappedBy = "userSubscriptionBySubscriptionId")
     private Collection<SubscriptionInvoice> subscriptionInvoicesBySubscriptionId;
 
-    public Collection<SubscriptionInvoice> getSubscriptionInvoicesBySubscriptionId() {
-        return subscriptionInvoicesBySubscriptionId;
-    }
 }
