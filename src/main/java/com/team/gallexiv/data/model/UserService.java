@@ -330,6 +330,7 @@ public class UserService {
         Userinfo new_user = new Userinfo();
         new_user.setUserName(String.valueOf(user.getAttributes().get("name")));
         log.info("帳號名是" + user.getName());
+        new_user.setAvatar(String.valueOf(user.getAttributes().get("picture")));
         new_user.setAccount(user.getName());
         String randomPassword = RandomUtil.randomString(8);
         new_user.setPWord(bCryptPE.encode(randomPassword));

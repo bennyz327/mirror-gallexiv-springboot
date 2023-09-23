@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -187,7 +188,7 @@ public class PlanService {
             System.out.println(userId);
 
             // 查詢訂單狀態並刷新資料庫後取得方案清單
-            List<Plan> pList = ecpayS.queryAndRenewTradeInfo(userD.findPlanIdByMyUserId(userId),userId);
+            List<Plan> pList = ecpayS.queryAndRenewTradeInfo(userD.findPlanIdByMyUserId(userId), userId);
 
             //替除掉未付款的方案
 //            pList.removeIf(plan -> plan.getPlanStatusByStatusId().getStatusId() == 16);

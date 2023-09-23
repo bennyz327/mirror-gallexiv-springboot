@@ -7,18 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.SimpleFormatter;
 
 import com.team.gallexiv.data.dto.EcpayDto;
-import com.team.gallexiv.data.dto.EcpayQueryDto;
 import com.team.gallexiv.data.model.*;
 import ecpay.payment.integration.domain.QueryTradeInfoObj;
-import ecpay.payment.integration.domain.QueryTradeObj;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import ecpay.payment.integration.AllInOne;
@@ -120,6 +115,7 @@ public class EcpayService {
                                 newSub.setSubscriptionStatusByStatusId(new Status(15));
                                 userSubscriptionD.save(subscriptionBetweenUserAndPlan.get());
                                 plan.isSubscribedPayed = true;
+                                plan.expireDate = new Timestamp(newSub.getSubscriptionStartTime().getTime() + 2592000000L).toString().substring(0, 10);
                             } else {
                                 log.info("訂閱 ID 為 {} 的方案,尚未付款", plan.getPlanId());
                             }

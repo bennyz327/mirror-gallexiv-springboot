@@ -54,6 +54,8 @@ public class Plan {
 
     @Transient
     public boolean isSubscribedPayed = false;
+    @Transient
+    public String expireDate = "";
 
     @Override
     public String toString() {
