@@ -21,6 +21,7 @@ public class Const {
     public final static List<String> CORS_EXPOSED_HEADERS = List.of("Authorization");
     public final static String DEFAULT_SUCCESS_MSG = "Yabai★Desune☆";
     public final static String CAPTCHA_REDIS_KEY = "captcha";
+    public final static String MAIL_VERIFFY_CODE_REDIS_KEY = "mailCode";
     public final static String USERNAME_PARAM = "name";
     public final static String PASSWORD_PARAM = "passwd";
     public final static String REGISTER_URI = "/register";
@@ -29,15 +30,11 @@ public class Const {
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";
     public final static String JWT_HEADER = "Authorization";
     public final static Integer JWT_EXPIRE_SECONDS = 1800;
-//    public final static String IMG_ROOTPATH = "C:\\Program Files";
-//    public final static String IMG_ROOTPATH_LINUX = "/home/benny/gallexiv";
-//    public final static String IMG_ROOTPATH_MAC = "/Users/max/Library/ActionGroupProject/gallexiv/upload";
-    public final static String DEFAULT_ROOTPATH_LINUX = "/home/gallexiv";
+    public final static String DEFAULT_ROOTPATH_LINUX = "/home/benny/gallexiv";
     public final static String DEFAULT_ROOTPATH_MAC = "/Library/gallexiv";
     public final static String DEFAULT_ROOTPATH_WIN = "C://gallexiv";
     public final static String CODE_PARAM = "code";
     public final static String CODE_TOKEN_PARAM = "token";
-
 
     public static final String DEFULT_AVATAR = "https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg";
 }

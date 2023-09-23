@@ -1,6 +1,7 @@
 package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
+import com.team.gallexiv.data.api.Ecpay.EcpayService;
 import jakarta.servlet.http.Part;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +21,14 @@ public class PlanService {
     final PlanForShowDao planForShowD;
     final UserDao userD;
     final StatusDao statusD;
+    final EcpayService ecpayS;
 
-    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userD, StatusDao statusD) {
+    public PlanService(PlanDao planD, PlanForShowDao planForShowD, UserDao userD, StatusDao statusD, EcpayService ecpayS) {
         this.planD = planD;
         this.planForShowD = planForShowD;
         this.userD = userD;
         this.statusD = statusD;
+        this.ecpayS = ecpayS;
     }
 
     // 取得單筆plan
@@ -39,7 +43,7 @@ public class PlanService {
     }
 
     // 在 user 設定頁面取得 plan
-    public VueData getPlanByUserId(String account) {
+    public VueData getPlanByUserId() {
         String accountName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> thisUser = userD.findByAccount(accountName);
         Integer thisUserId = thisUser.get().getUserId();
@@ -47,6 +51,11 @@ public class PlanService {
             return VueData.ok(planD.findPlanByUserIdAndStatus(thisUserId));
         }
         return VueData.error("查詢失敗");
+    }
+
+    // 在個人頁面取得 plan
+    public VueData getPlanByUserIdNotOwner(Integer userId) {
+        return VueData.ok(planD.findPlanByUserIdAndStatus(userId));
     }
 
     // --------先略過此處-------------
@@ -169,6 +178,24 @@ public class PlanService {
         }
         return VueData.error("更新失敗");
 
+    }
+
+    public VueData getPersonalPaidPlan(String user) {
+        Optional<Userinfo> userinfo = userD.findByAccount(user);
+        System.out.println(user);
+        if (userinfo.isPresent()) {
+            int userId = userinfo.get().getUserId();
+            System.out.println(userId);
+
+            // 查詢訂單狀態並刷新資料庫後取得方案清單
+            List<Plan> pList = ecpayS.queryAndRenewTradeInfo(userD.findPlanIdByMyUserId(userId), userId);
+
+            //替除掉未付款的方案
+//            pList.removeIf(plan -> plan.getPlanStatusByStatusId().getStatusId() == 16);
+
+            return VueData.ok(pList);
+        }
+        return VueData.error("查無資訊");
     }
 
 }

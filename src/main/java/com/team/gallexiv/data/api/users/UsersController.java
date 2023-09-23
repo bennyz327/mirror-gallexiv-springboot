@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 @Slf4j
@@ -82,13 +81,13 @@ public class UsersController {
     @PostMapping(value = "/register", consumes = "application/json")
     public VueData registerUser(@RequestBody Map<String, String> registerInfo) {
 
+        //TODO 生產環境清理
         log.info("請求的註冊資料");
         System.out.println(registerInfo.get("account"));
         System.out.println(registerInfo.get("password"));
         System.out.println(registerInfo.get("email"));
         System.out.println(registerInfo.get("token"));
         System.out.println(registerInfo.get("verification"));
-
 
         String token = registerInfo.get("token");
         String code = registerInfo.get("verification");
@@ -108,4 +107,27 @@ public class UsersController {
         return VueData.error("驗證失敗");
     }
 
+    @PostMapping(value = "/auth/startVerifyMail")
+    public VueData sendVerifyMail(){
+//        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String testAccount = "101976049684784052619";
+        if(userS.sendVerifyMail(testAccount)){
+            return VueData.ok("驗證信已寄出");
+        }
+        return VueData.error("驗證信寄送失敗");
+    }
+
+    @PostMapping(value = "/auth/verifyMail")
+    public VueData verifyMail(@RequestBody Map<String, String> mailVerifyInfo){
+//        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String testAccount = "101976049684784052619";
+        String code = mailVerifyInfo.get("code");
+        if (code == null || code.isEmpty()) {
+            return VueData.error("驗證碼不得為空");
+        }
+        if(userS.verifyMail(testAccount, code)){
+            return VueData.ok("驗證成功");
+        }
+        return VueData.error("驗證失敗，請重新寄送驗證信");
+    }
 }

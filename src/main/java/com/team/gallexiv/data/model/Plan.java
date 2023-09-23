@@ -52,6 +52,11 @@ public class Plan {
     @JsonIncludeProperties({"userId","userName","userEmail","accountRoleByRoleId"})
     private Userinfo ownerIdByUserId;
 
+    @Transient
+    public boolean isSubscribedPayed = false;
+    @Transient
+    public String expireDate = "";
+
     @Override
     public String toString() {
         return "Plan{" +

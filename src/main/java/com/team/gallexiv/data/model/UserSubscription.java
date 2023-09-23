@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 
 @Setter
 @Getter
@@ -50,5 +51,9 @@ public class UserSubscription {
 //    public int hashCode() {
 //        return Objects.hash(subscriptionId, userId, planId, subscriptionStartTime, subscriptionStatus);
 //    }
+
+    @Getter
+    @OneToMany(mappedBy = "userSubscriptionBySubscriptionId")
+    private Collection<SubscriptionInvoice> subscriptionInvoicesBySubscriptionId;
 
 }

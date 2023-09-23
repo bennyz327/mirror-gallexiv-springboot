@@ -16,4 +16,5 @@ public class UserSubscriptionsController {
     public VueData findPersonalSub(){
         return userSubscriptionS.findPersonalSubscription();
     }
+
 }

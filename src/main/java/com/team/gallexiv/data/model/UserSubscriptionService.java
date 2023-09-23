@@ -2,9 +2,11 @@ package com.team.gallexiv.data.model;
 
 import com.team.gallexiv.common.lang.VueData;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserSubscriptionService {
 
     private UserSubscriptionDao userSubscriptionD;
@@ -17,6 +19,8 @@ public class UserSubscriptionService {
     }
 
     public VueData findPersonalSubscription(){
+
+        reNewSubscription();
         String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
         if (optionalUserinfo.isPresent()){
@@ -24,6 +28,10 @@ public class UserSubscriptionService {
             return VueData.ok(userSubscriptionD.findById(userId));
         }
         return VueData.error("沒有userId");
+
+    }
+
+    private void reNewSubscription() {
 
     }
 

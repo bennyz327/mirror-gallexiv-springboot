@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EcpayDto {
-    private String planId;
+public class EcpayQueryDto {
+    private String tradeNo;
     private String tradeDate;
     private String totalAmount;
     private String tradeDesc;

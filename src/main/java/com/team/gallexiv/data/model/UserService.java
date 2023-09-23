@@ -1,9 +1,6 @@
 package com.team.gallexiv.data.model;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.http.HttpStatus;
-import cn.hutool.system.UserInfo;
-import com.team.gallexiv.common.exception.CaptchaException;
 import com.team.gallexiv.common.lang.VueData;
 import com.team.gallexiv.common.utils.RedisUtil;
 import com.team.gallexiv.data.dto.PreRegisterUserinfo;
@@ -13,11 +10,12 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,8 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.team.gallexiv.common.lang.Const.CAPTCHA_REDIS_KEY;
-import static com.team.gallexiv.common.lang.Const.JWT_EXPIRE_SECONDS;
+import static com.team.gallexiv.common.lang.Const.*;
 
 @Slf4j
 @Service
@@ -46,10 +43,11 @@ public class UserService {
     final PermissionsService permissionsService;
     final RolePermissionsDao rolePermissionD;
     private final BCryptPasswordEncoder bCryptPE;
+    final JavaMailSender mailSender;
 
     @Autowired
     public UserService(UserDao userD, CommentDao commentD, PostDao postD, UserSubscriptionDao userSubD, PlanDao planD, StatusDao statusD, UserSubscriptionDao userSubscriptionD, AccountRoleDao accountRoleD, RedisUtil redisUtil, EntityManager entityManager,
-                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD, BCryptPasswordEncoder bCryptPasswordEncoder) {
+                       PermissionsService permissionsS, RolePermissionsDao rolePermissionD, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender mailSender) {
         this.userD = userD;
         this.commentD = commentD;
         this.postD = postD;
@@ -63,6 +61,7 @@ public class UserService {
         this.permissionsService = permissionsS;
         this.rolePermissionD = rolePermissionD;
         this.bCryptPE = bCryptPasswordEncoder;
+        this.mailSender = mailSender;
     }
 
     public Userinfo mygetUserById(int id) {
@@ -261,6 +260,7 @@ public class UserService {
         log.info("找不到使用者，無法獲取身份組");
         return null;
     }
+
     public String getUserRoleStrByUserEntity(Userinfo user) {
         log.info(user.getAccountRoleByRoleId().toString());
         String roleName = user.getAccountRoleByRoleId().getRoleName();
@@ -330,6 +330,7 @@ public class UserService {
         Userinfo new_user = new Userinfo();
         new_user.setUserName(String.valueOf(user.getAttributes().get("name")));
         log.info("帳號名是" + user.getName());
+        new_user.setAvatar(String.valueOf(user.getAttributes().get("picture")));
         new_user.setAccount(user.getName());
         String randomPassword = RandomUtil.randomString(8);
         new_user.setPWord(bCryptPE.encode(randomPassword));
@@ -341,7 +342,8 @@ public class UserService {
         log.info("返回生成的隨機密碼請用戶更改");
         return new PreRegisterUserinfo(String.valueOf(user.getAttributes().get("name")), randomPassword, String.valueOf(user.getAttributes().get("email")));
     }
-    public Userinfo getUserEntityById (int userId){
+
+    public Userinfo getUserEntityById(int userId) {
         Optional<Userinfo> optionalUserinfo = userD.findById(userId);
         if (optionalUserinfo.isPresent()) {
             return optionalUserinfo.orElse(null);
@@ -349,7 +351,7 @@ public class UserService {
         return null;
     }
 
-    public boolean createRegisterUser(Map<String, String> user){
+    public boolean createRegisterUser(Map<String, String> user) {
         //檢查ACCOUNT是否重複
         String userName = user.get("account");
         if (userD.findByAccount(userName).isPresent()) {
@@ -385,6 +387,59 @@ public class UserService {
 
     public boolean ifCaptchaMatch(String token, String code) {
         return code.equals(redisUtil.hget(CAPTCHA_REDIS_KEY, token));
+    }
+
+    public boolean sendVerifyMail(String account) {
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(account);
+        if (optionalUserinfo.isPresent()) {
+            Userinfo user = optionalUserinfo.get();
+            if (user.getEmail_verified() == 1) {
+                log.info("使用者已驗證過");
+                return false;
+            }
+            log.info("使用者尚未驗證");
+            String token = RandomUtil.randomString(6);
+            redisUtil.hset(MAIL_VERIFFY_CODE_REDIS_KEY, account, token);
+            log.info("為使用者 {} 生成驗證碼：{}", account, token);
+
+            log.info("發送驗證信");
+            //TODO 發送驗證信
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setFrom("分享你的藝術<www.gallexiv.com>");
+            msg.setTo(user.getUserEmail());
+            msg.setSubject("驗證信");
+            msg.setText("您的驗證碼為：" + token);
+            mailSender.send(msg);
+
+            return true;
+        }
+        log.info("找不到使用者");
+        return false;
+    }
+
+    public boolean verifyMail(String account, String code) {
+        if (redisUtil.hHasKey(MAIL_VERIFFY_CODE_REDIS_KEY, account)) {
+            String redisCode = (String) redisUtil.hget(MAIL_VERIFFY_CODE_REDIS_KEY, account);
+            //拿了之後就刪除，只能用一次
+            redisUtil.hdel(MAIL_VERIFFY_CODE_REDIS_KEY, account);
+            if (redisCode.equals(code)) {
+                log.info("驗證碼正確");
+                Optional<Userinfo> optionalUserinfo = userD.findByAccount(account);
+                if (optionalUserinfo.isPresent()) {
+                    Userinfo user = optionalUserinfo.get();
+                    user.setEmail_verified(1);
+                    userD.save(user);
+                    log.info("使用者 {} 驗證成功", account);
+                    return true;
+                }
+                log.info("找不到使用者");
+                return false;
+            }
+            log.info("驗證碼錯誤");
+            return false;
+        }
+        log.info("非法驗證階段");
+        return false;
     }
 
 }

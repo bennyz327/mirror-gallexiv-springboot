@@ -10,11 +10,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
 
+import ch.qos.logback.classic.LoggerContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.*;
 
 import ecpay.payment.integration.domain.ATMRequestObj;
 import ecpay.payment.integration.domain.AioCheckOutALL;
@@ -53,9 +54,9 @@ import ecpay.payment.integration.verification.VerifyTradeNoAio;
  *
  */
 public class AllInOne extends AllInOneBase{
-	
+
 	public static final Logger log = LogManager.getLogger(AllInOne.class);
-	
+
 	/**
 	 * AllInOne Constructor
 	 * 參數帶入log4j.properties的路徑，若帶入空字串則預設不產生log
@@ -74,8 +75,9 @@ public class AllInOne extends AllInOneBase{
 			try {
 				LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
 				File conFile = new File(propertiesFile);
-				logContext.setConfigLocation(conFile.toURI());
-				logContext.reconfigure();
+// TODO 禁用寫入log
+//  			logContext.setConfigLocation(conFile.toURI());
+//				logContext.reconfigure();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

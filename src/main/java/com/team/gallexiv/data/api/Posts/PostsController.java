@@ -5,7 +5,6 @@ import com.team.gallexiv.data.model.*;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.team.gallexiv.data.dto.PostDto;
-import com.team.gallexiv.data.model.Tag;
 import com.team.gallexiv.data.model.*;
 import com.team.gallexiv.common.lang.VueData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.Collection;
 
 @Slf4j
 @RestController
@@ -62,12 +60,10 @@ public class PostsController {
     }
 
     @CrossOrigin
-    @GetMapping(path = "/posts/user", produces = "application/json;charset=UTF-8")
-    @Operation(description = "取得全部筆貼文")
+    @PostMapping(path = "/posts/userPosts", produces = "application/json;charset=UTF-8")
+    @Operation(description = "取得作者全部筆貼文")
     public VueData findUserAllPost() {
-        // return postS.getAllPost();
-        // 取得自己的貼文
-        return postS.getAllPost();
+        return postS.getUserAllPost();
     }
 
     @CrossOrigin(origins = "http://172.18.135.63:3100")
@@ -102,8 +98,8 @@ public class PostsController {
 
     @GetMapping("/posts/postTitle")
     @Operation(description = "模糊查詢貼文")
-    public List<Post> findPostByName(@RequestParam("postTitle") String postTitle) {
-        return postS.findPostByTitleLike(postTitle);
+    public VueData findPostByName(@RequestParam("postTitle") String postTitle) {
+        return VueData.ok(postS.findPostByTitleLike(postTitle));
     }
 
     // 同時上傳多張圖片和貼文資料
