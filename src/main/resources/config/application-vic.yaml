@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/gallexiv?useSSL=false&serverTimezone=UTC
-    username: Vic
+    url: jdbc:mysql://localhost:3306/gallexivV2?useSSL=false&serverTimezone=UTC
+    username: vic
     password: 1234
   security:
     user:
