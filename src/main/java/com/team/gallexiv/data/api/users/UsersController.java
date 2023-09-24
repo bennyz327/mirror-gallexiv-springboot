@@ -109,9 +109,8 @@ public class UsersController {
 
     @PostMapping(value = "/auth/startVerifyMail")
     public VueData sendVerifyMail(){
-//        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String testAccount = "101976049684784052619";
-        if(userS.sendVerifyMail(testAccount)){
+        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userS.sendVerifyMail(account)){
             return VueData.ok("驗證信已寄出");
         }
         return VueData.error("驗證信寄送失敗");
@@ -119,13 +118,12 @@ public class UsersController {
 
     @PostMapping(value = "/auth/verifyMail")
     public VueData verifyMail(@RequestBody Map<String, String> mailVerifyInfo){
-//        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String testAccount = "101976049684784052619";
+        String account = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String code = mailVerifyInfo.get("code");
         if (code == null || code.isEmpty()) {
             return VueData.error("驗證碼不得為空");
         }
-        if(userS.verifyMail(testAccount, code)){
+        if(userS.verifyMail(account, code)){
             return VueData.ok("驗證成功");
         }
         return VueData.error("驗證失敗，請重新寄送驗證信");

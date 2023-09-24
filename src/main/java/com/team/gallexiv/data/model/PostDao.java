@@ -24,10 +24,10 @@ public interface PostDao extends JpaRepository<Post, Integer> {
     @Query("SELECT p FROM Post p WHERE p.userinfoByUserId.userId = :userId AND p.postStatusByStatusId.statusId = 7 ORDER BY postTime DESC")
     List<Post> findUserPostsByStatus(@Param("userId") Integer userId);
 
-    @Query("select u from Post u where u.userinfoByUserId.userId = ?1 and u.planByPlanId.planId is not null ")
+    @Query("select p from Post p where p.userinfoByUserId.userId = ?1 and p.planByPlanId.planId is not null and p.postStatusByStatusId.statusId = 7 ORDER BY postTime DESC")
     List<Post> postWithPlan(int userId);
 
-    @Query("select u from Post u where u.userinfoByUserId.userId = ?1 and u.planByPlanId.planId is null ")
+    @Query("select p from Post p where p.userinfoByUserId.userId = ?1 and p.planByPlanId.planId is null and p.postStatusByStatusId.statusId = 7 ORDER BY postTime DESC")
     List<Post> postWithNoPlan(int userId);
 
     @Query("SELECT p FROM Post p JOIN p.tagsByPostId t WHERE t.tagName = ?1")
