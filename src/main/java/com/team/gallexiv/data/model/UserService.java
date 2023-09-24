@@ -174,7 +174,8 @@ public class UserService {
 
     // 更新user
     public VueData updateUserById(Userinfo user) {
-        Optional<Userinfo> optionalUserinfo = userD.findById(user.getUserId());
+        String accoutName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Userinfo> optionalUserinfo = userD.findByAccount(accoutName);
 
         System.out.println("要更新資料: " + user);
         if (optionalUserinfo.isPresent()) {
@@ -191,6 +192,7 @@ public class UserService {
             result.setBirthday(user.getBirthday() != null ? user.getBirthday() : result.getBirthday());
             result.setGender(user.getGender() != null ? user.getGender() : result.getGender());
             result.setAvatar(user.getAvatar() != null ? user.getAvatar() : result.getAvatar());
+            result.setBackground_image(user.getBackground_image() != null ? user.getBackground_image() : result.getBackground_image());
             result.setIntro(user.getIntro() != null ? user.getIntro() : result.getIntro());
             result.setAccountRoleByRoleId(user.getAccountRoleByRoleId() != null ? user.getAccountRoleByRoleId() : result.getAccountRoleByRoleId());
             result.setUserStatusByStatusId(user.getUserStatusByStatusId() != null ? user.getUserStatusByStatusId() : result.getUserStatusByStatusId());
