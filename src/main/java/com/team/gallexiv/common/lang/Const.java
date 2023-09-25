@@ -29,7 +29,7 @@ public class Const {
     public final static String LOGOUT_URI = "/logout";
     public final static String OAUTH2_LOGIN_URI = "/login/oauth2/code/**";
     public final static String JWT_HEADER = "Authorization";
-    public final static Integer JWT_EXPIRE_SECONDS = 1800;
+    public final static Integer JWT_EXPIRE_SECONDS = 300000;
     public final static String DEFAULT_ROOTPATH_LINUX = "/home/benny/gallexiv";
     public final static String DEFAULT_ROOTPATH_MAC = "/Library/gallexiv";
     public final static String DEFAULT_ROOTPATH_WIN = "C://gallexiv";

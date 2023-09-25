@@ -152,20 +152,27 @@ public class PostsController {
         if (s == 2) {
             return postS.getAllPost();
         }
-        // 別人的免費
+        // 別人的付費
         if (s == 3) {
             if (userId == 0) {
                 return null;
             }
             return postS.findOtherUserPost(userId, s);
         }
-        // 別人的付費
+        // 別人的免費
         if (s == 4) {
             if (userId == 0) {
                 return null;
             }
             return postS.findOtherUserPost(userId, s);
         }
+        // TODO 未完成 別人的付費同時登入者有付費的情況
+//        if (s == 5) {
+//            if (userId == 0) {
+//                return null;
+//            }
+//            return postS.findOtherUserPost(userId, s);
+//        }
         return null;
     }
 

@@ -78,7 +78,7 @@ public class PlansController {
 
     }
 
-    // 在 user 設定頁面取得 plan
+    // 在 user 設定頁面取得 plan方案
     @GetMapping(path = "plans/personalPlan")
     public VueData getAllPlanByUserId(@RequestParam(required = false, defaultValue = "1") Integer userId,
             @RequestParam(required = false, defaultValue = "2") Integer state) {

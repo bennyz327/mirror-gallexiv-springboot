@@ -264,6 +264,10 @@ public class PostService {
         if (mode == 4) {
             return VueData.ok(postD.postWithNoPlan(userId));
         }
+        //TODO 未完成
+//        if (mode == 5){
+//            return VueData.ok(postD.postWithNoSubscribe(userId));
+//        }
 
         return VueData.error("查無此使用者");
     }
